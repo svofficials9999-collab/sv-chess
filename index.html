@@ -53,6 +53,8 @@ body{background:radial-gradient(circle at 20% 0,#3d2f10 0,#191307 55%,#0d0a05 10
 #board3d.on{display:block}
 #board3d canvas{display:block;width:100%;height:100%;border-radius:7px}
 body.rv3d #board{visibility:hidden}
+body.rv3d #boardwrap{aspect-ratio:4/3}
+body.rv3d #board{position:absolute;inset:0}
 .sq{position:relative;display:flex;align-items:center;justify-content:center}
 .sq.l{background:linear-gradient(145deg,#e3c06a,#c9a24a)}.sq.d{background:linear-gradient(145deg,#2c251a,#1c1710)}
 .sq svg{width:92%;height:92%;pointer-events:none;filter:drop-shadow(0 2px 2px #0006)}
