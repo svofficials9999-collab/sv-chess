@@ -144,7 +144,7 @@ function init(){
   renderer.domElement.addEventListener('pointermove',onMove);
   renderer.domElement.addEventListener('pointerup',onUp);
   renderer.domElement.addEventListener('pointercancel',onUp);
-  renderer.domElement.addEventListener('dblclick',function(){cam.tPhi=0.93;cam.tR=11.9;cam.tTheta=(orient==='w'?0:Math.PI)});
+  renderer.domElement.addEventListener('dblclick',function(){cam.tPhi=0.93;cam.tR=fitRadius();cam.tTheta=(orient==='w'?0:Math.PI)});
   window.addEventListener('resize',resize);
   resize();
   RV3.ready=true;
@@ -154,6 +154,7 @@ function resize(){
   var w=containerEl.clientWidth||300,h=containerEl.clientHeight||300;
   renderer.setSize(w,h,false);
   camera.aspect=w/h;camera.updateProjectionMatrix();
+  cam.tR=Math.max(cam.tR,fitRadius());
 }
 
 /* ---------- input ---------- */
@@ -299,6 +300,9 @@ function loop(t){
   var dt=Math.min(0.1,(t-lastT)/1000||0.016);lastT=t;
   if(dt>0){var f=1/dt;fpsAvg=fpsAvg*0.95+f*0.05}
   if(fpsAvg<26&&shadowsOn){lowFrames++;if(lowFrames>90){renderer.shadowMap.enabled=false;shadowsOn=false;dir_light_off();}}
+  var fr=fitRadius();
+  if(cam.tR<fr)cam.tR=fr;
+  if(cam.tR>18)cam.tR=18;
   cam.theta+=(cam.tTheta-cam.theta)*Math.min(1,dt*9);
   cam.phi+=(cam.tPhi-cam.phi)*Math.min(1,dt*9);
   cam.r+=(cam.tR-cam.r)*Math.min(1,dt*9);
@@ -309,6 +313,22 @@ function loop(t){
 }
 function dir_light_off(){ /* called once on sustained low fps */
   scene.traverse(function(o){if(o.isDirectionalLight)o.castShadow=false});
+}
+
+function fitRadius(){
+  if(!camera)return 11.9;
+  var tanV=Math.tan(camera.fov*Math.PI/360),tanH=tanV*camera.aspect;
+  var dir=new THREE.Vector3(Math.sin(cam.theta)*Math.sin(cam.phi),Math.cos(cam.phi),Math.cos(cam.theta)*Math.sin(cam.phi));
+  var right=new THREE.Vector3().crossVectors(dir,new THREE.Vector3(0,1,0)).normalize();
+  var up=new THREE.Vector3().crossVectors(right,dir).normalize();
+  var need=6,i,p,pd,pr,pu;
+  var C=[[-5.4,0,-5.4],[5.4,0,-5.4],[-5.4,0,5.4],[5.4,0,5.4],[-5.4,1.25,-5.4],[5.4,1.25,-5.4],[-5.4,1.25,5.4],[5.4,1.25,5.4]];
+  for(i=0;i<8;i++){
+    p=new THREE.Vector3(C[i][0],C[i][1],C[i][2]);
+    pd=p.dot(dir);pr=Math.abs(p.dot(right));pu=Math.abs(p.dot(up));
+    need=Math.max(need,pd+pr/(0.92*tanH),pd+pu/(0.92*tanV));
+  }
+  return Math.min(need,18);
 }
 
 RV3.attach=function(el){
