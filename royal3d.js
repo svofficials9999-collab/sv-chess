@@ -342,6 +342,6 @@ RV3.setActive=function(on){
   else cancelAnimationFrame(rafId);
 };
 RV3.project=function(sq){if(!camera||!renderer)return null;var p=sqPos(sq);var v=new THREE.Vector3(p.x,0,p.z).project(camera);var r=renderer.domElement.getBoundingClientRect();return{x:r.left+(v.x+1)/2*r.width,y:r.top+(1-v.y)/2*r.height}};
-RV3.stats=function(){return{fps:Math.round(fpsAvg),pieces:Object.keys(meshes).length,tris:renderer?renderer.info.render.triangles:0,shadows:shadowsOn}};
+RV3.stats=function(){return{fps:Math.round(fpsAvg),pieces:Object.keys(meshes).length,tris:renderer?renderer.info.render.triangles:0,shadows:shadowsOn,r:+cam.r.toFixed(2),phi:+cam.phi.toFixed(2),aspect:+camera.aspect.toFixed(3),need:+fitRadius().toFixed(2)}};
 })();
 if(window.__rvApplyView)window.__rvApplyView();
