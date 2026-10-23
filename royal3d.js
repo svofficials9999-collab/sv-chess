@@ -358,7 +358,7 @@ function fitRadius(){
   var right=new THREE.Vector3().crossVectors(dir,new THREE.Vector3(0,1,0)).normalize();
   var up=new THREE.Vector3().crossVectors(right,dir).normalize();
   var need=6,i,p,pd,pr,pu;
-  var C=[[-4.6,0,-4.6],[4.6,0,-4.6],[-4.6,0,4.6],[4.6,0,4.6],[-4.6,1.35,-4.6],[4.6,1.35,-4.6],[-4.6,1.35,4.6],[4.6,1.35,4.6]];
+  var C=[[-4.15,0,-4.15],[4.15,0,-4.15],[-4.15,0,4.15],[4.15,0,4.15],[-4.15,1.35,-4.15],[4.15,1.35,-4.15],[-4.15,1.35,4.15],[4.15,1.35,4.15]];
   for(i=0;i<8;i++){
     p=new THREE.Vector3(C[i][0],C[i][1],C[i][2]);
     pd=p.dot(dir);pr=Math.abs(p.dot(right));pu=Math.abs(p.dot(up));
