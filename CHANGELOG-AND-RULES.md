@@ -2,6 +2,20 @@
 
 Live: https://svofficials9999-collab.github.io/sv-chess/
 
+## v1.3.1 (2026-10-23)
+- User-driven redesign (voice 18:31 + annotated screenshot 18:34): board is now STRAIGHT
+  (near-top-down camera, phi 0.78 -> 0.10; no more tilted slate/trapezoid look) and fills the
+  total phone frame - square full-width canvas, camera fits the gold rim edge to edge, dark
+  trapezoid corners gone.
+- Ultra-realistic materials pass: procedural wood-grain (canvas texture + bump) on pieces
+  (light oak vs ebony) and on the maple/walnut board; calmer antique-gold rim; grounded
+  shadows (2048px) + soft fill light; smoother 40-segment piece lathes; knight head tilted
+  back so the horse face reads from the straight top view.
+- Colours changed per user permission. Orbit/pinch camera preserved (double-tap resets to
+  the straight view). No rules, modes, effects, netplay or control changes.
+- Verified headless at 390x844: 32 pieces render, r==need exact frame fit, real tap pipeline
+  (pointer -> raycast) e2-e4 and e7-e5 both land, zero JS errors.
+
 ## v1.1.0 - 2026-10-23
 - Rebranded to ROYAL CHESS per user master prompt: Royal Gold + Black Marble board themes,
   gold luxury palette, 5 AI levels (Beginner/Easy/Medium/Hard/Expert), Hint button.
