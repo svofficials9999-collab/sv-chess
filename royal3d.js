@@ -302,7 +302,8 @@ function stepFx(dt){
     p.m.position.x+=p.vx*dt;p.m.position.y+=p.vy*dt;p.m.position.z+=p.vz*dt;
     p.vy+=p.grav*dt;
     p.m.rotation.x+=p.rx*dt;p.m.rotation.y+=p.ry*dt;
-    if(p.fade){var s=Math.max(0.001,p.s0*(1-k));p.m.scale.set(s,s,s)}
+    if(p.grow){var g=1+3.2*k;p.m.scale.set(g,g,g);p.m.material.opacity=Math.max(0,0.95*(1-k))}
+    else if(p.fade){var s=Math.max(0.001,p.s0*(1-k));p.m.scale.set(s,s,s)}
     if(k>=1){scene.remove(p.m);if(p.m.geometry)p.m.geometry.dispose();if(p.m.material)p.m.material.dispose();fxParts.splice(i,1)}
   }
 }
@@ -312,12 +313,16 @@ RV3.fx=function(kind,sq){
   var i;
   if(kind==='blast'&&sq){
     var sp=sqPos(sq);
-    for(i=0;i<16;i++){
-      var m=new THREE.Mesh(new THREE.BoxGeometry(0.09,0.09,0.09),new THREE.MeshBasicMaterial({color:i%3?0xffb547:0xfff2c8}));
+    for(i=0;i<24;i++){
+      var sz=0.12+Math.random()*0.09;
+      var m=new THREE.Mesh(new THREE.BoxGeometry(sz,sz,sz),new THREE.MeshBasicMaterial({color:i%3?0xffb547:0xfff2c8}));
       m.position.set(sp.x,0.3,sp.z);
-      var a=Math.random()*Math.PI*2,v=1.2+Math.random()*2.2;
-      addFx(m,Math.cos(a)*v,2.2+Math.random()*2.4,Math.sin(a)*v,(Math.random()-0.5)*8,(Math.random()-0.5)*8,0.75+Math.random()*0.2);
+      var a=Math.random()*Math.PI*2,v=1.6+Math.random()*2.6;
+      addFx(m,Math.cos(a)*v,2.6+Math.random()*2.6,Math.sin(a)*v,(Math.random()-0.5)*9,(Math.random()-0.5)*9,0.8+Math.random()*0.25);
     }
+    var ring=new THREE.Mesh(new THREE.RingGeometry(0.18,0.34,28),new THREE.MeshBasicMaterial({color:0xffd54a,side:THREE.DoubleSide,transparent:true,opacity:0.95,depthWrite:false}));
+    ring.rotation.x=-Math.PI/2;ring.position.set(sp.x,0.1,sp.z);
+    fxParts.push({m:ring,vx:0,vy:0,vz:0,rx:0,ry:0,t:0,dur:0.5,grav:0,fade:false,grow:true,s0:1});scene.add(ring);
   }else if(kind==='celebrate'){
     var cols=[0xffd54a,0x18e88a,0xff6b8a,0x59b7ff,0xffffff];
     for(i=0;i<50;i++){
