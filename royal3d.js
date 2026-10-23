@@ -6,7 +6,7 @@ var RV3={active:false,supported:false,ready:false};
 window.RV3=RV3;
 
 /* capture move data for glide animations */
-if(window.Chess&&Chess.prototype&&!Chess.prototype.__rvPatched){
+if(typeof Chess!=='undefined'&&Chess.prototype&&!Chess.prototype.__rvPatched){
   var om=Chess.prototype.move, ou=Chess.prototype.undo;
   Chess.prototype.move=function(){var r=om.apply(this,arguments);if(r)window.__rvMove={from:r.from,to:r.to,flags:r.flags||'',captured:r.captured||null,piece:r.piece,promotion:r.promotion||null};return r};
   Chess.prototype.undo=function(){var r=ou.apply(this,arguments);if(r)window.__rvJump=true;return r};
