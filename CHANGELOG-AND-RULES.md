@@ -35,3 +35,9 @@ Live: https://svofficials9999-collab.github.io/sv-chess/
 
 ## v1.3.0 (2026-10-23)
 - NEW (beta): Two Phones mode - play a friend on another phone with WebRTC phone-to-phone moves. No account, no game server: game codes are copied by the players themselves. Same Wi-Fi needs no helper; different networks can opt into the free Google STUN helper (off by default; Google sees only the phone IP for connecting). Some mobile networks can still block direct play. Moves/resign/draw offers sync both ways; draw claims follow the same rules as local play.
+
+## v1.4.0 (2026-10-23)
+- Capture blast effect: 💥 burst on the captured square (2D) + golden particle burst (3D), with a stronger capture sound (low thump + snap). Sound still fully controlled by the existing sound toggle.
+- Win celebration: full-screen confetti rain above the game-over dialog (2D + 3D); existing win/lose jingles unchanged.
+- 3D view straightened and enlarged per user request: camera now near-overhead (phi 0.15), canvas square again, board fills ~80-84% of the canvas (was ~74% in 4:3 tilted view). Drag still allows tilt 0.08-1.25 rad; double-tap resets to the overhead view.
+- No rules, features, layout or netplay changes. Verified on 390x844: capture blast pixels present, confetti visible above modal, 3D blast particles live (fxCount=16), zero JS errors, 25-28fps on SwiftShader software rendering (real GPUs are faster).
