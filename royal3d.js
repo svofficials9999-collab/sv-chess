@@ -24,7 +24,7 @@ var renderer,scene,camera,raycaster,planeY0,containerEl;
 var boardGroup,pieceGroup,hlGroup;
 var meshes={};           /* sq -> group */
 var geoCache={},matCache={};
-var cam={theta:0,phi:0.85,r:11.9,tTheta:0,tPhi:0.85,tR:11.9};
+var cam={theta:0,phi:0.62,r:11.9,tTheta:0,tPhi:0.62,tR:11.9};
 var orient='w';
 var anims=[];
 var pointers=new Map();
@@ -144,7 +144,7 @@ function init(){
   renderer.domElement.addEventListener('pointermove',onMove);
   renderer.domElement.addEventListener('pointerup',onUp);
   renderer.domElement.addEventListener('pointercancel',onUp);
-  renderer.domElement.addEventListener('dblclick',function(){cam.tPhi=0.85;cam.tR=fitRadius();cam.tTheta=(orient==='w'?0:Math.PI)});
+  renderer.domElement.addEventListener('dblclick',function(){cam.tPhi=0.62;cam.tR=fitRadius();cam.tTheta=(orient==='w'?0:Math.PI)});
   window.addEventListener('resize',resize);
   resize();
   RV3.ready=true;
@@ -196,10 +196,10 @@ function onUp(e){
 
 /* ---------- highlights ---------- */
 var hlMats={
-  sel:new THREE.MeshBasicMaterial({color:0xffd94a,transparent:true,opacity:0.45,depthWrite:false}),
+  sel:new THREE.MeshBasicMaterial({color:0xffd94a,transparent:true,opacity:0.6,depthWrite:false}),
   last:new THREE.MeshBasicMaterial({color:0xffd94a,transparent:true,opacity:0.22,depthWrite:false}),
   check:new THREE.MeshBasicMaterial({color:0xff3344,transparent:true,opacity:0.55,depthWrite:false}),
-  dot:new THREE.MeshBasicMaterial({color:0xffd94a,transparent:true,opacity:0.75,depthWrite:false}),
+  dot:new THREE.MeshBasicMaterial({color:0x18e88a,transparent:true,opacity:0.95,depthWrite:false}),
   cap:new THREE.MeshBasicMaterial({color:0xff5533,transparent:true,opacity:0.85,depthWrite:false,side:THREE.DoubleSide})
 };
 function flat(geo,mat,sq,y){
@@ -207,7 +207,7 @@ function flat(geo,mat,sq,y){
   m.rotation.x=-Math.PI/2;m.position.set(p.x,y||0.012,p.z);
   return m;
 }
-var hlGeoSq=new THREE.PlaneGeometry(1,1),hlGeoDot=new THREE.CircleGeometry(0.10,20),hlGeoRing=new THREE.RingGeometry(0.34,0.44,28);
+var hlGeoSq=new THREE.PlaneGeometry(1,1),hlGeoDot=new THREE.CircleGeometry(0.17,24),hlGeoRing=new THREE.RingGeometry(0.38,0.5,28);
 function drawHighlights(st){
   while(hlGroup.children.length)hlGroup.remove(hlGroup.children[0]);
   if(st.last){hlGroup.add(flat(hlGeoSq,hlMats.last,st.last.from,0.011));hlGroup.add(flat(hlGeoSq,hlMats.last,st.last.to,0.011))}
