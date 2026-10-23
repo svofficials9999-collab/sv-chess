@@ -89,5 +89,6 @@ function cleanup(){
   pc=null;dc=null;
 }
 NET.leave=function(){cleanup();setStatus('net-status',t2('Left the game.'))};
+NET.debug=function(){return pc?{cs:pc.connectionState,ice:pc.iceConnectionState,gather:pc.iceGatheringState,sig:pc.signalingState,dc:dc?dc.readyState:null}:null};
 function t2(s){return (window.RVI18N&&RVI18N.t)?RVI18N.t(s):s}
 })();
