@@ -24,7 +24,7 @@ var renderer,scene,camera,raycaster,planeY0,containerEl;
 var boardGroup,pieceGroup,hlGroup;
 var meshes={};           /* sq -> group */
 var geoCache={},matCache={};
-var cam={theta:0,phi:0.62,r:11.9,tTheta:0,tPhi:0.62,tR:11.9};
+var cam={theta:0,phi:0.15,r:11.9,tTheta:0,tPhi:0.15,tR:11.9};
 var orient='w';
 var anims=[];
 var pointers=new Map();
@@ -144,7 +144,7 @@ function init(){
   renderer.domElement.addEventListener('pointermove',onMove);
   renderer.domElement.addEventListener('pointerup',onUp);
   renderer.domElement.addEventListener('pointercancel',onUp);
-  renderer.domElement.addEventListener('dblclick',function(){cam.tPhi=0.62;cam.tR=fitRadius();cam.tTheta=(orient==='w'?0:Math.PI)});
+  renderer.domElement.addEventListener('dblclick',function(){cam.tPhi=0.15;cam.tR=fitRadius();cam.tTheta=(orient==='w'?0:Math.PI)});
   window.addEventListener('resize',resize);
   resize();
   RV3.ready=true;
@@ -168,7 +168,7 @@ function onMove(e){
   var dx=e.clientX-p.x,dy=e.clientY-p.y;
   if(pointers.size===1){
     if(tapInfo&&(Math.abs(e.clientX-tapInfo.x)+Math.abs(e.clientY-tapInfo.y)>12))tapInfo.moved=true;
-    if(!tapInfo||tapInfo.moved){cam.tTheta+=dx*0.0062;cam.tPhi=Math.min(1.25,Math.max(0.55,cam.tPhi-dy*0.005))}
+    if(!tapInfo||tapInfo.moved){cam.tTheta+=dx*0.0062;cam.tPhi=Math.min(1.25,Math.max(0.08,cam.tPhi-dy*0.005))}
   }else if(pointers.size===2){
     var arr=[].slice.call(pointers.values());
     var other=arr[0]===p?arr[1]:arr[0];
@@ -293,6 +293,41 @@ function stepAnims(dt){
   }
 }
 
+/* ---------- fx: capture blast + win celebration ---------- */
+var fxParts=[];
+function addFx(m,vx,vy,vz,rx,ry,dur,grav,fade){fxParts.push({m:m,vx:vx,vy:vy,vz:vz,rx:rx||0,ry:ry||0,t:0,dur:dur,grav:grav===undefined?-9:grav,fade:fade!==false,s0:m.scale.x});scene.add(m)}
+function stepFx(dt){
+  for(var i=fxParts.length-1;i>=0;i--){
+    var p=fxParts[i];p.t+=dt;var k=Math.min(1,p.t/p.dur);
+    p.m.position.x+=p.vx*dt;p.m.position.y+=p.vy*dt;p.m.position.z+=p.vz*dt;
+    p.vy+=p.grav*dt;
+    p.m.rotation.x+=p.rx*dt;p.m.rotation.y+=p.ry*dt;
+    if(p.fade){var s=Math.max(0.001,p.s0*(1-k));p.m.scale.set(s,s,s)}
+    if(k>=1){scene.remove(p.m);if(p.m.geometry)p.m.geometry.dispose();if(p.m.material)p.m.material.dispose();fxParts.splice(i,1)}
+  }
+}
+RV3.fx=function(kind,sq){
+  if(!RV3.ready)return;
+  var i;
+  if(kind==='blast'&&sq){
+    var sp=sqPos(sq);
+    for(i=0;i<16;i++){
+      var m=new THREE.Mesh(new THREE.BoxGeometry(0.09,0.09,0.09),new THREE.MeshBasicMaterial({color:i%3?0xffb547:0xfff2c8}));
+      m.position.set(sp.x,0.3,sp.z);
+      var a=Math.random()*Math.PI*2,v=1.2+Math.random()*2.2;
+      addFx(m,Math.cos(a)*v,2.2+Math.random()*2.4,Math.sin(a)*v,(Math.random()-0.5)*8,(Math.random()-0.5)*8,0.75+Math.random()*0.2);
+    }
+  }else if(kind==='celebrate'){
+    var cols=[0xffd54a,0x18e88a,0xff6b8a,0x59b7ff,0xffffff];
+    for(i=0;i<50;i++){
+      var c=new THREE.Mesh(new THREE.PlaneGeometry(0.16,0.22),new THREE.MeshBasicMaterial({color:cols[i%5],side:THREE.DoubleSide}));
+      c.position.set((Math.random()-0.5)*8.6,4.6+Math.random()*3.4,(Math.random()-0.5)*8.6);
+      c.rotation.set(Math.random()*3,Math.random()*3,0);
+      addFx(c,(Math.random()-0.5)*0.6,-1.6-Math.random()*1.1,(Math.random()-0.5)*0.6,(Math.random()-0.5)*6,(Math.random()-0.5)*6,3.2+Math.random()*0.8,0,false);
+    }
+  }
+};
+
 /* ---------- main loop ---------- */
 function loop(t){
   if(!RV3.active)return;
@@ -309,6 +344,7 @@ function loop(t){
   camera.position.set(Math.sin(cam.theta)*Math.sin(cam.phi)*cam.r,Math.cos(cam.phi)*cam.r,Math.cos(cam.theta)*Math.sin(cam.phi)*cam.r);
   camera.lookAt(0,-0.35,0);
   stepAnims(dt);
+  stepFx(dt);
   renderer.render(scene,camera);
 }
 function dir_light_off(){ /* called once on sustained low fps */
