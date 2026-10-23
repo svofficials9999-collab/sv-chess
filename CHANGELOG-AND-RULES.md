@@ -41,3 +41,9 @@ Live: https://svofficials9999-collab.github.io/sv-chess/
 - Win celebration: full-screen confetti rain above the game-over dialog (2D + 3D); existing win/lose jingles unchanged.
 - 3D view straightened and enlarged per user request: camera now near-overhead (phi 0.15), canvas square again, board fills ~80-84% of the canvas (was ~74% in 4:3 tilted view). Drag still allows tilt 0.08-1.25 rad; double-tap resets to the overhead view.
 - No rules, features, layout or netplay changes. Verified on 390x844: capture blast pixels present, confetti visible above modal, 3D blast particles live (fxCount=16), zero JS errors, 25-28fps on SwiftShader software rendering (real GPUs are faster).
+
+## v1.5.0 (2026-10-23)
+- Single realistic view per user request: the 2D/3D choice is removed from setup and the game screen. The app always shows the realistic 3D physical chess set; a simple 2D board remains only as a silent automatic fallback on devices without WebGL.
+- Bigger board: 3D fit tightened so the board fills ~90% of the canvas (was ~80%), larger finger targets.
+- Tap accuracy: tapping a piece's body now selects that piece (piece-first raycast), not whatever square the plane projection lands on.
+- Capture blast, win confetti, rules, modes, netplay unchanged.
