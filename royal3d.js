@@ -24,7 +24,7 @@ var renderer,scene,camera,raycaster,planeY0,containerEl;
 var boardGroup,pieceGroup,hlGroup;
 var meshes={};           /* sq -> group */
 var geoCache={},matCache={};
-var cam={theta:0,phi:0.50,r:11.9,tTheta:0,tPhi:0.50,tR:11.9};
+var cam={theta:0,phi:0.60,r:11.9,tTheta:0,tPhi:0.60,tR:11.9};
 var orient='w';
 var anims=[];
 var pointers=new Map();
@@ -57,8 +57,8 @@ function pieceGeo(type){
     var c=new THREE.SphereGeometry(0.085,14,12);c.translate(0,1.02,0);g.push(c);
   }else if(type==='k'){ /* king: tallest, bold cross */
     g.push(lathe([[0.001,0],[0.335,0],[0.335,0.05],[0.175,0.12],[0.155,0.54],[0.26,0.62],[0.185,0.68],[0.215,0.76],[0.25,0.82],[0.12,0.85],[0.001,0.85]]));
-    var v1=new THREE.BoxGeometry(0.075,0.26,0.075);v1.translate(0,1.00,0);g.push(v1);
-    var v2=new THREE.BoxGeometry(0.20,0.075,0.075);v2.translate(0,1.03,0);g.push(v2);
+    var v1=new THREE.BoxGeometry(0.10,0.30,0.10);v1.translate(0,1.00,0);g.push(v1);
+    var v2=new THREE.BoxGeometry(0.26,0.095,0.10);v2.translate(0,1.03,0);g.push(v2);
   }else if(type==='n'){ /* knight: horse head profile */
     g.push(lathe([[0.001,0],[0.31,0],[0.31,0.05],[0.195,0.12],[0.175,0.26],[0.235,0.32],[0.001,0.32]]));
     var s2=new THREE.Shape();
@@ -87,7 +87,6 @@ function createPiece(type,color){
     mesh.castShadow=true;mesh.receiveShadow=false;
     grp.add(mesh);
   });
-  if(type==='n')grp.rotation.y=(color==='w'?Math.PI/2:-Math.PI/2);
   grp.userData={type:type,color:color};
   return grp;
 }
@@ -145,7 +144,7 @@ function init(){
   renderer.domElement.addEventListener('pointermove',onMove);
   renderer.domElement.addEventListener('pointerup',onUp);
   renderer.domElement.addEventListener('pointercancel',onUp);
-  renderer.domElement.addEventListener('dblclick',function(){cam.tPhi=0.50;cam.tR=fitRadius();cam.tTheta=(orient==='w'?0:Math.PI)});
+  renderer.domElement.addEventListener('dblclick',function(){cam.tPhi=0.60;cam.tR=fitRadius();cam.tTheta=(orient==='w'?0:Math.PI)});
   window.addEventListener('resize',resize);
   resize();
   RV3.ready=true;
