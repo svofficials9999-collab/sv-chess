@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SV CHESS MASTER</title>
+<meta name="app-version" content="1.0.0">
+<meta name="theme-color" content="#070b24">
+<meta name="description" content="SV CHESS MASTER - world class free chess game. Play 2 players on one phone or against the computer at 8 levels up to 2850 ELO. English + Telugu. Created by D. Srinivas.">
+<meta property="og:title" content="SV CHESS MASTER - Free 2 Player Chess">
+<meta property="og:description" content="Play chess with a friend on one phone, or challenge the computer from Beginner to World Class (2850 ELO). Free, English + Telugu.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:radial-gradient(circle at 15% 0,#1b2a63 0,#070b24 55%,#05081c 100%) fixed;color:#e8f1ff;font-family:system-ui,-apple-system,"Noto Sans Telugu","Nirmala UI",Roboto,sans-serif;font-size:16px;line-height:1.5;min-height:100vh;overflow-x:hidden}
+.w{max-width:520px;margin:0 auto;padding:10px 12px 90px}
+.neon{background:linear-gradient(90deg,#00e5ff,#ff4df0,#ffd600,#00e5ff);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sh 6s linear infinite}
+@keyframes sh{to{background-position:300% 0}}
+.top{display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:20;padding:8px 10px;background:#070b24ee;backdrop-filter:blur(8px);border-bottom:1px solid #2b3a7a}
+.top .t{flex:1;font-weight:800;font-size:17px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.ib{border:1.5px solid #4a5aa8;background:#101a45;color:#fff;border-radius:12px;min-width:40px;height:40px;font-size:15px;font-weight:700;padding:0 10px;box-shadow:0 0 10px #00e5ff33;font-family:inherit}
+.ib:active,.btn:active,.card:active{box-shadow:inset 0 0 12px #000a,0 0 6px #ff4df088;transform:scale(.97)}
+.ib.on{background:#0a1030;border-color:#ffd600;box-shadow:0 0 12px #ffd60066}
+.card{display:block;width:100%;text-align:left;border:1.5px solid #3a4a98;background:linear-gradient(145deg,#111b4acc,#0a1030cc);color:#fff;border-radius:16px;padding:12px 14px;margin:8px 0;font:inherit;box-shadow:0 0 12px #7c4dff33;cursor:pointer}
+.card b{display:block;font-size:17px}.card small{color:#9fb4e8}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid2 .card{margin:0;min-height:76px;display:flex;flex-direction:column;justify-content:center}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{border:1.5px solid #00e5ffaa;background:linear-gradient(135deg,#0b2a66,#2b126e);color:#fff;border-radius:14px;padding:10px 14px;font:inherit;font-weight:700;box-shadow:0 0 12px #00e5ff44;margin:4px 4px 4px 0;cursor:pointer}
+.btn.g{border-color:#ffd600aa}.btn.r{border-color:#ff4df0aa}.btn.gray{border-color:#4a5aa8;background:#101a45}
+.btn:disabled{opacity:.45;cursor:default}
+.lbl{display:block;font-size:13px;color:#9fb4e8;margin:12px 0 4px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg .btn{margin:0;padding:8px 12px;font-size:14px;min-height:44px}
+.seg .btn.on{border-color:#ffd600;background:#0a1030;box-shadow:0 0 12px #ffd60066}
+.mode-chip{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;border:1.5px solid #00e5ff;background:#0b2a66;color:#fff;box-shadow:0 0 8px #00e5ff66;margin-left:6px;vertical-align:middle}
+/* board */
+.pcard{display:flex;align-items:center;gap:8px;border:1.5px solid #3a4a98;background:linear-gradient(145deg,#111b4acc,#0a1030cc);border-radius:14px;padding:6px 10px;margin:6px 0}
+.pcard .nm{font-weight:800;font-size:14px;flex:0 0 auto;max-width:38%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.pcard .caps{flex:1;display:flex;flex-wrap:wrap;gap:1px;align-items:center;min-height:22px}
+.pcard .caps svg{width:16px;height:16px}
+.pcard .mat{font-size:12px;color:#ffd600;font-weight:800}
+.clock{font-variant-numeric:tabular-nums;font-weight:800;font-size:20px;padding:4px 12px;border-radius:10px;border:1.5px solid #4a5aa8;background:#101a45;min-width:84px;text-align:center}
+.clock.on{border-color:#00e5ff;box-shadow:0 0 12px #00e5ff66}
+.clock.low{border-color:#ff3355;color:#ff8899;animation:pulse 1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 16px #ff3355aa}}
+#boardwrap{position:relative;width:100%;max-width:520px;margin:4px auto;border-radius:10px;overflow:hidden;box-shadow:0 4px 24px #000c;border:2px solid #2b3a7a}
+#board{display:grid;grid-template-columns:repeat(8,1fr);width:100%;aspect-ratio:1;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.sq{position:relative;display:flex;align-items:center;justify-content:center}
+.sq.l{background:#eeeed2}.sq.d{background:#769656}
+.sq svg{width:92%;height:92%;pointer-events:none;filter:drop-shadow(0 2px 2px #0006)}
+.sq.sel{box-shadow:inset 0 0 0 4px #ffd600cc}
+.sq.last{box-shadow:inset 0 0 0 100px #f6f66966}
+.sq.check{background:radial-gradient(circle,#ff3355 0%,#ff335588 45%,#769656 80%)}
+.sq.hint::after{content:"";position:absolute;width:30%;height:30%;border-radius:50%;background:#14550f55}
+.sq.cap::after{content:"";position:absolute;inset:4%;border-radius:50%;border:4px solid #14550f66}
+.sq .cr{position:absolute;font-size:10px;font-weight:700;color:#5d6b45;pointer-events:none}
+.sq .cf{left:2px;bottom:0}.sq .crk{right:2px;top:0}
+.sq.d .cr{color:#eeeed2cc}
+#think{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#0009;z-index:5}
+#think span{background:#101a45ee;border:1.5px solid #00e5ff;border-radius:14px;padding:10px 18px;font-weight:800;box-shadow:0 0 16px #00e5ff88;animation:pulse 1.2s infinite}
+.controls{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
+.controls .btn{margin:0;padding:8px 12px;font-size:14px;min-height:44px;flex:1 1 30%}
+.status{text-align:center;font-weight:800;font-size:15px;min-height:22px;margin:4px 0}
+.status.chk{color:#ffd600}
+#moves{max-height:120px;overflow-y:auto;border:1.5px solid #3a4a98;border-radius:12px;background:#0a1030cc;padding:6px 10px;font-size:14px;font-variant-numeric:tabular-nums}
+#moves table{width:100%;border-collapse:collapse}
+#moves td{padding:1px 6px}
+#moves td.n{color:#9fb4e8;width:34px}
+#moves tr.cur td{background:#1b2a63}
+/* modal */
+.modal{position:fixed;inset:0;background:#000b;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal .box{background:linear-gradient(145deg,#111b4a,#0a1030);border:2px solid #00e5ff88;border-radius:18px;padding:18px;max-width:340px;width:100%;text-align:center;box-shadow:0 0 30px #00e5ff55}
+.modal h3{margin:.2em 0 .5em;font-size:20px}
+.prow{display:flex;gap:8px;justify-content:center;margin:10px 0}
+.prow button{border:1.5px solid #00e5ffaa;background:#101a45;border-radius:12px;width:64px;height:64px;cursor:pointer}
+.prow button svg{width:90%;height:90%}
+/* home */
+.hero{display:flex;align-items:center;gap:12px;margin:10px 0}
+.hero img{width:64px;height:64px;border-radius:16px;border:2px solid #00e5ff88;box-shadow:0 0 14px #00e5ff55}
+.hero .st{font-size:13px;color:#9fb4e8}
+h1.app{font-size:26px;margin:6px 0 0}
+/* about */
+.me-ring{width:132px;height:132px;margin:8px auto;border-radius:50%;padding:5px;background:conic-gradient(#ffd600,#c0c0c0,#ffd600,#c0c0c0,#ffd600);box-shadow:0 0 22px #ffd60055}
+.me-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:top;display:block;border:3px solid #070b24}
+.creator{text-align:center;font-weight:800;font-size:19px;margin:4px 0;text-shadow:0 0 12px #00e5ff66}
+.alogo{width:56px;height:56px;border-radius:12px;margin:6px auto;display:block}
+.small{font-size:13px;color:#9fb4e8}
+a{color:#00e5ff}
+input.txt{width:100%;border:1.5px solid #4a5aa8;background:#0a1030;color:#fff;border-radius:12px;padding:10px 12px;font:inherit;font-size:16px}
+#installbtn{position:fixed;right:16px;bottom:16px;width:58px;height:58px;border-radius:50%;border:2.5px solid #00e5ff;background:linear-gradient(135deg,#0b2a66,#2b126e);color:#fff;font-size:24px;z-index:40;box-shadow:0 0 18px #00e5ff88;display:none;cursor:pointer}
+#installbtn:active{transform:scale(.9);box-shadow:inset 0 0 12px #000a}
+.guide h4{margin:14px 0 4px;color:#ffd600}
+.guide p{margin:4px 0;font-size:14.5px}
+.guide .prow{justify-content:flex-start}
+.piece-row{display:flex;align-items:center;gap:10px;margin:6px 0}
+.piece-row svg{width:34px;height:34px;flex:0 0 auto}
+.piece-row div{font-size:14px}
+.flag{font-size:11px;color:#8ea2d8;text-align:center;margin-top:14px}
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none"><symbol id="pc-wp" viewBox="0 0 45 45"><path d="m 22.5,9 c -2.21,0 -4,1.79 -4,4 0,0.89 0.29,1.71 0.78,2.38 C 17.33,16.5 16,18.59 16,21 c 0,2.03 0.94,3.84 2.41,5.03 C 15.41,27.09 11,31.58 11,39.5 H 34 C 34,31.58 29.59,27.09 26.59,26.03 28.06,24.84 29,23.03 29,21 29,18.59 27.67,16.5 25.72,15.38 26.21,14.71 26.5,13.89 26.5,13 c 0,-2.21 -1.79,-4 -4,-4 z" style="opacity:1; fill:#ffffff; fill-opacity:1; fill-rule:nonzero; stroke:#000000; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:miter; stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"/></symbol><symbol id="pc-wn" viewBox="0 0 45 45"><g style="opacity:1; fill:none; fill-opacity:1; fill-rule:evenodd; stroke:#000000; stroke-width:1.5; stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;" transform="translate(0,0.3)">
+    <path
+      d="M 22,10 C 32.5,11 38.5,18 38,39 L 15,39 C 15,30 25,32.5 23,18"
+      style="fill:#ffffff; stroke:#000000;" />
+    <path
+      d="M 24,18 C 24.38,20.91 18.45,25.37 16,27 C 13,29 13.18,31.34 11,31 C 9.958,30.06 12.41,27.96 11,28 C 10,28 11.19,29.23 10,30 C 9,30 5.997,31 6,26 C 6,24 12,14 12,14 C 12,14 13.89,12.1 14,10.5 C 13.27,9.506 13.5,8.5 13.5,7.5 C 14.5,6.5 16.5,10 16.5,10 L 18.5,10 C 18.5,10 19.28,8.008 21,7 C 22,7 22,10 22,10"
+      style="fill:#ffffff; stroke:#000000;" />
+    <path
+      d="M 9.5 25.5 A 0.5 0.5 0 1 1 8.5,25.5 A 0.5 0.5 0 1 1 9.5 25.5 z"
+      style="fill:#000000; stroke:#000000;" />
+    <path
+      d="M 15 15.5 A 0.5 1.5 0 1 1  14,15.5 A 0.5 1.5 0 1 1  15 15.5 z"
+      transform="matrix(0.866,0.5,-0.5,0.866,9.693,-5.173)"
+      style="fill:#000000; stroke:#000000;" />
+  </g></symbol><symbol id="pc-wb" viewBox="0 0 45 45"><g style="opacity:1; fill:none; fill-rule:evenodd; fill-opacity:1; stroke:#000000; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;" transform="translate(0,0.6)">
+    <g style="fill:#ffffff; stroke:#000000; stroke-linecap:butt;">
+      <path d="M 9,36 C 12.39,35.03 19.11,36.43 22.5,34 C 25.89,36.43 32.61,35.03 36,36 C 36,36 37.65,36.54 39,38 C 38.32,38.97 37.35,38.99 36,38.5 C 32.61,37.53 25.89,38.96 22.5,37.5 C 19.11,38.96 12.39,37.53 9,38.5 C 7.65,38.99 6.68,38.97 6,38 C 7.35,36.54 9,36 9,36 z"/>
+      <path d="M 15,32 C 17.5,34.5 27.5,34.5 30,32 C 30.5,30.5 30,30 30,30 C 30,27.5 27.5,26 27.5,26 C 33,24.5 33.5,14.5 22.5,10.5 C 11.5,14.5 12,24.5 17.5,26 C 17.5,26 15,27.5 15,30 C 15,30 14.5,30.5 15,32 z"/>
+      <path d="M 25 8 A 2.5 2.5 0 1 1  20,8 A 2.5 2.5 0 1 1  25 8 z"/>
+    </g>
+    <path d="M 17.5,26 L 27.5,26 M 15,30 L 30,30 M 22.5,15.5 L 22.5,20.5 M 20,18 L 25,18" style="fill:none; stroke:#000000; stroke-linejoin:miter;"/>
+  </g></symbol><symbol id="pc-wr" viewBox="0 0 45 45"><g style="opacity:1; fill:#ffffff; fill-opacity:1; fill-rule:evenodd; stroke:#000000; stroke-width:1.5; stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;" transform="translate(0,0.3)">
+    <path
+      d="M 9,39 L 36,39 L 36,36 L 9,36 L 9,39 z "
+      style="stroke-linecap:butt;" />
+    <path
+      d="M 12,36 L 12,32 L 33,32 L 33,36 L 12,36 z "
+      style="stroke-linecap:butt;" />
+    <path
+      d="M 11,14 L 11,9 L 15,9 L 15,11 L 20,11 L 20,9 L 25,9 L 25,11 L 30,11 L 30,9 L 34,9 L 34,14"
+      style="stroke-linecap:butt;" />
+    <path
+      d="M 34,14 L 31,17 L 14,17 L 11,14" />
+    <path
+      d="M 31,17 L 31,29.5 L 14,29.5 L 14,17"
+      style="stroke-linecap:butt; stroke-linejoin:miter;" />
+    <path
+      d="M 31,29.5 L 32.5,32 L 12.5,32 L 14,29.5" />
+    <path
+      d="M 11,14 L 34,14"
+      style="fill:none; stroke:#000000; stroke-linejoin:miter;" />
+  </g></symbol><symbol id="pc-wq" viewBox="0 0 45 45"><g style="fill:#ffffff;stroke:#000000;stroke-width:1.5;stroke-linejoin:round">
+    <path d="M 9,26 C 17.5,24.5 30,24.5 36,26 L 38.5,13.5 L 31,25 L 30.7,10.9 L 25.5,24.5 L 22.5,10 L 19.5,24.5 L 14.3,10.9 L 14,25 L 6.5,13.5 L 9,26 z"/>
+    <path d="M 9,26 C 9,28 10.5,28 11.5,30 C 12.5,31.5 12.5,31 12,33.5 C 10.5,34.5 11,36 11,36 C 9.5,37.5 11,38.5 11,38.5 C 17.5,39.5 27.5,39.5 34,38.5 C 34,38.5 35.5,37.5 34,36 C 34,36 34.5,34.5 33,33.5 C 32.5,31 32.5,31.5 33.5,30 C 34.5,28 36,28 36,26 C 27.5,24.5 17.5,24.5 9,26 z"/>
+    <path d="M 11.5,30 C 15,29 30,29 33.5,30" style="fill:none"/>
+    <path d="M 12,33.5 C 18,32.5 27,32.5 33,33.5" style="fill:none"/>
+    <circle cx="6" cy="12" r="2" />
+    <circle cx="14" cy="9" r="2" />
+    <circle cx="22.5" cy="8" r="2" />
+    <circle cx="31" cy="9" r="2" />
+    <circle cx="39" cy="12" r="2" />
+  </g></symbol><symbol id="pc-wk" viewBox="0 0 45 45"><g fill="none" fill-rule="evenodd" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+    <path stroke-linejoin="miter" d="M22.5 11.63V6M20 8h5"/>
+    <path fill="#fff" stroke-linecap="butt" stroke-linejoin="miter" d="M22.5 25s4.5-7.5 3-10.5c0 0-1-2.5-3-2.5s-3 2.5-3 2.5c-1.5 3 3 10.5 3 10.5"/>
+    <path fill="#fff" d="M12.5 37c5.5 3.5 14.5 3.5 20 0v-7s9-4.5 6-10.5c-4-6.5-13.5-3.5-16 4V27v-3.5c-2.5-7.5-12-10.5-16-4-3 6 6 10.5 6 10.5v7"/>
+    <path d="M12.5 30c5.5-3 14.5-3 20 0m-20 3.5c5.5-3 14.5-3 20 0m-20 3.5c5.5-3 14.5-3 20 0"/>
+  </g></symbol><symbol id="pc-bp" viewBox="0 0 45 45"><path d="m 22.5,9 c -2.21,0 -4,1.79 -4,4 0,0.89 0.29,1.71 0.78,2.38 C 17.33,16.5 16,18.59 16,21 c 0,2.03 0.94,3.84 2.41,5.03 C 15.41,27.09 11,31.58 11,39.5 H 34 C 34,31.58 29.59,27.09 26.59,26.03 28.06,24.84 29,23.03 29,21 29,18.59 27.67,16.5 25.72,15.38 26.21,14.71 26.5,13.89 26.5,13 c 0,-2.21 -1.79,-4 -4,-4 z" style="opacity:1; fill:#000000; fill-opacity:1; fill-rule:nonzero; stroke:#000000; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:miter; stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;"/></symbol><symbol id="pc-bn" viewBox="0 0 45 45"><g style="opacity:1; fill:none; fill-opacity:1; fill-rule:evenodd; stroke:#000000; stroke-width:1.5; stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;" transform="translate(0,0.3)">
+    <path
+      d="M 22,10 C 32.5,11 38.5,18 38,39 L 15,39 C 15,30 25,32.5 23,18"
+      style="fill:#000000; stroke:#000000;" />
+    <path
+      d="M 24,18 C 24.38,20.91 18.45,25.37 16,27 C 13,29 13.18,31.34 11,31 C 9.958,30.06 12.41,27.96 11,28 C 10,28 11.19,29.23 10,30 C 9,30 5.997,31 6,26 C 6,24 12,14 12,14 C 12,14 13.89,12.1 14,10.5 C 13.27,9.506 13.5,8.5 13.5,7.5 C 14.5,6.5 16.5,10 16.5,10 L 18.5,10 C 18.5,10 19.28,8.008 21,7 C 22,7 22,10 22,10"
+      style="fill:#000000; stroke:#000000;" />
+    <path
+      d="M 9.5 25.5 A 0.5 0.5 0 1 1 8.5,25.5 A 0.5 0.5 0 1 1 9.5 25.5 z"
+      style="fill:#ffffff; stroke:#ffffff;" />
+    <path
+      d="M 15 15.5 A 0.5 1.5 0 1 1  14,15.5 A 0.5 1.5 0 1 1  15 15.5 z"
+      transform="matrix(0.866,0.5,-0.5,0.866,9.693,-5.173)"
+      style="fill:#ffffff; stroke:#ffffff;" />
+    <path
+      d="M 24.55,10.4 L 24.1,11.85 L 24.6,12 C 27.75,13 30.25,14.49 32.5,18.75 C 34.75,23.01 35.75,29.06 35.25,39 L 35.2,39.5 L 37.45,39.5 L 37.5,39 C 38,28.94 36.62,22.15 34.25,17.66 C 31.88,13.17 28.46,11.02 25.06,10.5 L 24.55,10.4 z "
+      style="fill:#ffffff; stroke:none;" />
+  </g></symbol><symbol id="pc-bb" viewBox="0 0 45 45"><g style="opacity:1; fill:none; fill-rule:evenodd; fill-opacity:1; stroke:#000000; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;" transform="translate(0,0.6)">
+    <g style="fill:#000000; stroke:#000000; stroke-linecap:butt;">
+      <path d="M 9,36 C 12.39,35.03 19.11,36.43 22.5,34 C 25.89,36.43 32.61,35.03 36,36 C 36,36 37.65,36.54 39,38 C 38.32,38.97 37.35,38.99 36,38.5 C 32.61,37.53 25.89,38.96 22.5,37.5 C 19.11,38.96 12.39,37.53 9,38.5 C 7.65,38.99 6.68,38.97 6,38 C 7.35,36.54 9,36 9,36 z"/>
+      <path d="M 15,32 C 17.5,34.5 27.5,34.5 30,32 C 30.5,30.5 30,30 30,30 C 30,27.5 27.5,26 27.5,26 C 33,24.5 33.5,14.5 22.5,10.5 C 11.5,14.5 12,24.5 17.5,26 C 17.5,26 15,27.5 15,30 C 15,30 14.5,30.5 15,32 z"/>
+      <path d="M 25 8 A 2.5 2.5 0 1 1  20,8 A 2.5 2.5 0 1 1  25 8 z"/>
+    </g>
+    <path d="M 17.5,26 L 27.5,26 M 15,30 L 30,30 M 22.5,15.5 L 22.5,20.5 M 20,18 L 25,18" style="fill:none; stroke:#ffffff; stroke-linejoin:miter;"/>
+  </g></symbol><symbol id="pc-br" viewBox="0 0 45 45"><g style="opacity:1; fill:#000000; fill-opacity:1; fill-rule:evenodd; stroke:#000000; stroke-width:1.5; stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;" transform="translate(0,0.3)">
+    <path
+      d="M 9,39 L 36,39 L 36,36 L 9,36 L 9,39 z "
+      style="stroke-linecap:butt;" />
+    <path
+      d="M 12.5,32 L 14,29.5 L 31,29.5 L 32.5,32 L 12.5,32 z "
+      style="stroke-linecap:butt;" />
+    <path
+      d="M 12,36 L 12,32 L 33,32 L 33,36 L 12,36 z "
+      style="stroke-linecap:butt;" />
+    <path
+      d="M 14,29.5 L 14,16.5 L 31,16.5 L 31,29.5 L 14,29.5 z "
+      style="stroke-linecap:butt;stroke-linejoin:miter;" />
+    <path
+      d="M 14,16.5 L 11,14 L 34,14 L 31,16.5 L 14,16.5 z "
+      style="stroke-linecap:butt;" />
+    <path
+      d="M 11,14 L 11,9 L 15,9 L 15,11 L 20,11 L 20,9 L 25,9 L 25,11 L 30,11 L 30,9 L 34,9 L 34,14 L 11,14 z "
+      style="stroke-linecap:butt;" />
+    <path
+      d="M 12,35.5 L 33,35.5 L 33,35.5"
+      style="fill:none; stroke:#ffffff; stroke-width:1; stroke-linejoin:miter;" />
+    <path
+      d="M 13,31.5 L 32,31.5"
+      style="fill:none; stroke:#ffffff; stroke-width:1; stroke-linejoin:miter;" />
+    <path
+      d="M 14,29.5 L 31,29.5"
+      style="fill:none; stroke:#ffffff; stroke-width:1; stroke-linejoin:miter;" />
+    <path
+      d="M 14,16.5 L 31,16.5"
+      style="fill:none; stroke:#ffffff; stroke-width:1; stroke-linejoin:miter;" />
+    <path
+      d="M 11,14 L 34,14"
+      style="fill:none; stroke:#ffffff; stroke-width:1; stroke-linejoin:miter;" />
+  </g></symbol><symbol id="pc-bq" viewBox="0 0 45 45"><g style="fill:#000000;stroke:#000000;stroke-width:1.5; stroke-linecap:round;stroke-linejoin:round">
+
+    <path d="M 9,26 C 17.5,24.5 30,24.5 36,26 L 38.5,13.5 L 31,25 L 30.7,10.9 L 25.5,24.5 L 22.5,10 L 19.5,24.5 L 14.3,10.9 L 14,25 L 6.5,13.5 L 9,26 z"
+    style="stroke-linecap:butt;fill:#000000" />
+    <path d="m 9,26 c 0,2 1.5,2 2.5,4 1,1.5 1,1 0.5,3.5 -1.5,1 -1,2.5 -1,2.5 -1.5,1.5 0,2.5 0,2.5 6.5,1 16.5,1 23,0 0,0 1.5,-1 0,-2.5 0,0 0.5,-1.5 -1,-2.5 -0.5,-2.5 -0.5,-2 0.5,-3.5 1,-2 2.5,-2 2.5,-4 -8.5,-1.5 -18.5,-1.5 -27,0 z" />
+    <path d="M 11.5,30 C 15,29 30,29 33.5,30" />
+    <path d="m 12,33.5 c 6,-1 15,-1 21,0" />
+    <circle cx="6" cy="12" r="2" />
+    <circle cx="14" cy="9" r="2" />
+    <circle cx="22.5" cy="8" r="2" />
+    <circle cx="31" cy="9" r="2" />
+    <circle cx="39" cy="12" r="2" />
+    <path d="M 11,38.5 A 35,35 1 0 0 34,38.5"
+    style="fill:none; stroke:#000000;stroke-linecap:butt;" />
+    <g style="fill:none; stroke:#ffffff;">
+      <path d="M 11,29 A 35,35 1 0 1 34,29" />
+      <path d="M 12.5,31.5 L 32.5,31.5" />
+      <path d="M 11.5,34.5 A 35,35 1 0 0 33.5,34.5" />
+      <path d="M 10.5,37.5 A 35,35 1 0 0 34.5,37.5" />
+    </g>
+  </g></symbol><symbol id="pc-bk" viewBox="0 0 45 45"><g style="fill:none; fill-opacity:1; fill-rule:evenodd; stroke:#000000; stroke-width:1.5; stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4; stroke-dasharray:none; stroke-opacity:1;">
+    <path d="M 22.5,11.63 L 22.5,6" style="fill:none; stroke:#000000; stroke-linejoin:miter;" id="path6570"/>
+    <path d="M 22.5,25 C 22.5,25 27,17.5 25.5,14.5 C 25.5,14.5 24.5,12 22.5,12 C 20.5,12 19.5,14.5 19.5,14.5 C 18,17.5 22.5,25 22.5,25" style="fill:#000000;fill-opacity:1; stroke-linecap:butt; stroke-linejoin:miter;"/>
+    <path d="M 12.5,37 C 18,40.5 27,40.5 32.5,37 L 32.5,30 C 32.5,30 41.5,25.5 38.5,19.5 C 34.5,13 25,16 22.5,23.5 L 22.5,27 L 22.5,23.5 C 20,16 10.5,13 6.5,19.5 C 3.5,25.5 12.5,30 12.5,30 L 12.5,37" style="fill:#000000; stroke:#000000;"/>
+    <path d="M 20,8 L 25,8" style="fill:none; stroke:#000000; stroke-linejoin:miter;"/>
+    <path d="M 32,29.5 C 32,29.5 40.5,25.5 38.03,19.85 C 34.15,14 25,18 22.5,24.5 L 22.5,26.6 L 22.5,24.5 C 20,18 10.85,14 6.97,19.85 C 4.5,25.5 13,29.5 13,29.5" style="fill:none; stroke:#ffffff;"/>
+    <path d="M 12.5,30 C 18,27 27,27 32.5,30 M 12.5,33.5 C 18,30.5 27,30.5 32.5,33.5 M 12.5,37 C 18,34 27,34 32.5,37" style="fill:none; stroke:#ffffff;"/>
+  </g></symbol></svg>
+<div class="top">
+  <button class="ib" id="backbtn" aria-label="Back">&#8592;</button>
+  <div class="t"><span id="apptitle">SV CHESS MASTER</span><span class="mode-chip" id="modechip" style="display:none"></span></div>
+  <button class="ib" id="soundbtn" aria-label="Sound">&#128266;</button>
+  <button class="ib" id="langbtn">&#3124;&#3142;&#3122;&#3137;&#3095;&#3137;</button>
+</div>
+<div class="w">
+
+<!-- HOME -->
+<section id="scr-home">
+  <div class="hero">
+    <img src="icon.svg" alt="SV Chess Master logo">
+    <div>
+      <h1 class="app neon" data-i18n="appname">SV CHESS MASTER</h1>
+      <div class="st" data-i18n="tagline">World class chess, free for everyone</div>
+    </div>
+  </div>
+  <button class="card" id="m-2p"><b>&#128101; <span data-i18n="two_players">Two Players</span></b><small data-i18n="two_players_d">Play with a friend on this same phone, with clocks</small></button>
+  <button class="card" id="m-cpu"><b>&#129302; <span data-i18n="vs_cpu">Play vs Computer</span></b><small data-i18n="vs_cpu_d">8 levels, from Beginner to World Class (2850 ELO)</small></button>
+  <button class="card" id="m-resume" style="display:none"><b>&#9200; <span data-i18n="resume">Resume Game</span></b><small data-i18n="resume_d">Continue your unfinished game</small></button>
+  <button class="card" id="m-guide"><b>&#128214; <span data-i18n="guide">Game Guide</span></b><small data-i18n="guide_d">How to play chess, rules and tips</small></button>
+  <button class="card" id="m-about"><b>&#11088; <span data-i18n="about">About</span></b><small data-i18n="about_d">Creator, version and credits</small></button>
+</section>
+
+<!-- SETUP -->
+<section id="scr-setup" style="display:none">
+  <h2 class="neon" id="setup-title">Setup</h2>
+  <div id="setup-names">
+    <span class="lbl" data-i18n="names">Player names (optional)</span>
+    <div class="grid2">
+      <input class="txt" id="name1" maxlength="14" placeholder="Player 1">
+      <input class="txt" id="name2" maxlength="14" placeholder="Player 2">
+    </div>
+  </div>
+  <div id="setup-level">
+    <span class="lbl" data-i18n="level">Computer level</span>
+    <div class="grid4" id="levels"></div>
+    <span class="lbl" data-i18n="youplay">You play as</span>
+    <div class="seg" id="colorseg">
+      <button class="btn on" data-c="w">&#9812; <span data-i18n="white">White</span></button>
+      <button class="btn" data-c="b">&#9818; <span data-i18n="black">Black</span></button>
+      <button class="btn" data-c="r">&#127922; <span data-i18n="random">Random</span></button>
+    </div>
+  </div>
+  <span class="lbl" data-i18n="clock">Clock per player</span>
+  <div class="seg" id="clockseg">
+    <button class="btn on" data-t="0" data-i18n="no_clock">No clock</button>
+    <button class="btn" data-t="180">3 <span data-i18n="min">min</span></button>
+    <button class="btn" data-t="300">5 <span data-i18n="min">min</span></button>
+    <button class="btn" data-t="600">10 <span data-i18n="min">min</span></button>
+    <button class="btn" data-t="900">15+10s</button>
+  </div>
+  <div class="seg" id="flipsegl" style="display:none"><button class="btn" id="fliptoggle">&#8645; <span data-i18n="flip">Auto-flip board each turn</span></button></div>
+  <div style="margin-top:16px"><button class="btn g" id="startbtn" style="width:100%;padding:14px;font-size:17px">&#9654; <span data-i18n="start">Start Game</span></button></div>
+</section>
+
+<!-- GAME -->
+<section id="scr-game" style="display:none">
+  <div class="pcard" id="pcard-top">
+    <div class="nm" id="nm-top">Player 2</div>
+    <div class="caps" id="caps-top"></div>
+    <div class="mat" id="mat-top"></div>
+    <div class="clock" id="clock-top">--:--</div>
+  </div>
+  <div id="boardwrap">
+    <div id="board"></div>
+    <div id="think" style="display:none"><span data-i18n="thinking">Computer thinking&#8230;</span></div>
+  </div>
+  <div class="pcard" id="pcard-bottom">
+    <div class="nm" id="nm-bottom">Player 1</div>
+    <div class="caps" id="caps-bottom"></div>
+    <div class="mat" id="mat-bottom"></div>
+    <div class="clock" id="clock-bottom">--:--</div>
+  </div>
+  <div class="status" id="status"></div>
+  <div class="controls">
+    <button class="btn gray" id="c-undo">&#8617; <span data-i18n="undo">Undo</span></button>
+    <button class="btn gray" id="c-draw">&frac12; <span data-i18n="draw">Draw</span></button>
+    <button class="btn r" id="c-resign">&#9873; <span data-i18n="resign">Resign</span></button>
+    <button class="btn g" id="c-new">&#10227; <span data-i18n="new">New</span></button>
+  </div>
+  <div id="moves"></div>
+</section>
+
+<!-- GUIDE -->
+<section id="scr-guide" style="display:none" class="guide">
+  <h2 class="neon" data-i18n="g_title">Game Guide</h2>
+  <div id="guide-body"></div>
+</section>
+
+<!-- ABOUT -->
+<section id="scr-about" style="display:none">
+  <h2 class="neon" data-i18n="about">About</h2>
+  <div class="me-ring"><img src="assets/me.jpg" alt="D. Srinivas"></div>
+  <div class="creator" data-i18n="created">Created by D. Srinivas</div>
+  <img class="alogo" src="assets/logo.png" alt="SV PRIME">
+  <p class="small" style="text-align:center">SV CHESS MASTER <span data-i18n="ver">version</span> 1.0.0</p>
+  <span class="lbl" data-i18n="suggest">Suggestion box</span>
+  <p class="small" data-i18n="suggest_d">Only the creator can change this app. Have an idea? Send it here:</p>
+  <button class="btn" id="suggestbtn">&#9993; <span data-i18n="suggest_btn">Send a suggestion</span></button>
+  <span class="lbl" data-i18n="credits">Credits and licences</span>
+  <p class="small" data-i18n="credits_d">Chess engine: Stockfish 10 (GPL, Chess.com / nmrugg stockfish.js). Rules library: chess.js (MIT, Jeff Hlywa). Piece artwork: Colin M. L. Burnett, CC BY-SA 3.0 / GFDL, via Wikimedia Commons. All free and open.</p>
+  <p class="flag" data-i18n="madewith">Free forever. No ads. No sign-up.</p>
+</section>
+
+</div>
+<button id="installbtn" title="Install app">&#11015;</button>
+
+<!-- promotion modal -->
+<div class="modal" id="promo" style="display:none"><div class="box">
+  <h3 data-i18n="promote">Choose promotion</h3>
+  <div class="prow" id="promo-row"></div>
+</div></div>
+
+<!-- confirm modal -->
+<div class="modal" id="confirm" style="display:none"><div class="box">
+  <h3 id="confirm-title"></h3>
+  <p class="small" id="confirm-body"></p>
+  <div class="prow"><button class="btn g" id="confirm-yes" style="width:45%"></button><button class="btn gray" id="confirm-no" style="width:45%"></button></div>
+</div></div>
+
+<!-- game over modal -->
+<div class="modal" id="gameover" style="display:none"><div class="box">
+  <h3 id="go-title" class="neon"></h3>
+  <p class="small" id="go-body"></p>
+  <div class="prow"><button class="btn g" id="go-rematch" style="width:45%" data-i18n-html="rematch">&#10227; Rematch</button><button class="btn gray" id="go-home" style="width:45%" data-i18n-html="home">Home</button></div>
+</div></div>
+
+<script>var module={exports:{}};var exports=module.exports;</script>
+<script src="vendor/chess.js"></script>
+<script>var Chess=module.exports.Chess;module=undefined;exports=undefined;</script>
+<script>
+"use strict";
+/* ============ i18n ============ */
+const I18N={
+en:{appname:"SV CHESS MASTER",tagline:"World class chess, free for everyone",two_players:"Two Players",two_players_d:"Play with a friend on this same phone, with clocks",vs_cpu:"Play vs Computer",vs_cpu_d:"8 levels, from Beginner to World Class (2850 ELO)",resume:"Resume Game",resume_d:"Continue your unfinished game",guide:"Game Guide",guide_d:"How to play chess, rules and tips",about:"About",about_d:"Creator, version and credits",setup2:"Two Players Setup",setupc:"Computer Game Setup",names:"Player names (optional)",level:"Computer level",youplay:"You play as",white:"White",black:"Black",random:"Random",clock:"Clock per player",no_clock:"No clock",min:"min",flip:"Auto-flip board each turn",start:"Start Game",undo:"Undo",draw:"Draw",resign:"Resign",new:"New",thinking:"Computer thinking...",promote:"Choose promotion",created:"Created by D. Srinivas",ver:"version",suggest:"Suggestion box",suggest_d:"Only the creator can change this app. Have an idea? Send it here:",suggest_btn:"Send a suggestion",credits:"Credits and licences",credits_d:"Chess engine: Stockfish 10 (GPL, Chess.com / nmrugg stockfish.js). Rules library: chess.js (MIT, Jeff Hlywa). Piece artwork: Colin M. L. Burnett, CC BY-SA 3.0 / GFDL, via Wikimedia Commons. All free and open.",madewith:"Free forever. No ads. No sign-up.",home:"Home",rematch:"\u27F3 Rematch",white_turn:"White to move",black_turn:"Black to move",your_turn:"Your turn",check:"Check!",checkmate:"Checkmate",stalemate:"Stalemate",draw_by:"Draw",wins:"wins",you_win:"You win!",you_lose:"Computer wins",flag:"Time over",insufficient:"Not enough material to mate",fifty:"50-move rule",threefold:"Same position 3 times",agreement:"Draw agreed",offered:"offers a draw. Accept?",accept:"Accept",decline:"Decline",yes:"Yes",no:"No",resign_q:"Resign this game?",leave_q:"Leave this game? Your progress on this board stays until you start a new one.",new_q:"Abandon this game and set up a new one?",offline_eng:"Offline engine mode",undo_done:"Move taken back",draw_no:"Computer declines the draw",sound_on:"Sound on",sound_off:"Sound off"},
+te:{appname:"SV చెస్ మాస్టర్",tagline:"ప్రపంచ స్థాయి చదరంగం, అందరికీ ఉచితం",two_players:"ఇద్దరు ఆటగాళ్ళు",two_players_d:"ఇదే ఫోన్ లో స్నేహితుడితో గడియారంతో ఆడండి",vs_cpu:"కంప్యూటర్ తో ఆట",vs_cpu_d:"8 స్థాయిలు - బిగినర్ నుండి వరల్డ్ క్లాస్ (2850 ELO)",resume:"ఆట కొనసాగించండి",resume_d:"మీ అసంపూర్తి ఆటను కొనసాగించండి",guide:"గేమ్ గైడ్",guide_d:"చదరంగం ఎలా ఆడాలి, నియమాలు, చిట్కాలు",about:"గురించి",about_d:"సృష్టికర్త, వెర్షన్, క్రెడిట్స్",setup2:"ఇద్దరు ఆటగాళ్ళ సెటప్",setupc:"కంప్యూటర్ ఆట సెటప్",names:"ఆటగాళ్ళ పేర్లు (ఐచ్ఛికం)",level:"కంప్యూటర్ స్థాయి",youplay:"మీరు ఆడేది",white:"తెలుపు",black:"నలుపు",random:"యాదృచ్ఛికం",clock:"ప్రతి ఆటగాడికి గడియారం",no_clock:"గడియారం లేదు",min:"నిమి",flip:"ప్రతి వంతుకు బోర్డు తిప్పు",start:"ఆట ప్రారంభించండి",undo:"వెనక్కి",draw:"డ్రా",resign:"ఓటమి అంగీకారం",new:"కొత్తది",thinking:"కంప్యూటర్ ఆలోచిస్తోంది...",promote:"ప్రమోషన్ ఎంచుకోండి",created:"సృష్టించినవారు: డి. శ్రీనివాస్",ver:"వెర్షన్",suggest:"సూచనల పెట్టె",suggest_d:"ఈ యాప్ ను సృష్టికర్త మాత్రమే మార్చగలరు. మీ ఆలోచన ఇక్కడ పంపండి:",suggest_btn:"సూచన పంపండి",credits:"క్రెడిట్స్ మరియు లైసెన్సులు",credits_d:"చెస్ ఇంజిన్: Stockfish 10 (GPL, Chess.com / nmrugg stockfish.js). రూల్స్ లైబ్రరీ: chess.js (MIT, Jeff Hlywa). ముక్కల చిత్రాలు: Colin M. L. Burnett, CC BY-SA 3.0 / GFDL, Wikimedia Commons ద్వారా. అన్నీ ఉచితం.",madewith:"ఎప్పటికీ ఉచితం. ప్రకటనలు లేవు. సైన్ అప్ లేదు.",home:"హోమ్",rematch:"\u27F3 మళ్ళీ ఆడండి",white_turn:"తెలుపు వంతు",black_turn:"నలుపు వంతు",your_turn:"మీ వంతు",check:"చెక్!",checkmate:"చెక్మేట్",stalemate:"స్టేల్ మేట్",draw_by:"డ్రా",wins:"గెలిచారు",you_win:"మీరు గెలిచారు!",you_lose:"కంప్యూటర్ గెలిచింది",flag:"సమయం అయిపోయింది",insufficient:"మేట్ చేయడానికి ముక్కలు సరిపోవు",fifty:"50-కదలికల నియమం",threefold:"అదే స్థానం 3 సార్లు",agreement:"డ్రా అంగీకరించారు",offered:"డ్రా అడుగుతున్నారు. అంగీకరిస్తారా?",accept:"అంగీకరించు",decline:"తిరస్కరించు",yes:"అవును",no:"కాదు",resign_q:"ఈ ఆట ఓటమి అంగీకరిస్తారా?",leave_q:"ఈ ఆట నుండి బయటకు వెళ్తారా?",new_q:"ఈ ఆట వదిలి కొత్త ఆట సెటప్ చేయాలా?",offline_eng:"ఆఫ్ లైన్ ఇంజిన్ మోడ్",undo_done:"కదలిక వెనక్కి తీశారు",draw_no:"కంప్యూటర్ డ్రా తిరస్కరించింది",sound_on:"సౌండ్ ఆన్",sound_off:"సౌండ్ ఆఫ్"}};
+let LANG=localStorage.getItem('svchess.lang')||'en';
+const t=k=>(I18N[LANG]&&I18N[LANG][k])||I18N.en[k]||k;
+function applyLang(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n)});
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=t(el.dataset.i18nHtml)});
+  document.getElementById('langbtn').textContent=LANG==='en'?'\u0C24\u0C46\u0C32\u0C41\u0C17\u0C41':'English';
+  buildGuide();
+}
+document.getElementById('langbtn').onclick=()=>{LANG=LANG==='en'?'te':'en';localStorage.setItem('svchess.lang',LANG);applyLang();sfx('btn')};
+
+/* ============ navigation ============ */
+const SCREENS=['home','setup','game','guide','about'];
+let CUR='home';
+function show(id,push=true){
+  SCREENS.forEach(s=>{document.getElementById('scr-'+s).style.display=s===id?'':'none'});
+  CUR=id;
+  document.getElementById('backbtn').style.visibility=id==='home'?'hidden':'visible';
+  document.getElementById('modechip').style.display=id==='game'?'':'none';
+  if(push){try{history.pushState({scr:id},'')}catch(e){}}
+  if(id==='home'){document.getElementById('m-resume').style.display=(G&&G.active&&!G.over)?'':'none'}
+}
+document.getElementById('backbtn').onclick=()=>{sfx('btn');history.back()};
+window.addEventListener('popstate',e=>{
+  const scr=e.state&&e.state.scr?e.state.scr:'home';
+  show(scr,false);sfx('btn');
+});
+history.replaceState({scr:'home'},'');
+
+/* ============ audio ============ */
+let AC=null,SOUND=localStorage.getItem('svchess.sound')!=='0';
+function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function tone(f,d,type,gain,when){const c=ac();if(!c)return;const o=c.createOscillator(),g=c.createGain();o.type=type||'square';o.frequency.value=f;g.gain.setValueAtTime(gain||.12,c.currentTime+(when||0));g.gain.exponentialRampToValueAtTime(.001,c.currentTime+(when||0)+d);o.connect(g);g.connect(c.destination);o.start(c.currentTime+(when||0));o.stop(c.currentTime+(when||0)+d+.02)}
+function sfx(kind){if(!SOUND)return;try{
+  if(kind==='move')tone(440,.07,'square',.10);
+  else if(kind==='cap'){tone(300,.06,'sawtooth',.12);tone(180,.09,'sawtooth',.12,.06)}
+  else if(kind==='check'){tone(880,.08,'square',.12);tone(880,.08,'square',.12,.12)}
+  else if(kind==='castle'){tone(330,.07,'triangle',.12);tone(440,.09,'triangle',.12,.08)}
+  else if(kind==='promo'){tone(520,.07,'triangle',.12);tone(660,.07,'triangle',.12,.07);tone(880,.12,'triangle',.12,.14)}
+  else if(kind==='win'){[523,659,784,1046].forEach((f,i)=>tone(f,.14,'triangle',.12,i*.13))}
+  else if(kind==='lose'){[400,330,262,196].forEach((f,i)=>tone(f,.16,'sawtooth',.10,i*.14))}
+  else if(kind==='tick')tone(1100,.03,'square',.07);
+  else if(kind==='btn')tone(600,.045,'square',.07);
+  else if(kind==='bad')tone(160,.10,'sawtooth',.10);
+}catch(e){}}
+const sBtn=document.getElementById('soundbtn');
+function updSoundIcon(){sBtn.innerHTML=SOUND?'&#128266;':'&#128263;';sBtn.title=t(SOUND?'sound_on':'sound_off')}
+sBtn.onclick=()=>{SOUND=!SOUND;localStorage.setItem('svchess.sound',SOUND?'1':'0');updSoundIcon();sfx('btn')};
+updSoundIcon();
+document.body.addEventListener('pointerdown',()=>ac(),{once:true});
+
+/* ============ engine (Stockfish worker + offline fallback) ============ */
+const LEVELS=[
+ {n:'Beginner',elo:1350,mt:250},{n:'Learner',elo:1500,mt:350},{n:'Casual',elo:1650,mt:500},
+ {n:'Club',elo:1800,mt:750},{n:'Expert',elo:2000,mt:1100},{n:'Master',elo:2200,mt:1600},
+ {n:'Grandmaster',elo:2500,mt:2300},{n:'World Class',elo:2850,mt:3200}];
+let engine=null,engineReady=false,engineOffline=false;
+function engineSend(s){if(engine&&!engineOffline)engine.postMessage(s)}
+function initEngine(){
+  try{
+    engine=new Worker('vendor/stockfish.asm.js');
+    engine.onmessage=e=>{
+      const line=typeof e.data==='string'?e.data:'';
+      if(line==='uciok'){engineSend('isready')}
+      else if(line==='readyok'){engineReady=true}
+      else if(line.indexOf('bestmove ')===0){const bm=line.split(' ')[1];if(pendingBest){const cb=pendingBest;pendingBest=null;cb(bm)}}
+    };
+    engine.onerror=()=>{engineOffline=true;engineReady=true};
+    engineSend('uci');
+  }catch(e){engineOffline=true;engineReady=true}
+}
+let pendingBest=null;
+function setLevel(lv){
+  const L=LEVELS[lv-1];
+  if(engineOffline)return;
+  engineSend('setoption name Skill Level value '+Math.min(20,Math.max(0,Math.round((lv-1)*20/7))));
+  if(lv>=8){engineSend('setoption name UCI_LimitStrength value false')}
+  else{engineSend('setoption name UCI_LimitStrength value true');engineSend('setoption name UCI_Elo value '+L.elo)}
+  engineSend('isready');
+}
+function engineBestMove(fen,lv,cb){
+  const L=LEVELS[lv-1];
+  if(engineOffline||!engine){setTimeout(()=>cb(fallbackBest(fen,lv)),120);return}
+  const go=()=>{pendingBest=cb;engineSend('position fen '+fen);engineSend('go movetime '+L.mt)};
+  if(engineReady){go()}else{let n=0;const iv=setInterval(()=>{if(engineReady){clearInterval(iv);go()}else if(++n>60){clearInterval(iv);engineOffline=true;cb(fallbackBest(fen,lv))}},100)}
+}
+/* emergency offline engine: negamax, material + piece-square, only if the Stockfish worker cannot load */
+const FVAL={p:100,n:320,b:330,r:500,q:900,k:0};
+function fallbackBest(fen,lv){
+  const c=new Chess(fen);
+  const depth=[1,1,2,2,3,3,4,4][lv-1]||2;
+  const ev=b=>{let s=0;for(const sq in b){const p=b[sq];if(!p)continue;s+=(FVAL[p.type]||0)*(p.color==='w'?1:-1)}return s};
+  const boardOf=()=>{const o={};for(const r of c.board())for(const p of r)if(p)o[p.square]=p;return o};
+  const neg=(d,alpha,beta,ply)=>{
+    if(d===0||c.isGameOver()){
+      if(c.isCheckmate())return c.turn()==='w'?-99999+ply:99999-ply;
+      if(c.isDraw()||c.isStalemate())return 0;
+      return ev(boardOf())*(c.turn()==='w'?1:-1);
+    }
+    let best=-1e9;
+    const ms=c.moves({verbose:true});
+    ms.sort((a,b)=>((b.captured?FVAL[b.captured]:0)-(a.captured?FVAL[a.captured]:0)));
+    for(const m of ms){c.move(m);const v=-neg(d-1,-beta,-alpha,ply+1);c.undo();if(v>best)best=v;if(best>alpha)alpha=best;if(alpha>=beta)break}
+    return best;
+  };
+  const ms=c.moves({verbose:true});
+  if(!ms.length)return null;
+  let best=ms[0],bv=-1e9;
+  for(const m of ms){c.move(m);const v=-neg(depth-1,-1e9,1e9,1);c.undo();const jit=lv<=3?Math.random()*80:0;if(v+jit>bv){bv=v+jit;best=m}}
+  return best.from+best.to+(best.promotion||'');
+}
+
+/* ============ game state ============ */
+let G=null,SEL=null,LEGAL=[],PENDING_PROMO=null,THINKING=false;
+const FILES='abcdefgh';
+const START_COUNTS={p:8,n:2,b:2,r:2,q:2,k:1};
+const MVAL={p:1,n:3,b:3,r:5,q:9,k:0};
+function sqName(fileIdx,rankIdx){return FILES[fileIdx]+(rankIdx+1)}
+function parseSq(s){return [FILES.indexOf(s[0]),parseInt(s[1],10)-1]}
+function pieceUse(p){return '<svg viewBox="0 0 45 45"><use href="#pc-'+(p.color==='w'?'w':'b')+p.type+'"></use></svg>'}
+
+function setupFor(mode){
+  document.getElementById('setup-title').textContent=t(mode==='2p'?'setup2':'setupc');
+  document.getElementById('setup-names').style.display=mode==='2p'?'':'none';
+  document.getElementById('setup-level').style.display=mode==='cpu'?'':'none';
+  document.getElementById('flipsegl').style.display=mode==='2p'?'':'none';
+  setupMode=mode;show('setup');sfx('btn');
+}
+let setupMode='2p';
+document.getElementById('m-2p').onclick=()=>setupFor('2p');
+document.getElementById('m-cpu').onclick=()=>setupFor('cpu');
+document.getElementById('m-guide').onclick=()=>{show('guide');sfx('btn')};
+document.getElementById('m-about').onclick=()=>{show('about');sfx('btn')};
+document.getElementById('m-resume').onclick=()=>{show('game');renderAll();sfx('btn')};
+
+function segWire(id,cb){const seg=document.getElementById(id);seg.addEventListener('click',e=>{const b=e.target.closest('.btn');if(!b)return;seg.querySelectorAll('.btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');sfx('btn');cb(b)})}
+let selColor='w',selClock=0,selLevel=5,flipOn=false;
+segWire('colorseg',b=>selColor=b.dataset.c);
+segWire('clockseg',b=>selClock=parseInt(b.dataset.t,10));
+document.getElementById('fliptoggle').onclick=function(){flipOn=!flipOn;this.classList.toggle('on',flipOn);sfx('btn')};
+function buildLevels(){
+  const g=document.getElementById('levels');g.innerHTML='';
+  LEVELS.forEach((L,i)=>{
+    const b=document.createElement('button');b.className='btn'+(i+1===selLevel?' on':'');b.style.cssText='margin:0;min-height:64px';
+    b.innerHTML='<div style="font-size:13px">'+L.n+'</div><div style="font-size:11px;color:#ffd600">'+L.elo+'</div>';
+    b.onclick=()=>{selLevel=i+1;g.querySelectorAll('.btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');sfx('btn')};
+    g.appendChild(b);
+  });
+}
+document.getElementById('startbtn').onclick=()=>{
+  let human='w';
+  if(setupMode==='cpu'){human=selColor==='r'?(Math.random()<.5?'w':'b'):selColor}
+  const names=setupMode==='2p'
+    ?{w:document.getElementById('name1').value.trim()||'Player 1',b:document.getElementById('name2').value.trim()||'Player 2'}
+    :null;
+  newGame({mode:setupMode,level:selLevel,human:human,names:names,clock:selClock,inc:selClock===900?10:0,flip:setupMode==='2p'?flipOn:false});
+  show('game');sfx('btn');
+};
+
+function newGame(o){
+  G={chess:new Chess(),mode:o.mode,level:o.level,human:o.human,names:o.names||{w:'Player 1',b:'Player 2'},
+     base:o.clock,inc:o.inc,time:{w:o.clock*1000,b:o.clock*1000},active:true,over:false,
+     orientation:o.mode==='cpu'?o.human:'w',flip:o.flip,lastMove:null};
+  SEL=null;LEGAL=[];THINKING=false;
+  if(G.mode==='cpu'){setLevel(G.level)}
+  document.getElementById('modechip').textContent=G.mode==='2p'?t('two_players'):'CPU '+LEVELS[G.level-1].n;
+  lastTick=Date.now();
+  renderAll();
+  maybeEngine();
+}
+
+/* ============ board render ============ */
+const boardEl=document.getElementById('board');
+function buildBoard(){
+  boardEl.innerHTML='';
+  for(let r=7;r>=0;r--)for(let f=0;f<8;f++){
+    const fr=G.orientation==='w'?{f:f,r:r}:{f:7-f,r:7-r};
+    const sq=document.createElement('div');
+    sq.className='sq '+(((fr.f+fr.r)%2===1)?'d':'l');
+    sq.dataset.sq=sqName(fr.f,fr.r);
+    if(fr.f===(G.orientation==='w'?0:7)){const c=document.createElement('span');c.className='cr cf';c.textContent=fr.r+1;sq.appendChild(c)}
+    if(fr.r===(G.orientation==='w'?0:7)){const c=document.createElement('span');c.className='cr crk';c.textContent=FILES[fr.f];sq.appendChild(c)}
+    boardEl.appendChild(sq);
+  }
+}
+function kingSq(color){
+  for(const row of G.chess.board())for(const p of row)if(p&&p.type==='k'&&p.color===color)return p.square;
+  return null;
+}
+function render(){
+  const pos={};
+  for(const row of G.chess.board())for(const p of row)if(p)pos[p.square]=p;
+  boardEl.querySelectorAll('.sq').forEach(sq=>{
+    const id=sq.dataset.sq;
+    sq.querySelectorAll('svg').forEach(x=>x.remove());
+    if(pos[id])sq.insertAdjacentHTML('beforeend',pieceUse(pos[id]));
+    sq.classList.toggle('sel',SEL===id);
+    sq.classList.toggle('last',!!G.lastMove&&(G.lastMove.from===id||G.lastMove.to===id));
+    const mv=LEGAL.find(m=>m.to===id);
+    sq.classList.toggle('hint',!!mv&&!pos[id]);
+    sq.classList.toggle('cap',!!mv&&!!pos[id]);
+    sq.classList.toggle('check',G.chess.inCheck()&&kingSq(G.chess.turn())===id);
+  });
+  renderPlayers();
+  renderMoves();
+  renderStatus();
+}
+function capturedInfo(){
+  const counts={w:{p:0,n:0,b:0,r:0,q:0,k:0},b:{p:0,n:0,b:0,r:0,q:0,k:0}};
+  for(const row of G.chess.board())for(const p of row)if(p)counts[p.color][p.type]++;
+  const byW=[],byB=[];let mW=0,mB=0;
+  for(const ty of['q','r','b','n','p']){
+    for(let i=counts.b[ty];i<START_COUNTS[ty];i++){byW.push('b'+ty);mW+=MVAL[ty]}
+    for(let i=counts.w[ty];i<START_COUNTS[ty];i++){byB.push('w'+ty);mB+=MVAL[ty]}
+  }
+  return {byW:byW,byB:byB,diff:mW-mB};
+}
+function renderPlayers(){
+  const ci=capturedInfo();
+  const topColor=G.orientation==='w'?'b':'w';
+  const bot=topColor==='w'?'b':'w';
+  const nameFor=c=>G.mode==='cpu'?(c===G.human?t('you'):'CPU '+LEVELS[G.level-1].n):G.names[c];
+  document.getElementById('nm-top').textContent=nameFor(topColor);
+  document.getElementById('nm-bottom').textContent=nameFor(bot);
+  const capsTop=topColor==='w'?ci.byW:ci.byB, capsBot=bot==='w'?ci.byW:ci.byB;
+  document.getElementById('caps-top').innerHTML=capsTop.map(p=>'<svg viewBox="0 0 45 45"><use href="#pc-'+p+'"></use></svg>').join('');
+  document.getElementById('caps-bottom').innerHTML=capsBot.map(p=>'<svg viewBox="0 0 45 45"><use href="#pc-'+p+'"></use></svg>').join('');
+  document.getElementById('mat-top').textContent=(topColor==='w'?ci.diff:-ci.diff)>0?'+'+(topColor==='w'?ci.diff:-ci.diff):'';
+  document.getElementById('mat-bottom').textContent=(bot==='w'?ci.diff:-ci.diff)>0?'+'+(bot==='w'?ci.diff:-ci.diff):'';
+}
+function fmt(ms){ms=Math.max(0,Math.ceil(ms/1000));const m=Math.floor(ms/60),s=ms%60;return m+':'+(s<10?'0':'')+s}
+function renderClocks(){
+  const topColor=G.orientation==='w'?'b':'w';
+  const ct=document.getElementById('clock-top'),cb=document.getElementById('clock-bottom');
+  if(!G||!G.base){ct.textContent='--:--';cb.textContent='--:--';ct.className='clock';cb.className='clock';return}
+  ct.textContent=fmt(G.time[topColor]);cb.textContent=fmt(G.time[topColor==='w'?'b':'w']);
+  ct.className='clock'+(G.chess.turn()===topColor&&G.active&&!G.over?' on':'')+(G.time[topColor]<=10000?' low':'');
+  const bc=topColor==='w'?'b':'w';
+  cb.className='clock'+(G.chess.turn()===bc&&G.active&&!G.over?' on':'')+(G.time[bc]<=10000?' low':'');
+}
+function renderMoves(){
+  const h=G.chess.history();let html='<table>';
+  for(let i=0;i<h.length;i+=2){html+='<tr'+(i+2>=h.length?' class="cur"':'')+'><td class="n">'+(i/2+1)+'.</td><td>'+h[i]+'</td><td>'+(h[i+1]||'')+'</td></tr>'}
+  document.getElementById('moves').innerHTML=html+'</table>';
+  const mv=document.getElementById('moves');mv.scrollTop=mv.scrollHeight;
+}
+function renderStatus(msg){
+  const st=document.getElementById('status');
+  if(msg){st.textContent=msg;return}
+  if(G.over){return}
+  let s;
+  if(G.mode==='cpu'){s=G.chess.turn()===G.human?t('your_turn'):t('thinking')}
+  else{s=G.chess.turn()==='w'?t('white_turn'):t('black_turn');s+=' - '+(G.mode==='2p'?G.names[G.chess.turn()]:'')}
+  st.className='status'+(G.chess.inCheck()?' chk':'');
+  st.textContent=s+(G.chess.inCheck()?'  '+t('check'):'');
+}
+function renderAll(){
+  if(G.orientation!==boardEl.dataset.or){buildBoard();boardEl.dataset.or=G.orientation}
+  render();renderClocks();
+}
+
+/* ============ move input ============ */
+boardEl.addEventListener('pointerdown',e=>{
+  const sq=e.target.closest('.sq');
+  if(!sq||!G||!G.active||G.over||THINKING)return;
+  if(G.mode==='cpu'&&G.chess.turn()!==G.human)return;
+  const id=sq.dataset.sq;
+  const piece=G.chess.get(id);
+  if(SEL){
+    const mv=LEGAL.find(m=>m.to===id);
+    if(mv){attempt(SEL,id);return}
+  }
+  if(piece&&piece.color===G.chess.turn()){SEL=id;LEGAL=G.chess.moves({square:id,verbose:true});render();sfx('btn')}
+  else{SEL=null;LEGAL=[];render()}
+});
+function attempt(from,to){
+  const piece=G.chess.get(from);
+  if(piece&&piece.type==='p'&&((piece.color==='w'&&to[1]==='8')||(piece.color==='b'&&to[1]==='1'))){
+    showPromo(piece.color,pr=>commit(from,to,pr));return;
+  }
+  commit(from,to,null);
+}
+function commit(from,to,pr){
+  let mv;
+  try{mv=G.chess.move({from:from,to:to,promotion:pr||undefined})}
+  catch(e){sfx('bad');SEL=null;LEGAL=[];render();return false}
+  afterMove(mv);return true;
+}
+function afterMove(mv){
+  if(mv.flags.indexOf('p')>=0)sfx('promo');
+  else if(mv.flags.indexOf('c')>=0||mv.flags.indexOf('e')>=0)sfx('cap');
+  else if(mv.flags.indexOf('k')>=0||mv.flags.indexOf('q')>=0)sfx('castle');
+  else sfx('move');
+  if(G.chess.inCheck())sfx('check');
+  if(G.inc)G.time[mv.color]+=G.inc*1000;
+  G.lastMove={from:mv.from,to:mv.to};
+  SEL=null;LEGAL=[];
+  if(G.flip&&G.mode==='2p'&&!G.over)G.orientation=G.chess.turn();
+  renderAll();
+  if(endCheck())return;
+  maybeEngine();
+}
+function maybeEngine(){
+  if(!G||G.mode!=='cpu'||G.over||!G.active)return;
+  if(G.chess.turn()===G.human)return;
+  THINKING=true;
+  document.getElementById('think').style.display='flex';
+  const game=G;
+  engineBestMove(game.chess.fen(),game.level,bm=>{
+    THINKING=false;
+    document.getElementById('think').style.display='none';
+    if(game!==G||G.over)return;
+    if(!bm||bm==='(none)')return;
+    let mv=null;
+    try{mv=G.chess.move({from:bm.slice(0,2),to:bm.slice(2,4),promotion:bm[4]||'q'})}catch(e){return}
+    afterMove(mv);
+  });
+}
+
+/* ============ clocks ============ */
+let lastTick=Date.now();
+setInterval(()=>{
+  if(!G||!G.active||G.over||!G.base){lastTick=Date.now();return}
+  const now=Date.now(),dt=now-lastTick;lastTick=now;
+  const side=G.chess.turn();
+  const before=G.time[side];
+  G.time[side]-=dt;
+  if(G.time[side]<=0){G.time[side]=0;flagFall(side);return}
+  if(G.time[side]<=5000&&Math.floor(before/1000)!==Math.floor(G.time[side]/1000))sfx('tick');
+  renderClocks();
+},100);
+function flagFall(side){
+  const winner=side==='w'?'b':'w';
+  if(G.chess.isInsufficientMaterial()){finishGame('draw',t('flag')+' - '+t('insufficient'));return}
+  finishGame(winner,t('flag'));
+}
+
+/* ============ end of game ============ */
+function endCheck(){
+  const c=G.chess;
+  if(c.isCheckmate()){const winner=c.turn()==='w'?'b':'w';finishGame(winner,t('checkmate'));return true}
+  if(c.isStalemate()){finishGame('draw',t('stalemate'));return true}
+  if(c.isInsufficientMaterial()){finishGame('draw',t('insufficient'));return true}
+  if(c.isThreefoldRepetition()){finishGame('draw',t('threefold'));return true}
+  if(c.isDraw()){finishGame('draw',t('draw_by'));return true}
+  return false;
+}
+function finishGame(result,reason){
+  G.over=true;THINKING=false;
+  document.getElementById('think').style.display='none';
+  renderAll();
+  let title,body=reason;
+  if(result==='draw'){title=t('draw_by');sfx('btn')}
+  else{
+    const wname=G.mode==='cpu'?(result===G.human?t('you_win'):t('you_lose')):(G.names[result]+' '+t('wins'));
+    title=G.mode==='cpu'?wname:wname;
+    body=reason+(G.mode==='2p'?'':(result===G.human?'':' - CPU '+LEVELS[G.level-1].n));
+    sfx(result===G.human||G.mode==='2p'?'win':'lose');
+  }
+  document.getElementById('status').textContent=title+' - '+reason;
+  document.getElementById('go-title').textContent=title;
+  document.getElementById('go-body').textContent=reason;
+  document.getElementById('gameover').style.display='flex';
+}
+
+/* ============ modals ============ */
+function confirmBox(title,body,yes,no,cb){
+  document.getElementById('confirm-title').textContent=title;
+  document.getElementById('confirm-body').textContent=body||'';
+  const y=document.getElementById('confirm-yes'),n=document.getElementById('confirm-no');
+  y.textContent=yes;n.textContent=no;
+  document.getElementById('confirm').style.display='flex';
+  y.onclick=()=>{document.getElementById('confirm').style.display='none';sfx('btn');cb(true)};
+  n.onclick=()=>{document.getElementById('confirm').style.display='none';sfx('btn');cb(false)};
+}
+function showPromo(color,cb){
+  const row=document.getElementById('promo-row');row.innerHTML='';
+  ['q','r','b','n'].forEach(p=>{
+    const b=document.createElement('button');
+    b.innerHTML='<svg viewBox="0 0 45 45"><use href="#pc-'+(color==='w'?'w':'b')+p+'"></use></svg>';
+    b.onclick=()=>{document.getElementById('promo').style.display='none';sfx('btn');cb(p)};
+    row.appendChild(b);
+  });
+  document.getElementById('promo').style.display='flex';
+}
+
+/* ============ controls ============ */
+document.getElementById('c-undo').onclick=()=>{
+  if(!G||G.over||THINKING||!G.chess.history().length){sfx('bad');return}
+  G.chess.undo();
+  if(G.mode==='cpu'&&G.chess.turn()!==G.human&&G.chess.history().length)G.chess.undo();
+  SEL=null;LEGAL=[];G.lastMove=null;
+  if(G.flip&&G.mode==='2p')G.orientation=G.chess.turn();
+  renderAll();sfx('btn');
+  const st=document.getElementById('status');st.textContent=t('undo_done');
+  setTimeout(()=>{if(G&&!G.over)renderStatus()},1200);
+};
+document.getElementById('c-draw').onclick=()=>{
+  if(!G||G.over){sfx('bad');return}
+  if(G.mode==='2p'){
+    const offerer=G.names[G.chess.turn()];
+    confirmBox(t('draw'),offerer+' '+t('offered'),t('accept'),t('decline'),ok=>{
+      if(ok)finishGame('draw',t('agreement'));
+    });
+  }else{
+    renderStatus(t('draw_no'));sfx('bad');
+    setTimeout(()=>{if(G&&!G.over)renderStatus()},1500);
+  }
+};
+document.getElementById('c-resign').onclick=()=>{
+  if(!G||G.over){sfx('bad');return}
+  confirmBox(t('resign'),t('resign_q'),t('yes'),t('no'),ok=>{
+    if(!ok)return;
+    const loser=G.mode==='cpu'?G.human:G.chess.turn();
+    finishGame(loser==='w'?'b':'w',t('resign'));
+  });
+};
+document.getElementById('c-new').onclick=()=>{
+  if(!G){show('setup');return}
+  confirmBox(t('new'),t('new_q'),t('yes'),t('no'),ok=>{if(ok){setupFor(G.mode)}});
+};
+document.getElementById('go-rematch').onclick=()=>{
+  document.getElementById('gameover').style.display='none';sfx('btn');
+  const o=G;
+  if(o.mode==='cpu'){
+    newGame({mode:'cpu',level:o.level,human:o.human==='w'?'b':'w',names:null,clock:o.base,inc:o.inc,flip:false});
+  }else{
+    newGame({mode:'2p',level:o.level,human:o.human,names:{w:o.names.b,b:o.names.w},clock:o.base,inc:o.inc,flip:o.flip});
+  }
+};
+document.getElementById('go-home').onclick=()=>{document.getElementById('gameover').style.display='none';show('home');sfx('btn')};
+I18N.en.you='You';I18N.te.you='\u0C2E\u0C40\u0C30\u0C41';
+
+/* ============ guide ============ */
+function prow(p,en,te){return '<div class="piece-row"><svg viewBox="0 0 45 45"><use href="#pc-w'+p+'"></use></svg><div>'+(LANG==='te'?te:en)+'</div></div>'}
+function buildGuide(){
+  const el=document.getElementById('guide-body');if(!el)return;
+  const en=LANG!=='te';
+  el.innerHTML=
+  '<h4>'+(en?'The game':'ఆట గురించి')+'</h4><p>'+(en
+    ?'Chess is a battle of two armies on an 8x8 board. Trap the enemy king so it cannot escape - that is checkmate, and you win. Play with a friend on this phone, or challenge the computer at 8 strength levels up to World Class.'
+    :'చదరంగం 8x8 బోర్డు మీద ఇద్దరు సైన్యాల యుద్ధం. శత్రు రాజు తప్పించుకోలేనిత్టుగా చుట్టుముట్టితే అది చెక్మేట్ - మీరు గెలిచారు. ఈ ఫోన్ లోనే స్నేహితుడితో ఆడండి లేదా కంప్యూటర్ ను 8 స్థాయిల్లో సవాలు చేయండి, వరల్డ్ క్లాస్ వరకు.')+'</p>'
+  +'<h4>'+(en?'How the pieces move':'ముక్కలు ఎలా కదుతాయి')+'</h4>'
+  +prow('p','Pawn: moves one square forward (two on its first move), captures one square diagonally forward.','పawn: నేరుగా ఒక గడి ముందుకు (మొదటి సారి రెండు గడులు), మూలలో ఒక గడి ముందుకు బంతిని పట్టుకుంటుంది.')
+  +prow('n','Knight: jumps in an L shape - two squares one way, then one to the side. It can jump over pieces.','గుర్రం: L ఆకారంలో - ఒక వైపు రెండు గడులు, పక్కకు ఒక గడి. ముక్కలను దాటి దూకగలదు.')
+  +prow('b','Bishop: slides any number of squares diagonally.','బిషప్: మూలలో ఎన్ని గడులైనా కదుతుంది.')
+  +prow('r','Rook: slides any number of squares straight - forward, back or sideways.','రూక్: నేరుగా - ముందుకు, వెనుకకు లేదా పక్కకు ఎన్ని గడులైనా.')
+  +prow('q','Queen: slides any number of squares in any direction. The strongest piece.','రాణి: ఏ దిశలోనైనా ఎన్ని గడులైనా. అత్యంత బలమైన ముక్క.')
+  +prow('k','King: one square in any direction. Keep it safe!','రాజు: ఏ దిశలోనైనా ఒక గడి. దీన్ని కాపాడండి!')
+  +'<h4>'+(en?'Special moves':'ప్రత్యేక కదలికలు')+'</h4><p>'+(en
+    ?'Castling: the king moves two squares toward a rook and the rook jumps over it - only if neither has moved and no square is attacked. En passant: a pawn that jumps two squares can be captured by a neighbor pawn as if it moved one. Promotion: a pawn reaching the last rank becomes a queen, rook, bishop or knight - your choice.'
+    :'క్యాజ్లింగ్: రాజు రూక్ వైపు రెండు గడులు, రూక్ దాని మీదుగా దూకుతుంది - రెండూ ముందు కదలకుండా, దారిలో ఎటాక్ లేకుండా ఉంటేనే. En passant: రెండు గడులు దూకిన బంతిని పక్క బంతి ఒక గడి కదిలినట్టు పట్టుకోవచ్చు. ప్రమోషన్: చివరి వరుసకు చేరిన బంతి రాణి, రూక్, బిషప్ లేదా గుర్రం అవుతుంది - మీ ఎంపిక.')+'</p>'
+  +'<h4>'+(en?'Win, lose or draw':'గెలుపు, ఓటమి, డ్రా')+'</h4><p>'+(en
+    ?'Check means the king is attacked - it must escape. Checkmate ends the game. A draw happens by stalemate (no legal move but not in check), not enough material to mate, the same position 3 times, the 50-move rule, or both players agreeing.'
+    :'చెక్ అంటే రాజుకు ముప్పు - తప్పించుకోవాలి. చెక్మేట్ తో ఆట ముగుస్తుంది. స్టేల్ మేట్ (చెక్ లేకుండా కదలిక లేకపోవడం), మేట్ కు సరిపోనంత ముక్కలు, అదే స్థానం 3 సార్లు, 50-కదలికల నియమం, లేదా ఇద్దరు అంగీకరిస్తే డ్రా.')+'</p>'
+  +'<h4>'+(en?'Clocks':'గడియారాలు')+'</h4><p>'+(en
+    ?'Pick a clock per player in setup, or play with no clock. Your time runs only on your turn. In 15+10s, each move adds 10 seconds. If your time hits zero, you lose - unless the other side cannot possibly mate, which is a draw.'
+    :'సెటప్ లో ప్రతి ఆటగాడికి గడియారం ఎంచుకోండి లేదా గడియారం లేకుండా ఆడండి. మీ వంతులో మాత్రమే మీ సమయం తగ్గుతుంది. 15+10s లో ప్రతి కదలిక 10 సెకన్లు ఇస్తుంది. సమయం అయిపోతే ఓటమి - కానీ మిగతా వైపు మేట్ చేయలేకపోతే డ్రా.')+'</p>'
+  +'<h4>'+(en?'Computer levels':'కంప్యూటర్ స్థాయిలు')+'</h4><p>'+(en
+    ?'Level 1 Beginner (1350 ELO) is gentle for learning. Each level up plays stronger and thinks longer. Level 8 World Class (2850 ELO) is full Stockfish strength - stronger than any human world champion.'
+    :'లెవల్ 1 బిగినర్ (1350 ELO) నేర్చుకోవడానికి సులభం. పై స్థాయిలు బలంగా ఆడి ఎక్కువ ఆలోచిస్తాయి. లెవల్ 8 వరల్డ్ క్లాస్ (2850 ELO) పూర్తి Stockfish శక్తి - ఏ మానవ ప్రపంచ ఛాంపియన్ కంటే బలం.')+'</p>'
+  +'<h4>'+(en?'Tips':'చిట్కాలు')+'</h4><p>'+(en
+    ?'Control the center with pawns. Bring knights and bishops out early. Castle your king to safety. Do not move the same piece twice in the opening. Think before every move: what did my opponent just threaten?'
+    :'బంతులతో సెంటర్ ను నియంత్రించండి. గుర్రాలు, బిషప్ లను త్వరగా బయటకు తీయండి. రాజును క్యాజ్లింగ్ తో భద్రపరచండి. ఓపెనింగ్ లో అదే ముక్కను రెండుసార్లు కదపవద్దు. ప్రతి కదలిక ముందు ఆలోచించండి: ప్రత్యర్థి ఇప్పుడు ఏమి బెదిరించాడు?')+'</p>';
+}
+
+/* ============ suggestion box ============ */
+document.getElementById('suggestbtn').onclick=()=>{
+  const msg=LANG==='te'?'నా సూచన: ':'My suggestion: ';
+  location.href='mailto:svofficials9999@gmail.com?subject='+encodeURIComponent('SV CHESS MASTER suggestion')+'&body='+encodeURIComponent(msg);
+};
+
+/* ============ install + service worker ============ */
+let deferredInstall=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;document.getElementById('installbtn').style.display='block'});
+document.getElementById('installbtn').onclick=()=>{
+  sfx('btn');
+  if(deferredInstall){deferredInstall.prompt();deferredInstall.userChoice.then(()=>{deferredInstall=null;document.getElementById('installbtn').style.display='none'})}
+};
+window.addEventListener('appinstalled',()=>{document.getElementById('installbtn').style.display='none'});
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
+}
+
+/* ============ init ============ */
+buildLevels();
+applyLang();
+initEngine();
+show('home',false);
+</script>
+</body>
+</html>
