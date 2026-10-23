@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ROYAL CHESS</title>
-<meta name="app-version" content="1.4.0">
+<meta name="app-version" content="1.4.1">
 <meta name="theme-color" content="#191307">
 <meta name="description" content="ROYAL CHESS - a luxury free chess game. Play 2 players on one phone or against the computer at 5 levels up to Expert. English + Telugu. Created by D. Srinivas.">
 <meta property="og:title" content="ROYAL CHESS - Free Luxury Chess">
@@ -36,6 +36,11 @@ body{background:radial-gradient(circle at 20% 0,#3d2f10 0,#191307 55%,#0d0a05 10
 .seg{display:flex;flex-wrap:wrap;gap:6px}
 .seg .btn{margin:0;padding:8px 12px;font-size:14px;min-height:44px}
 .seg .btn.on{border-color:#ffd600;background:#1a1408;box-shadow:0 0 12px #ffd60066}
+/* Difficulty selection: persistent frame, dark pressed surface and check mark. */
+#levels .btn{position:relative;border:3px solid #786334;background:linear-gradient(135deg,#382b13,#211807);box-shadow:none;padding:12px 30px 12px 12px;transition:background .15s,border-color .15s,box-shadow .15s}
+#levels .btn.on{border-color:#ffe26b;background:linear-gradient(135deg,#110e07,#241c09);box-shadow:inset 0 0 0 2px #171107,inset 0 0 0 3px #a88a36,0 0 12px #ffd60055;color:#fff8db}
+#levels .btn.on::after{content:'✓';position:absolute;top:5px;right:6px;width:20px;height:20px;border-radius:50%;background:#ffe26b;color:#211807;font:900 14px/20px system-ui;text-align:center}
+#levels .btn:focus-visible{outline:2px solid #fff8db;outline-offset:3px}
 .mode-chip{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;border:1.5px solid #e6c25a;background:#3d2f10;color:#fff;box-shadow:0 0 8px #e6c25a66;margin-left:6px;vertical-align:middle}
 /* board */
 .pcard{display:flex;align-items:center;gap:6px;border:1.5px solid #5a4a22;background:linear-gradient(145deg,#2e2410cc,#1a1408cc);border-radius:10px;padding:2px 8px;margin:3px 0}
@@ -400,7 +405,7 @@ input.txt{width:100%;border:1.5px solid #6b5a2a;background:#1a1408;color:#fff;bo
   <div class="me-ring"><img src="assets/me.jpg" alt="D. Srinivas"></div>
   <div class="creator" data-i18n="created">Created by D. Srinivas</div>
   <img class="alogo" src="assets/logo.png" alt="SV PRIME">
-  <p class="small" style="text-align:center">ROYAL CHESS <span data-i18n="ver">version</span> 1.4.0</p>
+  <p class="small" style="text-align:center">ROYAL CHESS <span data-i18n="ver">version</span> 1.4.1</p>
   <span class="lbl" data-i18n="suggest">Suggestion box</span>
   <p class="small" data-i18n="suggest_d">Only the creator can change this app. Have an idea? Send it here:</p>
   <button class="btn" id="suggestbtn">&#9993; <span data-i18n="suggest_btn">Send a suggestion</span></button>
@@ -577,7 +582,7 @@ document.getElementById('m-about').onclick=()=>{show('about');sfx('btn')};
 document.getElementById('m-net').onclick=()=>{show('net');sfx('btn')};
 document.getElementById('m-resume').onclick=()=>{show('game');renderAll();sfx('btn')};
 
-function segWire(id,cb){const seg=document.getElementById(id);if(!seg)return;seg.addEventListener('click',e=>{const b=e.target.closest('.btn');if(!b)return;seg.querySelectorAll('.btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');sfx('btn');cb(b)})}
+function segWire(id,cb){const seg=document.getElementById(id);if(!seg)return;seg.addEventListener('click',e=>{const b=e.target.closest('.btn');if(!b)return;seg.querySelectorAll('.btn').forEach(x=>{x.classList.remove('on');x.setAttribute('aria-pressed','false')});b.classList.add('on');b.setAttribute('aria-pressed','true');sfx('btn');cb(b)})}
 let selColor='w',selClock=0,selLevel=3,flipOn=false,selTheme='';
 segWire('colorseg',b=>selColor=b.dataset.c);
 segWire('clockseg',b=>selClock=parseInt(b.dataset.t,10));
@@ -602,8 +607,9 @@ function buildLevels(){
   const g=document.getElementById('levels');g.innerHTML='';
   LEVELS.forEach((L,i)=>{
     const b=document.createElement('button');b.className='btn'+(i+1===selLevel?' on':'');b.style.cssText='margin:0;min-height:64px';
+    b.setAttribute('aria-pressed',String(i+1===selLevel));
     b.innerHTML='<div style="font-size:13px">'+L.n+'</div><div style="font-size:11px;color:#ffd600">LV '+(i+1)+'</div>';
-    b.onclick=()=>{selLevel=i+1;g.querySelectorAll('.btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');sfx('btn')};
+    b.onclick=()=>{selLevel=i+1;g.querySelectorAll('.btn').forEach(x=>{x.classList.remove('on');x.setAttribute('aria-pressed','false')});b.classList.add('on');b.setAttribute('aria-pressed','true');sfx('btn')};
     g.appendChild(b);
   });
 }
