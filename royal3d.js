@@ -24,7 +24,7 @@ var renderer,scene,camera,raycaster,planeY0,containerEl;
 var boardGroup,pieceGroup,hlGroup;
 var meshes={};           /* sq -> group */
 var geoCache={},matCache={};
-var cam={theta:0,phi:0.93,r:11.9,tTheta:0,tPhi:0.93,tR:11.9};
+var cam={theta:0,phi:0.85,r:11.9,tTheta:0,tPhi:0.85,tR:11.9};
 var orient='w';
 var anims=[];
 var pointers=new Map();
@@ -144,7 +144,7 @@ function init(){
   renderer.domElement.addEventListener('pointermove',onMove);
   renderer.domElement.addEventListener('pointerup',onUp);
   renderer.domElement.addEventListener('pointercancel',onUp);
-  renderer.domElement.addEventListener('dblclick',function(){cam.tPhi=0.93;cam.tR=fitRadius();cam.tTheta=(orient==='w'?0:Math.PI)});
+  renderer.domElement.addEventListener('dblclick',function(){cam.tPhi=0.85;cam.tR=fitRadius();cam.tTheta=(orient==='w'?0:Math.PI)});
   window.addEventListener('resize',resize);
   resize();
   RV3.ready=true;
@@ -322,11 +322,11 @@ function fitRadius(){
   var right=new THREE.Vector3().crossVectors(dir,new THREE.Vector3(0,1,0)).normalize();
   var up=new THREE.Vector3().crossVectors(right,dir).normalize();
   var need=6,i,p,pd,pr,pu;
-  var C=[[-5.4,0,-5.4],[5.4,0,-5.4],[-5.4,0,5.4],[5.4,0,5.4],[-5.4,1.25,-5.4],[5.4,1.25,-5.4],[-5.4,1.25,5.4],[5.4,1.25,5.4]];
+  var C=[[-4.6,0,-4.6],[4.6,0,-4.6],[-4.6,0,4.6],[4.6,0,4.6],[-4.6,1.35,-4.6],[4.6,1.35,-4.6],[-4.6,1.35,4.6],[4.6,1.35,4.6]];
   for(i=0;i<8;i++){
     p=new THREE.Vector3(C[i][0],C[i][1],C[i][2]);
     pd=p.dot(dir);pr=Math.abs(p.dot(right));pu=Math.abs(p.dot(up));
-    need=Math.max(need,pd+pr/(0.92*tanH),pd+pu/(0.92*tanV));
+    need=Math.max(need,pd+pr/(0.965*tanH),pd+pu/(0.965*tanV));
   }
   return Math.min(need,18);
 }
@@ -341,6 +341,7 @@ RV3.setActive=function(on){
   if(RV3.active&&renderer){resize();lastT=performance.now();cancelAnimationFrame(rafId);rafId=requestAnimationFrame(loop)}
   else cancelAnimationFrame(rafId);
 };
+RV3.project=function(sq){if(!camera||!renderer)return null;var p=sqPos(sq);var v=new THREE.Vector3(p.x,0,p.z).project(camera);var r=renderer.domElement.getBoundingClientRect();return{x:r.left+(v.x+1)/2*r.width,y:r.top+(1-v.y)/2*r.height}};
 RV3.stats=function(){return{fps:Math.round(fpsAvg),pieces:Object.keys(meshes).length,tris:renderer?renderer.info.render.triangles:0,shadows:shadowsOn}};
 })();
 if(window.__rvApplyView)window.__rvApplyView();
