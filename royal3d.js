@@ -313,14 +313,14 @@ RV3.fx=function(kind,sq){
   var i;
   if(kind==='blast'&&sq){
     var sp=sqPos(sq);
-    for(i=0;i<24;i++){
-      var sz=0.12+Math.random()*0.09;
+    for(i=0;i<30;i++){
+      var sz=0.16+Math.random()*0.10;
       var m=new THREE.Mesh(new THREE.BoxGeometry(sz,sz,sz),new THREE.MeshBasicMaterial({color:i%3?0xffb547:0xfff2c8}));
       m.position.set(sp.x,0.3,sp.z);
       var a=Math.random()*Math.PI*2,v=1.6+Math.random()*2.6;
       addFx(m,Math.cos(a)*v,2.6+Math.random()*2.6,Math.sin(a)*v,(Math.random()-0.5)*9,(Math.random()-0.5)*9,0.8+Math.random()*0.25);
     }
-    var ring=new THREE.Mesh(new THREE.RingGeometry(0.18,0.34,28),new THREE.MeshBasicMaterial({color:0xffd54a,side:THREE.DoubleSide,transparent:true,opacity:0.95,depthWrite:false}));
+    var ring=new THREE.Mesh(new THREE.RingGeometry(0.22,0.42,28),new THREE.MeshBasicMaterial({color:0xffd54a,side:THREE.DoubleSide,transparent:true,opacity:0.95,depthWrite:false}));
     ring.rotation.x=-Math.PI/2;ring.position.set(sp.x,0.1,sp.z);
     fxParts.push({m:ring,vx:0,vy:0,vz:0,rx:0,ry:0,t:0,dur:0.5,grav:0,fade:false,grow:true,s0:1});scene.add(ring);
   }else if(kind==='celebrate'){
