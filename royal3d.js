@@ -24,7 +24,7 @@ var renderer,scene,camera,raycaster,planeY0,containerEl;
 var boardGroup,pieceGroup,hlGroup;
 var meshes={};           /* sq -> group */
 var geoCache={},matCache={};
-var cam={theta:0,phi:0.42,r:11.9,tTheta:0,tPhi:0.42,tR:11.9};
+var cam={theta:0,phi:0.50,r:11.9,tTheta:0,tPhi:0.50,tR:11.9};
 var orient='w';
 var anims=[];
 var pointers=new Map();
@@ -40,33 +40,34 @@ function sqFromPoint(p){var f=Math.round(p.x+3.5),r=Math.round(3.5-p.z);if(f<0||
 function lathe(pts,seg){return new THREE.LatheGeometry(pts.map(function(p){return new THREE.Vector2(p[0],p[1])}),seg||28)}
 function pieceGeo(type){
   if(geoCache[type])return geoCache[type];
-  var g=[],v=function(a,b,c){return new THREE.Vector3(a,b,c)};
-  if(type==='p'){
-    g.push(lathe([[0.001,0],[0.30,0],[0.30,0.045],[0.17,0.10],[0.135,0.28],[0.19,0.32],[0.19,0.36],[0.10,0.38]]));
-    var h=new THREE.SphereGeometry(0.135,20,16);h.translate(0,0.485,0);g.push(h);
-  }else if(type==='r'){
-    g.push(lathe([[0.001,0],[0.315,0],[0.315,0.05],[0.20,0.12],[0.175,0.48],[0.235,0.53],[0.235,0.58],[0.30,0.58],[0.30,0.70],[0.001,0.70]]));
-    for(var i=0;i<4;i++){var b=new THREE.BoxGeometry(0.12,0.09,0.10);var a=i*Math.PI/2;b.translate(Math.cos(a)*0.24,0.735,Math.sin(a)*0.24);g.push(b)}
-  }else if(type==='b'){
-    g.push(lathe([[0.001,0],[0.30,0],[0.30,0.05],[0.16,0.11],[0.13,0.40],[0.215,0.47],[0.15,0.54],[0.085,0.66],[0.015,0.75]]));
-    var t=new THREE.SphereGeometry(0.07,14,12);t.translate(0,0.79,0);g.push(t);
-  }else if(type==='q'){
-    g.push(lathe([[0.001,0],[0.335,0],[0.335,0.05],[0.175,0.12],[0.155,0.48],[0.26,0.56],[0.19,0.62],[0.22,0.69],[0.26,0.75],[0.10,0.78],[0.001,0.78]]));
-    for(var j=0;j<6;j++){var s=new THREE.SphereGeometry(0.05,10,8);var a2=j*Math.PI/3;s.translate(Math.cos(a2)*0.20,0.82,Math.sin(a2)*0.20);g.push(s)}
-    var c=new THREE.SphereGeometry(0.085,14,12);c.translate(0,0.87,0);g.push(c);
-  }else if(type==='k'){
-    g.push(lathe([[0.001,0],[0.335,0],[0.335,0.05],[0.175,0.12],[0.155,0.50],[0.26,0.58],[0.185,0.64],[0.215,0.71],[0.25,0.77],[0.12,0.80],[0.001,0.80]]));
-    var v1=new THREE.BoxGeometry(0.065,0.22,0.065);v1.translate(0,0.92,0);g.push(v1);
-    var v2=new THREE.BoxGeometry(0.16,0.06,0.065);v2.translate(0,0.94,0);g.push(v2);
-  }else if(type==='n'){
-    g.push(lathe([[0.001,0],[0.31,0],[0.31,0.05],[0.195,0.12],[0.17,0.24],[0.235,0.30],[0.001,0.30]]));
+  var g=[];
+  if(type==='p'){ /* short pawn, big round head */
+    g.push(lathe([[0.001,0],[0.30,0],[0.30,0.05],[0.17,0.10],[0.14,0.24],[0.20,0.28],[0.20,0.32],[0.12,0.35]]));
+    var h=new THREE.SphereGeometry(0.15,20,16);h.translate(0,0.48,0);g.push(h);
+  }else if(type==='r'){ /* crenellated tower */
+    g.push(lathe([[0.001,0],[0.32,0],[0.32,0.05],[0.20,0.12],[0.18,0.50],[0.24,0.56],[0.24,0.62],[0.30,0.62],[0.30,0.74],[0.001,0.74]]));
+    for(var i=0;i<4;i++){var b=new THREE.BoxGeometry(0.13,0.12,0.11);var a=i*Math.PI/2;b.translate(Math.cos(a)*0.235,0.79,Math.sin(a)*0.235);g.push(b)}
+  }else if(type==='b'){ /* tall bishop, pointed mitre with slash nick */
+    g.push(lathe([[0.001,0],[0.30,0],[0.30,0.05],[0.16,0.11],[0.13,0.46],[0.22,0.52],[0.155,0.60],[0.09,0.76],[0.015,0.86]]));
+    var t=new THREE.SphereGeometry(0.075,14,12);t.translate(0,0.91,0);g.push(t);
+    var sl=new THREE.BoxGeometry(0.03,0.18,0.12);sl.rotateZ(0.6);sl.translate(0.05,0.82,0);g.push(sl);
+  }else if(type==='q'){ /* queen: coronet of spikes */
+    g.push(lathe([[0.001,0],[0.335,0],[0.335,0.05],[0.175,0.12],[0.155,0.52],[0.26,0.60],[0.19,0.66],[0.22,0.74],[0.26,0.80],[0.10,0.83],[0.001,0.83]]));
+    for(var j=0;j<8;j++){var cn=new THREE.ConeGeometry(0.05,0.16,8);var a2=j*Math.PI/4;cn.translate(Math.cos(a2)*0.21,0.94,Math.sin(a2)*0.21);g.push(cn)}
+    var c=new THREE.SphereGeometry(0.085,14,12);c.translate(0,1.02,0);g.push(c);
+  }else if(type==='k'){ /* king: tallest, bold cross */
+    g.push(lathe([[0.001,0],[0.335,0],[0.335,0.05],[0.175,0.12],[0.155,0.54],[0.26,0.62],[0.185,0.68],[0.215,0.76],[0.25,0.82],[0.12,0.85],[0.001,0.85]]));
+    var v1=new THREE.BoxGeometry(0.075,0.26,0.075);v1.translate(0,1.00,0);g.push(v1);
+    var v2=new THREE.BoxGeometry(0.20,0.075,0.075);v2.translate(0,1.03,0);g.push(v2);
+  }else if(type==='n'){ /* knight: horse head profile */
+    g.push(lathe([[0.001,0],[0.31,0],[0.31,0.05],[0.195,0.12],[0.175,0.26],[0.235,0.32],[0.001,0.32]]));
     var s2=new THREE.Shape();
-    s2.moveTo(-0.15,0.00);s2.lineTo(0.11,0.00);s2.lineTo(0.16,0.05);s2.lineTo(0.10,0.09);
-    s2.lineTo(0.19,0.17);s2.lineTo(0.25,0.29);s2.lineTo(0.23,0.39);s2.lineTo(0.13,0.46);
-    s2.lineTo(0.055,0.51);s2.lineTo(0.02,0.59);s2.lineTo(-0.03,0.51);s2.lineTo(-0.09,0.53);
-    s2.lineTo(-0.15,0.43);s2.lineTo(-0.11,0.29);s2.lineTo(-0.15,0.15);s2.closePath();
-    var ex=new THREE.ExtrudeGeometry(s2,{depth:0.16,bevelEnabled:true,bevelThickness:0.02,bevelSize:0.02,bevelSegments:2});
-    ex.translate(0,0.28,-0.10);
+    s2.moveTo(-0.17,0.00);s2.lineTo(0.13,0.00);s2.lineTo(0.18,0.08);s2.lineTo(0.22,0.18);
+    s2.lineTo(0.25,0.30);s2.lineTo(0.22,0.40);s2.lineTo(0.16,0.47);s2.lineTo(0.13,0.57);
+    s2.lineTo(0.07,0.50);s2.lineTo(-0.02,0.53);s2.lineTo(-0.10,0.50);s2.lineTo(-0.155,0.43);
+    s2.lineTo(-0.13,0.30);s2.lineTo(-0.17,0.14);s2.closePath();
+    var ex=new THREE.ExtrudeGeometry(s2,{depth:0.18,bevelEnabled:true,bevelThickness:0.02,bevelSize:0.02,bevelSegments:2});
+    ex.translate(0,0.30,-0.09);
     g.push(ex);
   }
   geoCache[type]=g;
@@ -75,8 +76,8 @@ function pieceGeo(type){
 function mats(color){
   if(matCache[color])return matCache[color];
   var m=color==='w'
-    ?new THREE.MeshStandardMaterial({color:0xd8b64a,metalness:0.85,roughness:0.30,emissive:0x241a02})
-    :new THREE.MeshStandardMaterial({color:0x2b2b36,metalness:0.5,roughness:0.32,emissive:0x0b0b14});
+    ?new THREE.MeshStandardMaterial({color:0xd8b64a,metalness:0.35,roughness:0.5,emissive:0x241a02})
+    :new THREE.MeshStandardMaterial({color:0x3d3d4e,metalness:0.4,roughness:0.45,emissive:0x0b0b14});
   matCache[color]=m;return m;
 }
 function createPiece(type,color){
@@ -144,7 +145,7 @@ function init(){
   renderer.domElement.addEventListener('pointermove',onMove);
   renderer.domElement.addEventListener('pointerup',onUp);
   renderer.domElement.addEventListener('pointercancel',onUp);
-  renderer.domElement.addEventListener('dblclick',function(){cam.tPhi=0.42;cam.tR=fitRadius();cam.tTheta=(orient==='w'?0:Math.PI)});
+  renderer.domElement.addEventListener('dblclick',function(){cam.tPhi=0.50;cam.tR=fitRadius();cam.tTheta=(orient==='w'?0:Math.PI)});
   window.addEventListener('resize',resize);
   resize();
   RV3.ready=true;
@@ -369,7 +370,7 @@ function fitRadius(){
   var right=new THREE.Vector3().crossVectors(dir,new THREE.Vector3(0,1,0)).normalize();
   var up=new THREE.Vector3().crossVectors(right,dir).normalize();
   var need=6,i,p,pd,pr,pu;
-  var C=[[-3.95,0,-3.95],[3.95,0,-3.95],[-3.95,0,3.95],[3.95,0,3.95],[-3.95,1.35,-3.95],[3.95,1.35,-3.95],[-3.95,1.35,3.95],[3.95,1.35,3.95]];
+  var C=[[-4.05,0,-4.05],[4.05,0,-4.05],[-4.05,0,4.05],[4.05,0,4.05],[-4.05,1.5,-4.05],[4.05,1.5,-4.05],[-4.05,1.5,4.05],[4.05,1.5,4.05]];
   for(i=0;i<8;i++){
     p=new THREE.Vector3(C[i][0],C[i][1],C[i][2]);
     pd=p.dot(dir);pr=Math.abs(p.dot(right));pu=Math.abs(p.dot(up));

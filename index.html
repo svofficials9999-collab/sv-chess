@@ -16,7 +16,7 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
 body{background:radial-gradient(circle at 20% 0,#3d2f10 0,#191307 55%,#0d0a05 100%) fixed;color:#f5ead0;font-family:system-ui,-apple-system,"Noto Sans Telugu","Nirmala UI",Roboto,sans-serif;font-size:16px;line-height:1.5;min-height:100vh;overflow-x:hidden}
-.w{max-width:520px;margin:0 auto;padding:10px 12px 90px}
+.w{max-width:520px;margin:0 auto;padding:6px 5px 80px}
 .neon{background:linear-gradient(90deg,#ffd700,#fff3b0,#c9a227,#ffd700);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sh 6s linear infinite}
 @keyframes sh{to{background-position:300% 0}}
 .top{display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:20;padding:8px 10px;background:#191307ee;backdrop-filter:blur(8px);border-bottom:1px solid #4a3d1c}
@@ -47,7 +47,7 @@ body{background:radial-gradient(circle at 20% 0,#3d2f10 0,#191307 55%,#0d0a05 10
 .clock.on{border-color:#e6c25a;box-shadow:0 0 12px #e6c25a66}
 .clock.low{border-color:#ff3355;color:#ff8899;animation:pulse 1s infinite}
 @keyframes pulse{50%{box-shadow:0 0 16px #ff3355aa}}
-#boardwrap{position:relative;width:100%;max-width:520px;margin:4px auto;border-radius:10px;overflow:hidden;box-shadow:0 4px 24px #000c,0 0 18px #c9a22744;border:3px solid #c9a227}
+#boardwrap{position:relative;width:100%;max-width:520px;margin:2px auto;border-radius:10px;overflow:hidden;box-shadow:0 4px 24px #000c,0 0 18px #c9a22744;border:2px solid #c9a227}
 #board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);width:100%;aspect-ratio:1;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 #board3d{position:absolute;inset:0;display:none;z-index:2;touch-action:none}
 #board3d.on{display:block}
