@@ -1,4 +1,6 @@
-/* ROYAL CHESS 3D view - Three.js r147, gold & obsidian, tap-to-move with orbit camera.
+/* ROYAL CHESS 3D view - Three.js r147. Straight full-frame board: orthographic top camera
+   with an oblique shear, so the board grid stays a perfect rectangle flush to the phone
+   frame while pieces stand up showing full physical profiles. Tap-to-move, pinch zoom.
    2D remains the fallback; this module only renders and forwards taps via window.__rvTap. */
 (function(){
 'use strict';
@@ -21,10 +23,10 @@ try{
 if(!RV3.supported)return;
 
 var renderer,scene,camera,raycaster,planeY0,containerEl;
-var boardGroup,pieceGroup,hlGroup;
+var boardGroup,pieceGroup,hlGroup,fxGroup;
 var meshes={};           /* sq -> group */
 var geoCache={},matCache={};
-var cam={theta:0,phi:0.10,r:13.2,tTheta:0,tPhi:0.10,tR:13.2};
+var zoom={z:1,t:1};
 var orient='w';
 var anims=[];
 var pointers=new Map();
@@ -67,8 +69,7 @@ function pieceGeo(type){
     s2.lineTo(0.07,0.50);s2.lineTo(-0.02,0.53);s2.lineTo(-0.10,0.50);s2.lineTo(-0.155,0.43);
     s2.lineTo(-0.13,0.30);s2.lineTo(-0.17,0.14);s2.closePath();
     var ex=new THREE.ExtrudeGeometry(s2,{depth:0.20,bevelEnabled:true,bevelThickness:0.02,bevelSize:0.02,bevelSegments:2});
-    ex.rotateX(-0.45);
-    ex.translate(0,0.34,-0.10);
+    ex.translate(0,0.30,-0.10);
     g.push(ex);
   }
   geoCache[type]=g;
@@ -133,7 +134,12 @@ function init(){
   scene=new THREE.Scene();
   scene.background=new THREE.Color(0x0b0b10);
   scene.fog=new THREE.Fog(0x0b0b10,16,30);
-  camera=new THREE.PerspectiveCamera(40,1,0.1,100);
+  var S=4.60,camH=12; /* half-extent: gold rim flush to the frame; camera height */
+  camera=new THREE.OrthographicCamera(-S,S,S,-S,0.1,60);
+  camera.up.set(0,0,-1);
+  camera.position.set(0,camH,0);
+  camera.lookAt(0,0,0);
+  window.__rvS=S;
   raycaster=new THREE.Raycaster();
   planeY0=new THREE.Plane(new THREE.Vector3(0,1,0),0);
 
@@ -147,8 +153,8 @@ function init(){
   var accent=new THREE.PointLight(0xd4af37,0.28,40);accent.position.set(-6,3.5,-6);scene.add(accent);
   var fill=new THREE.DirectionalLight(0xbfd4ff,0.16);fill.position.set(-4.5,7,-5);scene.add(fill);
 
-  boardGroup=new THREE.Group();pieceGroup=new THREE.Group();hlGroup=new THREE.Group();
-  scene.add(boardGroup);scene.add(pieceGroup);scene.add(hlGroup);
+  boardGroup=new THREE.Group();pieceGroup=new THREE.Group();hlGroup=new THREE.Group();fxGroup=new THREE.Group();
+  scene.add(boardGroup);scene.add(pieceGroup);scene.add(hlGroup);scene.add(fxGroup);
 
   /* board squares */
   var lw=woodPair('#ecd6ab','150,118,72',8),dw=woodPair('#8a5a34','58,36,18',16);
@@ -183,21 +189,32 @@ function init(){
   renderer.domElement.addEventListener('pointermove',onMove);
   renderer.domElement.addEventListener('pointerup',onUp);
   renderer.domElement.addEventListener('pointercancel',onUp);
-  renderer.domElement.addEventListener('dblclick',function(){cam.tPhi=0.10;cam.tR=fitRadius();cam.tTheta=(orient==='w'?0:Math.PI)});
+  renderer.domElement.addEventListener('dblclick',function(){zoom.t=1});
   window.addEventListener('resize',resize);
   resize();
   RV3.ready=true;
+}
+var obliqueM=null;
+function applyProj(){
+  if(!obliqueM){var b=0.52,h=12;obliqueM=new THREE.Matrix4().set(1,0,0,0, 0,1,b,h*b, 0,0,1,0, 0,0,0,1)}
+  camera.updateProjectionMatrix();
+  camera.projectionMatrix.multiply(obliqueM);
+  camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
 }
 function resize(){
   if(!renderer||!containerEl)return;
   var w=containerEl.clientWidth||300,h=containerEl.clientHeight||300;
   renderer.setSize(w,h,false);
-  var newA=w/h,prevA=resize._a||0;
-  camera.aspect=newA;camera.updateProjectionMatrix();
-  var fr=fitRadius();
-  if(!resize._done||Math.abs(newA-prevA)>0.02){cam.tR=fr;resize._done=true}
-  else cam.tR=Math.max(cam.tR,fr);
-  resize._a=newA;
+  var S=window.__rvS||4.60,a=w/h;
+  camera.left=-S*a;camera.right=S*a;camera.top=S;camera.bottom=-S;
+  applyProj();
+}
+function applyOrient(){
+  var r=orient==='b'?Math.PI:0;
+  if(boardGroup)boardGroup.rotation.y=r;
+  if(pieceGroup)pieceGroup.rotation.y=r;
+  if(hlGroup)hlGroup.rotation.y=r;
+  if(fxGroup)fxGroup.rotation.y=r;
 }
 
 /* ---------- input ---------- */
@@ -211,14 +228,14 @@ function onMove(e){
   var dx=e.clientX-p.x,dy=e.clientY-p.y;
   if(pointers.size===1){
     if(tapInfo&&(Math.abs(e.clientX-tapInfo.x)+Math.abs(e.clientY-tapInfo.y)>12))tapInfo.moved=true;
-    if(!tapInfo||tapInfo.moved){cam.tTheta+=dx*0.0062;cam.tPhi=Math.min(1.25,Math.max(0.08,cam.tPhi-dy*0.005))}
+    /* straight view: one-finger drag does not tilt the board */
   }else if(pointers.size===2){
     var arr=[].slice.call(pointers.values());
     var other=arr[0]===p?arr[1]:arr[0];
     var dPrev=Math.hypot(p.x-other.x,p.y-other.y);
     p.x=e.clientX;p.y=e.clientY;
     var dNew=Math.hypot(p.x-other.x,p.y-other.y);
-    if(dPrev>0)cam.tR=Math.min(15,Math.max(6,cam.tR*dPrev/dNew));
+    if(dPrev>0)zoom.t=Math.min(1.6,Math.max(0.72,zoom.t*dNew/dPrev));
   }
   p.x=e.clientX;p.y=e.clientY;
 }
@@ -226,8 +243,10 @@ function onUp(e){
   var p=pointers.get(e.pointerId);pointers.delete(e.pointerId);
   if(tapInfo&&!tapInfo.moved&&Date.now()-tapInfo.t<400&&p){
     var rect=renderer.domElement.getBoundingClientRect();
-    var ndc=new THREE.Vector2(((e.clientX-rect.left)/rect.width)*2-1,-((e.clientY-rect.top)/rect.height)*2+1);
-    raycaster.setFromCamera(ndc,camera);
+    var nx=((e.clientX-rect.left)/rect.width)*2-1,ny=-((e.clientY-rect.top)/rect.height)*2+1;
+    var p1=new THREE.Vector3(nx,ny,-1).unproject(camera);
+    var p2=new THREE.Vector3(nx,ny,1).unproject(camera);
+    raycaster.set(p1,p2.sub(p1).normalize());
     var pm=pieceGroup?raycaster.intersectObjects(pieceGroup.children,true)[0]:null;
     if(pm){
       var o=pm.object;while(o&&!(o.userData&&o.userData.type))o=o.parent;
@@ -235,6 +254,7 @@ function onUp(e){
     }
     var hit=new THREE.Vector3();
     if(raycaster.ray.intersectPlane(planeY0,hit)){
+      if(orient==='b'){hit.x=-hit.x;hit.z=-hit.z}
       var sq=sqFromPoint(hit);
       if(sq&&window.__rvTap)window.__rvTap(sq);
     }
@@ -292,7 +312,7 @@ function reconcile(want){
 RV3.sync=function(st){
   lastState=st;
   if(!RV3.ready)return;
-  if(st.orient&&st.orient!==orient){orient=st.orient;cam.tTheta+=Math.PI}
+  if(st.orient&&st.orient!==orient){orient=st.orient;applyOrient()}
   drawHighlights(st);
   if(!pieceGroup)return;
   var want={};
@@ -342,7 +362,7 @@ function stepAnims(dt){
 
 /* ---------- fx: capture blast + win celebration ---------- */
 var fxParts=[];
-function addFx(m,vx,vy,vz,rx,ry,dur,grav,fade){fxParts.push({m:m,vx:vx,vy:vy,vz:vz,rx:rx||0,ry:ry||0,t:0,dur:dur,grav:grav===undefined?-9:grav,fade:fade!==false,s0:m.scale.x});scene.add(m)}
+function addFx(m,vx,vy,vz,rx,ry,dur,grav,fade){fxParts.push({m:m,vx:vx,vy:vy,vz:vz,rx:rx||0,ry:ry||0,t:0,dur:dur,grav:grav===undefined?-9:grav,fade:fade!==false,s0:m.scale.x});fxGroup.add(m)}
 function stepFx(dt){
   for(var i=fxParts.length-1;i>=0;i--){
     var p=fxParts[i];p.t+=dt;var k=Math.min(1,p.t/p.dur);
@@ -351,7 +371,7 @@ function stepFx(dt){
     p.m.rotation.x+=p.rx*dt;p.m.rotation.y+=p.ry*dt;
     if(p.grow){var g=1+3.2*k;p.m.scale.set(g,g,g);p.m.material.opacity=Math.max(0,0.95*(1-k))}
     else if(p.fade){var s=Math.max(0.001,p.s0*(1-k));p.m.scale.set(s,s,s)}
-    if(k>=1){scene.remove(p.m);if(p.m.geometry)p.m.geometry.dispose();if(p.m.material)p.m.material.dispose();fxParts.splice(i,1)}
+    if(k>=1){fxGroup.remove(p.m);if(p.m.geometry)p.m.geometry.dispose();if(p.m.material)p.m.material.dispose();fxParts.splice(i,1)}
   }
 }
 RV3.fxCount=function(){return fxParts.length};
@@ -369,7 +389,7 @@ RV3.fx=function(kind,sq){
     }
     var ring=new THREE.Mesh(new THREE.RingGeometry(0.22,0.42,28),new THREE.MeshBasicMaterial({color:0xffd54a,side:THREE.DoubleSide,transparent:true,opacity:0.95,depthWrite:false}));
     ring.rotation.x=-Math.PI/2;ring.position.set(sp.x,0.1,sp.z);
-    fxParts.push({m:ring,vx:0,vy:0,vz:0,rx:0,ry:0,t:0,dur:0.5,grav:0,fade:false,grow:true,s0:1});scene.add(ring);
+    fxParts.push({m:ring,vx:0,vy:0,vz:0,rx:0,ry:0,t:0,dur:0.5,grav:0,fade:false,grow:true,s0:1});fxGroup.add(ring);
   }else if(kind==='celebrate'){
     var cols=[0xffd54a,0x18e88a,0xff6b8a,0x59b7ff,0xffffff];
     for(i=0;i<50;i++){
@@ -388,14 +408,7 @@ function loop(t){
   var dt=Math.min(0.1,(t-lastT)/1000||0.016);lastT=t;
   if(dt>0){var f=1/dt;fpsAvg=fpsAvg*0.95+f*0.05}
   if(fpsAvg<26&&shadowsOn){lowFrames++;if(lowFrames>90){renderer.shadowMap.enabled=false;shadowsOn=false;dir_light_off();}}
-  var fr=fitRadius();
-  if(cam.tR<fr)cam.tR=fr;
-  if(cam.tR>18)cam.tR=18;
-  cam.theta+=(cam.tTheta-cam.theta)*Math.min(1,dt*9);
-  cam.phi+=(cam.tPhi-cam.phi)*Math.min(1,dt*9);
-  cam.r+=(cam.tR-cam.r)*Math.min(1,dt*9);
-  camera.position.set(Math.sin(cam.theta)*Math.sin(cam.phi)*cam.r,Math.cos(cam.phi)*cam.r,Math.cos(cam.theta)*Math.sin(cam.phi)*cam.r);
-  camera.lookAt(0,-0.35,0);
+  if(Math.abs(zoom.z-zoom.t)>0.0004){zoom.z+=(zoom.t-zoom.z)*Math.min(1,dt*9);camera.zoom=zoom.z;applyProj()}
   stepAnims(dt);
   stepFx(dt);
   renderer.render(scene,camera);
@@ -404,21 +417,6 @@ function dir_light_off(){ /* called once on sustained low fps */
   scene.traverse(function(o){if(o.isDirectionalLight)o.castShadow=false});
 }
 
-function fitRadius(){
-  if(!camera)return 11.9;
-  var tanV=Math.tan(camera.fov*Math.PI/360),tanH=tanV*camera.aspect;
-  var dir=new THREE.Vector3(Math.sin(cam.theta)*Math.sin(cam.phi),Math.cos(cam.phi),Math.cos(cam.theta)*Math.sin(cam.phi));
-  var right=new THREE.Vector3().crossVectors(dir,new THREE.Vector3(0,1,0)).normalize();
-  var up=new THREE.Vector3().crossVectors(right,dir).normalize();
-  var need=6,i,p,pd,pr,pu;
-  var C=[[-4.58,0,-4.58],[4.58,0,-4.58],[-4.58,0,4.58],[4.58,0,4.58],[-4.58,1.5,-4.58],[4.58,1.5,-4.58],[-4.58,1.5,4.58],[4.58,1.5,4.58]];
-  for(i=0;i<8;i++){
-    p=new THREE.Vector3(C[i][0],C[i][1],C[i][2]);
-    pd=p.dot(dir);pr=Math.abs(p.dot(right));pu=Math.abs(p.dot(up));
-    need=Math.max(need,pd+pr/(0.985*tanH),pd+pu/(0.985*tanV));
-  }
-  return Math.min(need,18);
-}
 
 RV3.attach=function(el){
   containerEl=el;
@@ -430,7 +428,7 @@ RV3.setActive=function(on){
   if(RV3.active&&renderer){resize();lastT=performance.now();cancelAnimationFrame(rafId);rafId=requestAnimationFrame(loop)}
   else cancelAnimationFrame(rafId);
 };
-RV3.project=function(sq){if(!camera||!renderer)return null;var p=sqPos(sq);var v=new THREE.Vector3(p.x,0,p.z).project(camera);var r=renderer.domElement.getBoundingClientRect();return{x:r.left+(v.x+1)/2*r.width,y:r.top+(1-v.y)/2*r.height}};
-RV3.stats=function(){return{fps:Math.round(fpsAvg),pieces:Object.keys(meshes).length,tris:renderer?renderer.info.render.triangles:0,shadows:shadowsOn,r:+cam.r.toFixed(2),phi:+cam.phi.toFixed(2),aspect:+camera.aspect.toFixed(3),need:+fitRadius().toFixed(2)}};
+RV3.project=function(sq){if(!camera||!renderer)return null;var p=sqPos(sq);var v=new THREE.Vector3(p.x,0,p.z);if(pieceGroup)v=pieceGroup.localToWorld(v);v.project(camera);var r=renderer.domElement.getBoundingClientRect();return{x:r.left+(v.x+1)/2*r.width,y:r.top+(1-v.y)/2*r.height}};
+RV3.stats=function(){return{fps:Math.round(fpsAvg),pieces:Object.keys(meshes).length,tris:renderer?renderer.info.render.triangles:0,shadows:shadowsOn,zoom:+zoom.z.toFixed(2),proj:'oblique'}};
 })();
 if(window.__rvApplyView)window.__rvApplyView();

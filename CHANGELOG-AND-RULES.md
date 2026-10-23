@@ -2,6 +2,23 @@
 
 Live: https://svofficials9999-collab.github.io/sv-chess/
 
+## v1.4.0 (2026-10-23)
+- REVIEW FIX (main rejected the v1.3.1 overhead look: converging sides + pieces as round
+  tops): replaced the perspective camera with an OBLIQUE orthographic projection (top camera
+  + shear matrix, camera-height-compensated). The board grid is now a mathematically perfect
+  rectangle - opposite edges parallel, zero perspective convergence, gold rim flush to all
+  four sides of the full-width square canvas - while every piece stands upright showing its
+  full physical Staunton profile (king cross, queen coronet, bishop mitre, rook battlements,
+  knight head). Straight frame AND recognizable pieces, both, no tradeoff.
+- One-finger drag no longer tilts the board (user: not even slight slant); pinch zoom and
+  double-tap zoom reset kept. Orientation flip now rotates the board/piece/highlight/fx
+  groups (was camera theta), with orientation-aware tap mapping and world-space projection.
+- Tap raycast uses exact rays for the sheared projection (manual unproject), verified:
+  e2-e4 and e7-e5 land via real pointer events in both normal and flipped orientation;
+  zero JS errors; 32 pieces, shadows on.
+- v1.3.1 changes kept: wood-grain pieces (oak vs ebony) and maple/walnut board, calmer
+  antique-gold rim, grounded shadows, 40-segment lathes.
+
 ## v1.3.1 (2026-10-23)
 - User-driven redesign (voice 18:31 + annotated screenshot 18:34): board is now STRAIGHT
   (near-top-down camera, phi 0.78 -> 0.10; no more tilted slate/trapezoid look) and fills the
