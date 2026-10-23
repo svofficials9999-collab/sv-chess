@@ -153,8 +153,12 @@ function resize(){
   if(!renderer||!containerEl)return;
   var w=containerEl.clientWidth||300,h=containerEl.clientHeight||300;
   renderer.setSize(w,h,false);
-  camera.aspect=w/h;camera.updateProjectionMatrix();
-  cam.tR=Math.max(cam.tR,fitRadius());
+  var newA=w/h,prevA=resize._a||0;
+  camera.aspect=newA;camera.updateProjectionMatrix();
+  var fr=fitRadius();
+  if(!resize._done||Math.abs(newA-prevA)>0.02){cam.tR=fr;resize._done=true}
+  else cam.tR=Math.max(cam.tR,fr);
+  resize._a=newA;
 }
 
 /* ---------- input ---------- */
