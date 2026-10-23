@@ -307,7 +307,7 @@ function loop(t){
   cam.phi+=(cam.tPhi-cam.phi)*Math.min(1,dt*9);
   cam.r+=(cam.tR-cam.r)*Math.min(1,dt*9);
   camera.position.set(Math.sin(cam.theta)*Math.sin(cam.phi)*cam.r,Math.cos(cam.phi)*cam.r,Math.cos(cam.theta)*Math.sin(cam.phi)*cam.r);
-  camera.lookAt(0,0,0);
+  camera.lookAt(0,-0.35,0);
   stepAnims(dt);
   renderer.render(scene,camera);
 }
