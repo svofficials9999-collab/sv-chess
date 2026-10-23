@@ -24,7 +24,7 @@ var renderer,scene,camera,raycaster,planeY0,containerEl;
 var boardGroup,pieceGroup,hlGroup;
 var meshes={};           /* sq -> group */
 var geoCache={},matCache={};
-var cam={theta:0,phi:0.97,r:11.0,tTheta:0,tPhi:0.97,tR:11.0};
+var cam={theta:0,phi:0.93,r:11.9,tTheta:0,tPhi:0.93,tR:11.9};
 var orient='w';
 var anims=[];
 var pointers=new Map();
@@ -76,7 +76,7 @@ function mats(color){
   if(matCache[color])return matCache[color];
   var m=color==='w'
     ?new THREE.MeshStandardMaterial({color:0xd8b64a,metalness:0.85,roughness:0.30,emissive:0x241a02})
-    :new THREE.MeshStandardMaterial({color:0x17171d,metalness:0.55,roughness:0.38,emissive:0x000000});
+    :new THREE.MeshStandardMaterial({color:0x2b2b36,metalness:0.5,roughness:0.32,emissive:0x0b0b14});
   matCache[color]=m;return m;
 }
 function createPiece(type,color){
@@ -100,14 +100,14 @@ function init(){
   raycaster=new THREE.Raycaster();
   planeY0=new THREE.Plane(new THREE.Vector3(0,1,0),0);
 
-  var hemi=new THREE.HemisphereLight(0xfff3dd,0x1a1208,0.55);scene.add(hemi);
+  var hemi=new THREE.HemisphereLight(0xfff3dd,0x1a1208,0.72);scene.add(hemi);
   var dir=new THREE.DirectionalLight(0xffe9c0,1.15);
   dir.position.set(4.5,9,2.5);dir.castShadow=true;
   dir.shadow.mapSize.set(1024,1024);
   dir.shadow.camera.left=-6;dir.shadow.camera.right=6;dir.shadow.camera.top=6;dir.shadow.camera.bottom=-6;
   dir.shadow.camera.far=24;dir.shadow.bias=-0.0004;
   scene.add(dir);
-  var accent=new THREE.PointLight(0xd4af37,0.35,40);accent.position.set(-6,3.5,-6);scene.add(accent);
+  var accent=new THREE.PointLight(0xd4af37,0.5,40);accent.position.set(-6,3.5,-6);scene.add(accent);
 
   boardGroup=new THREE.Group();pieceGroup=new THREE.Group();hlGroup=new THREE.Group();
   scene.add(boardGroup);scene.add(pieceGroup);scene.add(hlGroup);
@@ -144,7 +144,7 @@ function init(){
   renderer.domElement.addEventListener('pointermove',onMove);
   renderer.domElement.addEventListener('pointerup',onUp);
   renderer.domElement.addEventListener('pointercancel',onUp);
-  renderer.domElement.addEventListener('dblclick',function(){cam.tPhi=0.97;cam.tR=11.0;cam.tTheta=(orient==='w'?0:Math.PI)});
+  renderer.domElement.addEventListener('dblclick',function(){cam.tPhi=0.93;cam.tR=11.9;cam.tTheta=(orient==='w'?0:Math.PI)});
   window.addEventListener('resize',resize);
   resize();
   RV3.ready=true;
@@ -167,7 +167,7 @@ function onMove(e){
   var dx=e.clientX-p.x,dy=e.clientY-p.y;
   if(pointers.size===1){
     if(tapInfo&&(Math.abs(e.clientX-tapInfo.x)+Math.abs(e.clientY-tapInfo.y)>12))tapInfo.moved=true;
-    if(!tapInfo||tapInfo.moved){cam.tTheta+=dx*0.0062;cam.tPhi=Math.min(1.35,Math.max(0.45,cam.tPhi-dy*0.005))}
+    if(!tapInfo||tapInfo.moved){cam.tTheta+=dx*0.0062;cam.tPhi=Math.min(1.25,Math.max(0.55,cam.tPhi-dy*0.005))}
   }else if(pointers.size===2){
     var arr=[].slice.call(pointers.values());
     var other=arr[0]===p?arr[1]:arr[0];
