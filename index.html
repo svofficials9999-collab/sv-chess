@@ -442,6 +442,7 @@ function applyLang(){
   document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=t(el.dataset.i18nPh)});
   document.getElementById('langbtn').textContent=LANG==='en'?'\u0C24\u0C46\u0C32\u0C41\u0C17\u0C41':'English';
   buildGuide();
+  if(typeof G!=='undefined'&&G)renderStatus();
 }
 document.getElementById('langbtn').onclick=()=>{LANG=LANG==='en'?'te':'en';localStorage.setItem('svchess.lang',LANG);applyLang();sfx('btn')};
 
