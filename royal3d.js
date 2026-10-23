@@ -307,7 +307,7 @@ function loop(t){
   cam.phi+=(cam.tPhi-cam.phi)*Math.min(1,dt*9);
   cam.r+=(cam.tR-cam.r)*Math.min(1,dt*9);
   camera.position.set(Math.sin(cam.theta)*Math.sin(cam.phi)*cam.r,Math.cos(cam.phi)*cam.r,Math.cos(cam.theta)*Math.sin(cam.phi)*cam.r);
-  camera.lookAt(0,-0.15,0);
+  camera.lookAt(0,0,0);
   stepAnims(dt);
   renderer.render(scene,camera);
 }
@@ -326,7 +326,7 @@ function fitRadius(){
   for(i=0;i<8;i++){
     p=new THREE.Vector3(C[i][0],C[i][1],C[i][2]);
     pd=p.dot(dir);pr=Math.abs(p.dot(right));pu=Math.abs(p.dot(up));
-    need=Math.max(need,pd+pr/(0.965*tanH),pd+pu/(0.965*tanV));
+    need=Math.max(need,pd+pr/(0.985*tanH),pd+pu/(0.985*tanV));
   }
   return Math.min(need,18);
 }
