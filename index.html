@@ -3,95 +3,98 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>SV CHESS MASTER</title>
-<meta name="app-version" content="1.0.1">
-<meta name="theme-color" content="#070b24">
-<meta name="description" content="SV CHESS MASTER - world class free chess game. Play 2 players on one phone or against the computer at 8 levels up to World Class. English + Telugu. Created by D. Srinivas.">
-<meta property="og:title" content="SV CHESS MASTER - Free 2 Player Chess">
-<meta property="og:description" content="Play chess with a friend on one phone, or challenge the computer from Beginner to World Class. Free, English + Telugu.">
+<title>ROYAL CHESS</title>
+<meta name="app-version" content="1.1.0">
+<meta name="theme-color" content="#191307">
+<meta name="description" content="ROYAL CHESS - a luxury free chess game. Play 2 players on one phone or against the computer at 5 levels up to Expert. English + Telugu. Created by D. Srinivas.">
+<meta property="og:title" content="ROYAL CHESS - Free Luxury Chess">
+<meta property="og:description" content="Play chess with a friend on one phone, or challenge the computer from Beginner to Expert. Free, English + Telugu.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="icon.svg">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
-body{background:radial-gradient(circle at 15% 0,#1b2a63 0,#070b24 55%,#05081c 100%) fixed;color:#e8f1ff;font-family:system-ui,-apple-system,"Noto Sans Telugu","Nirmala UI",Roboto,sans-serif;font-size:16px;line-height:1.5;min-height:100vh;overflow-x:hidden}
+body{background:radial-gradient(circle at 20% 0,#3d2f10 0,#191307 55%,#0d0a05 100%) fixed;color:#f5ead0;font-family:system-ui,-apple-system,"Noto Sans Telugu","Nirmala UI",Roboto,sans-serif;font-size:16px;line-height:1.5;min-height:100vh;overflow-x:hidden}
 .w{max-width:520px;margin:0 auto;padding:10px 12px 90px}
-.neon{background:linear-gradient(90deg,#00e5ff,#ff4df0,#ffd600,#00e5ff);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sh 6s linear infinite}
+.neon{background:linear-gradient(90deg,#ffd700,#fff3b0,#c9a227,#ffd700);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sh 6s linear infinite}
 @keyframes sh{to{background-position:300% 0}}
-.top{display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:20;padding:8px 10px;background:#070b24ee;backdrop-filter:blur(8px);border-bottom:1px solid #2b3a7a}
+.top{display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:20;padding:8px 10px;background:#191307ee;backdrop-filter:blur(8px);border-bottom:1px solid #4a3d1c}
 .top .t{flex:1;font-weight:800;font-size:17px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.ib{border:1.5px solid #4a5aa8;background:#101a45;color:#fff;border-radius:12px;min-width:40px;height:40px;font-size:15px;font-weight:700;padding:0 10px;box-shadow:0 0 10px #00e5ff33;font-family:inherit}
-.ib:active,.btn:active,.card:active{box-shadow:inset 0 0 12px #000a,0 0 6px #ff4df088;transform:scale(.97)}
-.ib.on{background:#0a1030;border-color:#ffd600;box-shadow:0 0 12px #ffd60066}
-.card{display:block;width:100%;text-align:left;border:1.5px solid #3a4a98;background:linear-gradient(145deg,#111b4acc,#0a1030cc);color:#fff;border-radius:16px;padding:12px 14px;margin:8px 0;font:inherit;box-shadow:0 0 12px #7c4dff33;cursor:pointer}
-.card b{display:block;font-size:17px}.card small{color:#9fb4e8}
+.ib{border:1.5px solid #6b5a2a;background:#241c0c;color:#fff;border-radius:12px;min-width:40px;height:40px;font-size:15px;font-weight:700;padding:0 10px;box-shadow:0 0 10px #e6c25a33;font-family:inherit}
+.ib:active,.btn:active,.card:active{box-shadow:inset 0 0 12px #000a,0 0 6px #c9a22788;transform:scale(.97)}
+.ib.on{background:#1a1408;border-color:#ffd600;box-shadow:0 0 12px #ffd60066}
+.card{display:block;width:100%;text-align:left;border:1.5px solid #5a4a22;background:linear-gradient(145deg,#2e2410cc,#1a1408cc);color:#fff;border-radius:16px;padding:12px 14px;margin:8px 0;font:inherit;box-shadow:0 0 12px #c9a22733;cursor:pointer}
+.card b{display:block;font-size:17px}.card small{color:#cbb37a}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .grid2 .card{margin:0;min-height:76px;display:flex;flex-direction:column;justify-content:center}
 .grid4{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.btn{border:1.5px solid #00e5ffaa;background:linear-gradient(135deg,#0b2a66,#2b126e);color:#fff;border-radius:14px;padding:10px 14px;font:inherit;font-weight:700;box-shadow:0 0 12px #00e5ff44;margin:4px 4px 4px 0;cursor:pointer}
-.btn.g{border-color:#ffd600aa}.btn.r{border-color:#ff4df0aa}.btn.gray{border-color:#4a5aa8;background:#101a45}
+.btn{border:1.5px solid #e6c25aaa;background:linear-gradient(135deg,#3d2f10,#241a06);color:#fff;border-radius:14px;padding:10px 14px;font:inherit;font-weight:700;box-shadow:0 0 12px #e6c25a44;margin:4px 4px 4px 0;cursor:pointer}
+.btn.g{border-color:#ffd600aa}.btn.r{border-color:#c9a227aa}.btn.gray{border-color:#6b5a2a;background:#241c0c}
 .btn:disabled{opacity:.45;cursor:default}
-.lbl{display:block;font-size:13px;color:#9fb4e8;margin:12px 0 4px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.lbl{display:block;font-size:13px;color:#cbb37a;margin:12px 0 4px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 .seg{display:flex;flex-wrap:wrap;gap:6px}
 .seg .btn{margin:0;padding:8px 12px;font-size:14px;min-height:44px}
-.seg .btn.on{border-color:#ffd600;background:#0a1030;box-shadow:0 0 12px #ffd60066}
-.mode-chip{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;border:1.5px solid #00e5ff;background:#0b2a66;color:#fff;box-shadow:0 0 8px #00e5ff66;margin-left:6px;vertical-align:middle}
+.seg .btn.on{border-color:#ffd600;background:#1a1408;box-shadow:0 0 12px #ffd60066}
+.mode-chip{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;border:1.5px solid #e6c25a;background:#3d2f10;color:#fff;box-shadow:0 0 8px #e6c25a66;margin-left:6px;vertical-align:middle}
 /* board */
-.pcard{display:flex;align-items:center;gap:8px;border:1.5px solid #3a4a98;background:linear-gradient(145deg,#111b4acc,#0a1030cc);border-radius:14px;padding:6px 10px;margin:6px 0}
+.pcard{display:flex;align-items:center;gap:8px;border:1.5px solid #5a4a22;background:linear-gradient(145deg,#2e2410cc,#1a1408cc);border-radius:14px;padding:6px 10px;margin:6px 0}
 .pcard .nm{font-weight:800;font-size:14px;flex:0 0 auto;max-width:38%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .pcard .caps{flex:1;display:flex;flex-wrap:wrap;gap:1px;align-items:center;min-height:22px}
 .pcard .caps svg{width:16px;height:16px}
 .pcard .mat{font-size:12px;color:#ffd600;font-weight:800}
-.clock{font-variant-numeric:tabular-nums;font-weight:800;font-size:20px;padding:4px 12px;border-radius:10px;border:1.5px solid #4a5aa8;background:#101a45;min-width:84px;text-align:center}
-.clock.on{border-color:#00e5ff;box-shadow:0 0 12px #00e5ff66}
+.clock{font-variant-numeric:tabular-nums;font-weight:800;font-size:20px;padding:4px 12px;border-radius:10px;border:1.5px solid #6b5a2a;background:#241c0c;min-width:84px;text-align:center}
+.clock.on{border-color:#e6c25a;box-shadow:0 0 12px #e6c25a66}
 .clock.low{border-color:#ff3355;color:#ff8899;animation:pulse 1s infinite}
 @keyframes pulse{50%{box-shadow:0 0 16px #ff3355aa}}
-#boardwrap{position:relative;width:100%;max-width:520px;margin:4px auto;border-radius:10px;overflow:hidden;box-shadow:0 4px 24px #000c;border:2px solid #2b3a7a}
+#boardwrap{position:relative;width:100%;max-width:520px;margin:4px auto;border-radius:10px;overflow:hidden;box-shadow:0 4px 24px #000c,0 0 18px #c9a22744;border:3px solid #c9a227}
 #board{display:grid;grid-template-columns:repeat(8,1fr);width:100%;aspect-ratio:1;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 .sq{position:relative;display:flex;align-items:center;justify-content:center}
-.sq.l{background:#eeeed2}.sq.d{background:#769656}
+.sq.l{background:linear-gradient(145deg,#e3c06a,#c9a24a)}.sq.d{background:linear-gradient(145deg,#2c251a,#1c1710)}
 .sq svg{width:92%;height:92%;pointer-events:none;filter:drop-shadow(0 2px 2px #0006)}
 .sq.sel{box-shadow:inset 0 0 0 4px #ffd600cc}
-.sq.last{box-shadow:inset 0 0 0 100px #f6f66966}
-.sq.check{background:radial-gradient(circle,#ff3355 0%,#ff335588 45%,#769656 80%)}
-.sq.hint::after{content:"";position:absolute;width:30%;height:30%;border-radius:50%;background:#14550f55}
-.sq.cap::after{content:"";position:absolute;inset:4%;border-radius:50%;border:4px solid #14550f66}
-.sq .cr{position:absolute;font-size:10px;font-weight:700;color:#5d6b45;pointer-events:none}
+.sq.last{box-shadow:inset 0 0 0 100px #ffe68088}
+.sq.check{background:radial-gradient(circle,#ff3355 0%,#ff335588 45%,#2c251a 80%)}
+.sq.hint::after{content:"";position:absolute;width:30%;height:30%;border-radius:50%;background:#3d2f1077}
+.sq.cap::after{content:"";position:absolute;inset:4%;border-radius:50%;border:4px solid #3d2f1099}
+.sq .cr{position:absolute;font-size:10px;font-weight:700;color:#7a6834;pointer-events:none}
 .sq .cf{left:2px;bottom:0}.sq .crk{right:2px;top:0}
-.sq.d .cr{color:#eeeed2cc}
+.sq.d .cr{color:#e3c06acc}
 #think{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#0009;z-index:5}
-#think span{background:#101a45ee;border:1.5px solid #00e5ff;border-radius:14px;padding:10px 18px;font-weight:800;box-shadow:0 0 16px #00e5ff88;animation:pulse 1.2s infinite}
+#think span{background:#241c0cee;border:1.5px solid #e6c25a;border-radius:14px;padding:10px 18px;font-weight:800;box-shadow:0 0 16px #e6c25a88;animation:pulse 1.2s infinite}
 .controls{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
 .controls .btn{margin:0;padding:8px 12px;font-size:14px;min-height:44px;flex:1 1 30%}
 .status{text-align:center;font-weight:800;font-size:15px;min-height:22px;margin:4px 0}
 .status.chk{color:#ffd600}
-#moves{max-height:120px;overflow-y:auto;border:1.5px solid #3a4a98;border-radius:12px;background:#0a1030cc;padding:6px 10px;font-size:14px;font-variant-numeric:tabular-nums}
+#moves{max-height:120px;overflow-y:auto;border:1.5px solid #5a4a22;border-radius:12px;background:#1a1408cc;padding:6px 10px;font-size:14px;font-variant-numeric:tabular-nums}
 #moves table{width:100%;border-collapse:collapse}
 #moves td{padding:1px 6px}
-#moves td.n{color:#9fb4e8;width:34px}
-#moves tr.cur td{background:#1b2a63}
+#moves td.n{color:#cbb37a;width:34px}
+#moves tr.cur td{background:#2e2410}
+#boardwrap.marble .sq.l{background:linear-gradient(145deg,#cfc9bd,#a8a091)}
+#boardwrap.marble .sq.d{background:linear-gradient(145deg,#3a3a40,#222226)}
+#boardwrap.marble{border-color:#8a8a92;box-shadow:0 4px 24px #000c,0 0 18px #ffffff22}
 /* modal */
 .modal{position:fixed;inset:0;background:#000b;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
-.modal .box{background:linear-gradient(145deg,#111b4a,#0a1030);border:2px solid #00e5ff88;border-radius:18px;padding:18px;max-width:340px;width:100%;text-align:center;box-shadow:0 0 30px #00e5ff55}
+.modal .box{background:linear-gradient(145deg,#2e2410,#1a1408);border:2px solid #e6c25a88;border-radius:18px;padding:18px;max-width:340px;width:100%;text-align:center;box-shadow:0 0 30px #e6c25a55}
 .modal h3{margin:.2em 0 .5em;font-size:20px}
 .prow{display:flex;gap:8px;justify-content:center;margin:10px 0}
-.prow button{border:1.5px solid #00e5ffaa;background:#101a45;border-radius:12px;width:64px;height:64px;cursor:pointer}
+.prow button{border:1.5px solid #e6c25aaa;background:#241c0c;border-radius:12px;width:64px;height:64px;cursor:pointer}
 .prow button svg{width:90%;height:90%}
 /* home */
 .hero{display:flex;align-items:center;gap:12px;margin:10px 0}
-.hero img{width:64px;height:64px;border-radius:16px;border:2px solid #00e5ff88;box-shadow:0 0 14px #00e5ff55}
-.hero .st{font-size:13px;color:#9fb4e8}
+.hero img{width:64px;height:64px;border-radius:16px;border:2px solid #e6c25a88;box-shadow:0 0 14px #e6c25a55}
+.hero .st{font-size:13px;color:#cbb37a}
 h1.app{font-size:26px;margin:6px 0 0}
 /* about */
 .me-ring{width:132px;height:132px;margin:8px auto;border-radius:50%;padding:5px;background:conic-gradient(#ffd600,#c0c0c0,#ffd600,#c0c0c0,#ffd600);box-shadow:0 0 22px #ffd60055}
-.me-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:top;display:block;border:3px solid #070b24}
-.creator{text-align:center;font-weight:800;font-size:19px;margin:4px 0;text-shadow:0 0 12px #00e5ff66}
+.me-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:top;display:block;border:3px solid #191307}
+.creator{text-align:center;font-weight:800;font-size:19px;margin:4px 0;text-shadow:0 0 12px #e6c25a66}
 .alogo{width:56px;height:56px;border-radius:12px;margin:6px auto;display:block}
-.small{font-size:13px;color:#9fb4e8}
-a{color:#00e5ff}
-input.txt{width:100%;border:1.5px solid #4a5aa8;background:#0a1030;color:#fff;border-radius:12px;padding:10px 12px;font:inherit;font-size:16px}
-#installbtn{position:fixed;right:16px;bottom:16px;width:58px;height:58px;border-radius:50%;border:2.5px solid #00e5ff;background:linear-gradient(135deg,#0b2a66,#2b126e);color:#fff;font-size:24px;z-index:40;box-shadow:0 0 18px #00e5ff88;display:none;cursor:pointer}
+.small{font-size:13px;color:#cbb37a}
+a{color:#e6c25a}
+input.txt{width:100%;border:1.5px solid #6b5a2a;background:#1a1408;color:#fff;border-radius:12px;padding:10px 12px;font:inherit;font-size:16px}
+#installbtn{position:fixed;right:16px;bottom:16px;width:58px;height:58px;border-radius:50%;border:2.5px solid #e6c25a;background:linear-gradient(135deg,#3d2f10,#241a06);color:#fff;font-size:24px;z-index:40;box-shadow:0 0 18px #e6c25a88;display:none;cursor:pointer}
 #installbtn:active{transform:scale(.9);box-shadow:inset 0 0 12px #000a}
 .guide h4{margin:14px 0 4px;color:#ffd600}
 .guide p{margin:4px 0;font-size:14.5px}
@@ -99,7 +102,7 @@ input.txt{width:100%;border:1.5px solid #4a5aa8;background:#0a1030;color:#fff;bo
 .piece-row{display:flex;align-items:center;gap:10px;margin:6px 0}
 .piece-row svg{width:34px;height:34px;flex:0 0 auto}
 .piece-row div{font-size:14px}
-.flag{font-size:11px;color:#8ea2d8;text-align:center;margin-top:14px}
+.flag{font-size:11px;color:#b09a5e;text-align:center;margin-top:14px}
 </style>
 </head>
 <body>
@@ -247,7 +250,7 @@ input.txt{width:100%;border:1.5px solid #4a5aa8;background:#0a1030;color:#fff;bo
   </g></symbol></svg>
 <div class="top">
   <button class="ib" id="backbtn" aria-label="Back">&#8592;</button>
-  <div class="t"><span id="apptitle">SV CHESS MASTER</span><span class="mode-chip" id="modechip" style="display:none"></span></div>
+  <div class="t"><span id="apptitle">ROYAL CHESS</span><span class="mode-chip" id="modechip" style="display:none"></span></div>
   <button class="ib" id="soundbtn" aria-label="Sound">&#128266;</button>
   <button class="ib" id="langbtn">&#3124;&#3142;&#3122;&#3137;&#3095;&#3137;</button>
 </div>
@@ -289,6 +292,11 @@ input.txt{width:100%;border:1.5px solid #4a5aa8;background:#0a1030;color:#fff;bo
       <button class="btn" data-c="r">&#127922; <span data-i18n="random">Random</span></button>
     </div>
   </div>
+  <span class="lbl" data-i18n="theme">Board theme</span>
+  <div class="seg" id="themeseg">
+    <button class="btn on" data-th="">&#128081; Royal Gold</button>
+    <button class="btn" data-th="marble">&#11035; Black Marble</button>
+  </div>
   <span class="lbl" data-i18n="clock">Clock per player</span>
   <div class="seg" id="clockseg">
     <button class="btn on" data-t="0" data-i18n="no_clock">No clock</button>
@@ -322,6 +330,7 @@ input.txt{width:100%;border:1.5px solid #4a5aa8;background:#0a1030;color:#fff;bo
   <div class="status" id="status"></div>
   <div class="controls">
     <button class="btn gray" id="c-undo">&#8617; <span data-i18n="undo">Undo</span></button>
+    <button class="btn gray" id="c-hint">&#128161; <span data-i18n="hint">Hint</span></button>
     <button class="btn gray" id="c-draw">&frac12; <span data-i18n="draw">Draw</span></button>
     <button class="btn r" id="c-resign">&#9873; <span data-i18n="resign">Resign</span></button>
     <button class="btn g" id="c-new">&#10227; <span data-i18n="new">New</span></button>
@@ -341,7 +350,7 @@ input.txt{width:100%;border:1.5px solid #4a5aa8;background:#0a1030;color:#fff;bo
   <div class="me-ring"><img src="assets/me.jpg" alt="D. Srinivas"></div>
   <div class="creator" data-i18n="created">Created by D. Srinivas</div>
   <img class="alogo" src="assets/logo.png" alt="SV PRIME">
-  <p class="small" style="text-align:center">SV CHESS MASTER <span data-i18n="ver">version</span> 1.0.0</p>
+  <p class="small" style="text-align:center">ROYAL CHESS <span data-i18n="ver">version</span> 1.1.0</p>
   <span class="lbl" data-i18n="suggest">Suggestion box</span>
   <p class="small" data-i18n="suggest_d">Only the creator can change this app. Have an idea? Send it here:</p>
   <button class="btn" id="suggestbtn">&#9993; <span data-i18n="suggest_btn">Send a suggestion</span></button>
@@ -379,8 +388,8 @@ input.txt{width:100%;border:1.5px solid #4a5aa8;background:#0a1030;color:#fff;bo
 "use strict";
 /* ============ i18n ============ */
 const I18N={
-en:{appname:"SV CHESS MASTER",tagline:"World class chess, free for everyone",two_players:"Two Players",two_players_d:"Play with a friend on this same phone, with clocks",vs_cpu:"Play vs Computer",vs_cpu_d:"8 levels, from Beginner to World Class",resume:"Resume Game",resume_d:"Continue your unfinished game",guide:"Game Guide",guide_d:"How to play chess, rules and tips",about:"About",about_d:"Creator, version and credits",setup2:"Two Players Setup",setupc:"Computer Game Setup",names:"Player names (optional)",level:"Computer level",youplay:"You play as",white:"White",black:"Black",random:"Random",clock:"Clock per player",no_clock:"No clock",min:"min",flip:"Auto-flip board each turn",start:"Start Game",undo:"Undo",draw:"Draw",resign:"Resign",new:"New",thinking:"Computer thinking...",promote:"Choose promotion",created:"Created by D. Srinivas",ver:"version",suggest:"Suggestion box",suggest_d:"Only the creator can change this app. Have an idea? Send it here:",suggest_btn:"Send a suggestion",credits:"Credits and licences",credits_d:"Chess engine: Stockfish 10 (GPL, Chess.com / nmrugg stockfish.js). Rules library: chess.js (MIT, Jeff Hlywa). Piece artwork: Colin M. L. Burnett, CC BY-SA 3.0 / GFDL, via Wikimedia Commons. All free and open.",madewith:"Free forever. No ads. No sign-up.",home:"Home",rematch:"\u27F3 Rematch",white_turn:"White to move",black_turn:"Black to move",your_turn:"Your turn",check:"Check!",checkmate:"Checkmate",stalemate:"Stalemate",draw_by:"Draw",wins:"wins",you_win:"You win!",you_lose:"Computer wins",flag:"Time over",insufficient:"Not enough material to mate",fifty:"50-move rule",threefold:"Same position 3 times",agreement:"Draw agreed",offered:"offers a draw. Accept?",accept:"Accept",decline:"Decline",yes:"Yes",no:"No",resign_q:"Resign this game?",leave_q:"Leave this game? Your progress on this board stays until you start a new one.",new_q:"Abandon this game and set up a new one?",offline_eng:"Offline engine mode",undo_done:"Move taken back",draw_no:"Computer declines the draw",sound_on:"Sound on",sound_off:"Sound off"},
-te:{appname:"SV చెస్ మాస్టర్",tagline:"ప్రపంచ స్థాయి చదరంగం, అందరికీ ఉచితం",two_players:"ఇద్దరు ఆటగాళ్ళు",two_players_d:"ఇదే ఫోన్ లో స్నేహితుడితో గడియారంతో ఆడండి",vs_cpu:"కంప్యూటర్ తో ఆట",vs_cpu_d:"8 స్థాయిలు - బిగినర్ నుండి వరల్డ్ క్లాస్ వరకు",resume:"ఆట కొనసాగించండి",resume_d:"మీ అసంపూర్తి ఆటను కొనసాగించండి",guide:"గేమ్ గైడ్",guide_d:"చదరంగం ఎలా ఆడాలి, నియమాలు, చిట్కాలు",about:"గురించి",about_d:"సృష్టికర్త, వెర్షన్, క్రెడిట్స్",setup2:"ఇద్దరు ఆటగాళ్ళ సెటప్",setupc:"కంప్యూటర్ ఆట సెటప్",names:"ఆటగాళ్ళ పేర్లు (ఐచ్ఛికం)",level:"కంప్యూటర్ స్థాయి",youplay:"మీరు ఆడేది",white:"తెలుపు",black:"నలుపు",random:"యాదృచ్ఛికం",clock:"ప్రతి ఆటగాడికి గడియారం",no_clock:"గడియారం లేదు",min:"నిమి",flip:"ప్రతి వంతుకు బోర్డు తిప్పు",start:"ఆట ప్రారంభించండి",undo:"వెనక్కి",draw:"డ్రా",resign:"ఓటమి అంగీకారం",new:"కొత్తది",thinking:"కంప్యూటర్ ఆలోచిస్తోంది...",promote:"ప్రమోషన్ ఎంచుకోండి",created:"సృష్టించినవారు: డి. శ్రీనివాస్",ver:"వెర్షన్",suggest:"సూచనల పెట్టె",suggest_d:"ఈ యాప్ ను సృష్టికర్త మాత్రమే మార్చగలరు. మీ ఆలోచన ఇక్కడ పంపండి:",suggest_btn:"సూచన పంపండి",credits:"క్రెడిట్స్ మరియు లైసెన్సులు",credits_d:"చెస్ ఇంజిన్: Stockfish 10 (GPL, Chess.com / nmrugg stockfish.js). రూల్స్ లైబ్రరీ: chess.js (MIT, Jeff Hlywa). ముక్కల చిత్రాలు: Colin M. L. Burnett, CC BY-SA 3.0 / GFDL, Wikimedia Commons ద్వారా. అన్నీ ఉచితం.",madewith:"ఎప్పటికీ ఉచితం. ప్రకటనలు లేవు. సైన్ అప్ లేదు.",home:"హోమ్",rematch:"\u27F3 మళ్ళీ ఆడండి",white_turn:"తెలుపు వంతు",black_turn:"నలుపు వంతు",your_turn:"మీ వంతు",check:"చెక్!",checkmate:"చెక్మేట్",stalemate:"స్టేల్ మేట్",draw_by:"డ్రా",wins:"గెలిచారు",you_win:"మీరు గెలిచారు!",you_lose:"కంప్యూటర్ గెలిచింది",flag:"సమయం అయిపోయింది",insufficient:"మేట్ చేయడానికి ముక్కలు సరిపోవు",fifty:"50-కదలికల నియమం",threefold:"అదే స్థానం 3 సార్లు",agreement:"డ్రా అంగీకరించారు",offered:"డ్రా అడుగుతున్నారు. అంగీకరిస్తారా?",accept:"అంగీకరించు",decline:"తిరస్కరించు",yes:"అవును",no:"కాదు",resign_q:"ఈ ఆట ఓటమి అంగీకరిస్తారా?",leave_q:"ఈ ఆట నుండి బయటకు వెళ్తారా?",new_q:"ఈ ఆట వదిలి కొత్త ఆట సెటప్ చేయాలా?",offline_eng:"ఆఫ్ లైన్ ఇంజిన్ మోడ్",undo_done:"కదలిక వెనక్కి తీశారు",draw_no:"కంప్యూటర్ డ్రా తిరస్కరించింది",sound_on:"సౌండ్ ఆన్",sound_off:"సౌండ్ ఆఫ్"}};
+en:{appname:"ROYAL CHESS",tagline:"A luxury chess experience, free for everyone",two_players:"Two Players",two_players_d:"Play with a friend on this same phone, with clocks",vs_cpu:"Play vs Computer",vs_cpu_d:"5 levels, from Beginner to Expert",resume:"Resume Game",resume_d:"Continue your unfinished game",guide:"Game Guide",guide_d:"How to play chess, rules and tips",about:"About",about_d:"Creator, version and credits",setup2:"Two Players Setup",setupc:"Computer Game Setup",names:"Player names (optional)",level:"Computer level",youplay:"You play as",white:"White",black:"Black",random:"Random",clock:"Clock per player",no_clock:"No clock",min:"min",flip:"Auto-flip board each turn",start:"Start Game",undo:"Undo",draw:"Draw",resign:"Resign",new:"New",thinking:"Computer thinking...",promote:"Choose promotion",created:"Created by D. Srinivas",ver:"version",suggest:"Suggestion box",suggest_d:"Only the creator can change this app. Have an idea? Send it here:",suggest_btn:"Send a suggestion",credits:"Credits and licences",credits_d:"Chess engine: Stockfish 10 (GPL, Chess.com / nmrugg stockfish.js). Rules library: chess.js (MIT, Jeff Hlywa). Piece artwork: Colin M. L. Burnett, CC BY-SA 3.0 / GFDL, via Wikimedia Commons. All free and open.",madewith:"Free forever. No ads. No sign-up.",home:"Home",rematch:"\u27F3 Rematch",white_turn:"White to move",black_turn:"Black to move",your_turn:"Your turn",check:"Check!",checkmate:"Checkmate",stalemate:"Stalemate",draw_by:"Draw",wins:"wins",you_win:"You win!",you_lose:"Computer wins",flag:"Time over",insufficient:"Not enough material to mate",fifty:"50-move rule",threefold:"Same position 3 times",agreement:"Draw agreed",offered:"offers a draw. Accept?",accept:"Accept",decline:"Decline",yes:"Yes",no:"No",resign_q:"Resign this game?",leave_q:"Leave this game? Your progress on this board stays until you start a new one.",new_q:"Abandon this game and set up a new one?",offline_eng:"Offline engine mode",undo_done:"Move taken back",draw_no:"Computer declines the draw",hint:"Hint",theme:"Board theme",sound_on:"Sound on",sound_off:"Sound off"},
+te:{appname:"ROYAL CHESS",tagline:"విలాసవంతమైన చదరంగ అనుభూతి, అందరికీ ఉచితం",two_players:"ఇద్దరు ఆటగాళ్ళు",two_players_d:"ఇదే ఫోన్ లో స్నేహితుడితో గడియారంతో ఆడండి",vs_cpu:"కంప్యూటర్ తో ఆట",vs_cpu_d:"5 స్థాయిలు - బిగినర్ నుండి ఎక్స్ పర్ట్ వరకు",resume:"ఆట కొనసాగించండి",resume_d:"మీ అసంపూర్తి ఆటను కొనసాగించండి",guide:"గేమ్ గైడ్",guide_d:"చదరంగం ఎలా ఆడాలి, నియమాలు, చిట్కాలు",about:"గురించి",about_d:"సృష్టికర్త, వెర్షన్, క్రెడిట్స్",setup2:"ఇద్దరు ఆటగాళ్ళ సెటప్",setupc:"కంప్యూటర్ ఆట సెటప్",names:"ఆటగాళ్ళ పేర్లు (ఐచ్ఛికం)",level:"కంప్యూటర్ స్థాయి",youplay:"మీరు ఆడేది",white:"తెలుపు",black:"నలుపు",random:"యాదృచ్ఛికం",clock:"ప్రతి ఆటగాడికి గడియారం",no_clock:"గడియారం లేదు",min:"నిమి",flip:"ప్రతి వంతుకు బోర్డు తిప్పు",start:"ఆట ప్రారంభించండి",undo:"వెనక్కి",draw:"డ్రా",resign:"ఓటమి అంగీకారం",new:"కొత్తది",thinking:"కంప్యూటర్ ఆలోచిస్తోంది...",promote:"ప్రమోషన్ ఎంచుకోండి",created:"సృష్టించినవారు: డి. శ్రీనివాస్",ver:"వెర్షన్",suggest:"సూచనల పెట్టె",suggest_d:"ఈ యాప్ ను సృష్టికర్త మాత్రమే మార్చగలరు. మీ ఆలోచన ఇక్కడ పంపండి:",suggest_btn:"సూచన పంపండి",credits:"క్రెడిట్స్ మరియు లైసెన్సులు",credits_d:"చెస్ ఇంజిన్: Stockfish 10 (GPL, Chess.com / nmrugg stockfish.js). రూల్స్ లైబ్రరీ: chess.js (MIT, Jeff Hlywa). ముక్కల చిత్రాలు: Colin M. L. Burnett, CC BY-SA 3.0 / GFDL, Wikimedia Commons ద్వారా. అన్నీ ఉచితం.",madewith:"ఎప్పటికీ ఉచితం. ప్రకటనలు లేవు. సైన్ అప్ లేదు.",home:"హోమ్",rematch:"\u27F3 మళ్ళీ ఆడండి",white_turn:"తెలుపు వంతు",black_turn:"నలుపు వంతు",your_turn:"మీ వంతు",check:"చెక్!",checkmate:"చెక్మేట్",stalemate:"స్టేల్ మేట్",draw_by:"డ్రా",wins:"గెలిచారు",you_win:"మీరు గెలిచారు!",you_lose:"కంప్యూటర్ గెలిచింది",flag:"సమయం అయిపోయింది",insufficient:"మేట్ చేయడానికి ముక్కలు సరిపోవు",fifty:"50-కదలికల నియమం",threefold:"అదే స్థానం 3 సార్లు",agreement:"డ్రా అంగీకరించారు",offered:"డ్రా అడుగుతున్నారు. అంగీకరిస్తారా?",accept:"అంగీకరించు",decline:"తిరస్కరించు",yes:"అవును",no:"కాదు",resign_q:"ఈ ఆట ఓటమి అంగీకరిస్తారా?",leave_q:"ఈ ఆట నుండి బయటకు వెళ్తారా?",new_q:"ఈ ఆట వదిలి కొత్త ఆట సెటప్ చేయాలా?",offline_eng:"ఆఫ్ లైన్ ఇంజిన్ మోడ్",undo_done:"కదలిక వెనక్కి తీశారు",draw_no:"కంప్యూటర్ డ్రా తిరస్కరించింది",hint:"హింట్",theme:"బోర్డు థీమ్",sound_on:"సౌండ్ ఆన్",sound_off:"సౌండ్ ఆఫ్"}};
 let LANG=localStorage.getItem('svchess.lang')||'en';
 const t=k=>(I18N[LANG]&&I18N[LANG][k])||I18N.en[k]||k;
 function applyLang(){
@@ -433,9 +442,8 @@ document.body.addEventListener('pointerdown',()=>ac(),{once:true});
 
 /* ============ engine (Stockfish worker + offline fallback) ============ */
 const LEVELS=[
- {n:'Beginner',elo:1350,mt:250},{n:'Learner',elo:1500,mt:350},{n:'Casual',elo:1650,mt:500},
- {n:'Club',elo:1800,mt:750},{n:'Expert',elo:2000,mt:1100},{n:'Master',elo:2200,mt:1600},
- {n:'Grandmaster',elo:2500,mt:2300},{n:'World Class',elo:2850,mt:3200}];
+ {n:'Beginner',elo:1350,mt:250},{n:'Easy',elo:1500,mt:400},{n:'Medium',elo:1800,mt:800},
+ {n:'Hard',elo:2200,mt:1600},{n:'Expert',elo:2850,mt:3000}];
 let engine=null,engineReady=false,engineOffline=false;
 function engineSend(s){if(engine&&!engineOffline)engine.postMessage(s)}
 function initEngine(){
@@ -455,8 +463,8 @@ let pendingBest=null;
 function setLevel(lv){
   const L=LEVELS[lv-1];
   if(engineOffline)return;
-  engineSend('setoption name Skill Level value '+Math.min(20,Math.max(0,Math.round((lv-1)*20/7))));
-  if(lv>=8){engineSend('setoption name UCI_LimitStrength value false')}
+  engineSend('setoption name Skill Level value '+Math.min(20,Math.max(0,Math.round((lv-1)*5))));
+  if(lv>=5){engineSend('setoption name UCI_LimitStrength value false')}
   else{engineSend('setoption name UCI_LimitStrength value true');engineSend('setoption name UCI_Elo value '+L.elo)}
   engineSend('isready');
 }
@@ -470,7 +478,7 @@ function engineBestMove(fen,lv,cb){
 const FVAL={p:100,n:320,b:330,r:500,q:900,k:0};
 function fallbackBest(fen,lv){
   const c=new Chess(fen);
-  const depth=[1,1,2,2,3,3,4,4][lv-1]||2;
+  const depth=[1,1,2,3,4][lv-1]||2;
   const ev=b=>{let s=0;for(const sq in b){const p=b[sq];if(!p)continue;s+=(FVAL[p.type]||0)*(p.color==='w'?1:-1)}return s};
   const boardOf=()=>{const o={};for(const r of c.board())for(const p of r)if(p)o[p.square]=p;return o};
   const neg=(d,alpha,beta,ply)=>{
@@ -495,7 +503,7 @@ function fallbackBest(fen,lv){
 /* ============ game state ============ */
 let G=null,SEL=null,LEGAL=[],PENDING_PROMO=null,THINKING=false;
 const FILES='abcdefgh';
-const START_COUNTS={p:8,n:2,b:2,r:2,q:2,k:1};
+const START_COUNTS={p:8,n:2,b:2,r:2,q:1,k:1};
 const MVAL={p:1,n:3,b:3,r:5,q:9,k:0};
 function sqName(fileIdx,rankIdx){return FILES[fileIdx]+(rankIdx+1)}
 function parseSq(s){return [FILES.indexOf(s[0]),parseInt(s[1],10)-1]}
@@ -516,9 +524,10 @@ document.getElementById('m-about').onclick=()=>{show('about');sfx('btn')};
 document.getElementById('m-resume').onclick=()=>{show('game');renderAll();sfx('btn')};
 
 function segWire(id,cb){const seg=document.getElementById(id);seg.addEventListener('click',e=>{const b=e.target.closest('.btn');if(!b)return;seg.querySelectorAll('.btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');sfx('btn');cb(b)})}
-let selColor='w',selClock=0,selLevel=5,flipOn=false;
+let selColor='w',selClock=0,selLevel=3,flipOn=false,selTheme='';
 segWire('colorseg',b=>selColor=b.dataset.c);
 segWire('clockseg',b=>selClock=parseInt(b.dataset.t,10));
+segWire('themeseg',b=>selTheme=b.dataset.th);
 document.getElementById('fliptoggle').onclick=function(){flipOn=!flipOn;this.classList.toggle('on',flipOn);sfx('btn')};
 function buildLevels(){
   const g=document.getElementById('levels');g.innerHTML='';
@@ -535,14 +544,14 @@ document.getElementById('startbtn').onclick=()=>{
   const names=setupMode==='2p'
     ?{w:document.getElementById('name1').value.trim()||'Player 1',b:document.getElementById('name2').value.trim()||'Player 2'}
     :null;
-  newGame({mode:setupMode,level:selLevel,human:human,names:names,clock:selClock,inc:selClock===900?10:0,flip:setupMode==='2p'?flipOn:false});
+  newGame({mode:setupMode,level:selLevel,human:human,names:names,clock:selClock,inc:selClock===900?10:0,flip:setupMode==='2p'?flipOn:false,theme:selTheme});
   show('game');sfx('btn');
 };
 
 function newGame(o){
   G={chess:new Chess(),mode:o.mode,level:o.level,human:o.human,names:o.names||{w:'Player 1',b:'Player 2'},
      base:o.clock,inc:o.inc,time:{w:o.clock*1000,b:o.clock*1000},active:true,over:false,
-     orientation:o.mode==='cpu'?o.human:'w',flip:o.flip,lastMove:null};
+     orientation:o.mode==='cpu'?o.human:'w',flip:o.flip,lastMove:null,theme:o.theme||''};
   SEL=null;LEGAL=[];THINKING=false;
   if(G.mode==='cpu'){setLevel(G.level)}
   document.getElementById('modechip').textContent=G.mode==='2p'?t('two_players'):'CPU '+LEVELS[G.level-1].n;
@@ -637,6 +646,7 @@ function renderStatus(msg){
   st.textContent=s+(G.chess.inCheck()?'  '+t('check'):'');
 }
 function renderAll(){
+  document.getElementById('boardwrap').className=G.theme||'';
   if(G.orientation!==boardEl.dataset.or){buildBoard();boardEl.dataset.or=G.orientation}
   render();renderClocks();
 }
@@ -777,6 +787,18 @@ document.getElementById('c-undo').onclick=()=>{
   const st=document.getElementById('status');st.textContent=t('undo_done');
   setTimeout(()=>{if(G&&!G.over)renderStatus()},1200);
 };
+document.getElementById('c-hint').onclick=()=>{
+  if(!G||G.over||THINKING){sfx('bad');return}
+  if(G.mode==='cpu'&&G.chess.turn()!==G.human){sfx('bad');return}
+  sfx('btn');
+  engineBestMove(G.chess.fen(),Math.min(G.mode==='cpu'?G.level:3,3),bm=>{
+    if(!bm||!G||G.over)return;
+    const from=bm.slice(0,2),to=bm.slice(2,4);
+    SEL=from;LEGAL=G.chess.moves({square:from,verbose:true});render();
+    const tgt=boardEl.querySelector('[data-sq="'+to+'"]');if(tgt)tgt.classList.add('last');
+    setTimeout(()=>{SEL=null;LEGAL=[];if(G&&!G.over)render()},1800);
+  });
+};
 document.getElementById('c-draw').onclick=()=>{
   if(!G||G.over){sfx('bad');return}
   if(G.mode==='2p'){
@@ -805,9 +827,9 @@ document.getElementById('go-rematch').onclick=()=>{
   document.getElementById('gameover').style.display='none';sfx('btn');
   const o=G;
   if(o.mode==='cpu'){
-    newGame({mode:'cpu',level:o.level,human:o.human==='w'?'b':'w',names:null,clock:o.base,inc:o.inc,flip:false});
+    newGame({mode:'cpu',level:o.level,human:o.human==='w'?'b':'w',names:null,clock:o.base,inc:o.inc,flip:false,theme:o.theme});
   }else{
-    newGame({mode:'2p',level:o.level,human:o.human,names:{w:o.names.b,b:o.names.w},clock:o.base,inc:o.inc,flip:o.flip});
+    newGame({mode:'2p',level:o.level,human:o.human,names:{w:o.names.b,b:o.names.w},clock:o.base,inc:o.inc,flip:o.flip,theme:o.theme});
   }
 };
 document.getElementById('go-home').onclick=()=>{document.getElementById('gameover').style.display='none';show('home');sfx('btn')};
@@ -839,8 +861,8 @@ function buildGuide(){
     ?'Pick a clock per player in setup, or play with no clock. Your time runs only on your turn. In 15+10s, each move adds 10 seconds. If your time hits zero, you lose - unless the other side cannot possibly mate, which is a draw.'
     :'సెటప్ లో ప్రతి ఆటగాడికి గడియారం ఎంచుకోండి లేదా గడియారం లేకుండా ఆడండి. మీ వంతులో మాత్రమే మీ సమయం తగ్గుతుంది. 15+10s లో ప్రతి కదలిక 10 సెకన్లు ఇస్తుంది. సమయం అయిపోతే ఓటమి - కానీ మిగతా వైపు మేట్ చేయలేకపోతే డ్రా.')+'</p>'
   +'<h4>'+(en?'Computer levels':'కంప్యూటర్ స్థాయిలు')+'</h4><p>'+(en
-    ?'Level 1 Beginner is gentle for learning. Each level up plays stronger and thinks longer, up to Level 8 World Class - full Stockfish strength. Levels follow the built-in Stockfish strength settings, not a measured player rating.'
-    :'లెవల్ 1 బిగినర్ నేర్చుకోవడానికి సులభం. పై స్థాయిలు బలంగా ఆడి ఎక్కువ ఆలోచిస్తాయి, లెవల్ 8 వరల్డ్ క్లాస్ వరకు - పూర్తి Stockfish శక్తి. స్థాయిలు ఇంజిన్ సొంత శక్తి సెట్టింగులు, కొలిచిన ఆటగాడి రేటింగు కాదు.')+'</p>'
+    ?'Five levels: Beginner, Easy, Medium, Hard, Expert. Each level up plays stronger and thinks longer; Expert is full Stockfish strength. Levels follow the built-in engine strength settings, not a measured player rating.'
+    :'ఐదు స్థాయిలు: బిగినర్, ఈజీ, మీడియం, హార్డ్, ఎక్స్ పర్ట్. పై స్థాయిలు బలంగా ఆడి ఎక్కువ ఆలోచిస్తాయి; ఎక్స్ పర్ట్ పూర్తి Stockfish శక్తి. స్థాయిలు ఇంజిన్ శక్తి సెట్టింగులు, కొలిచిన ఆటగాడి రేటింగు కాదు.')+'</p>'
   +'<h4>'+(en?'Tips':'చిట్కాలు')+'</h4><p>'+(en
     ?'Control the center with pawns. Bring knights and bishops out early. Castle your king to safety. Do not move the same piece twice in the opening. Think before every move: what did my opponent just threaten?'
     :'బంతులతో సెంటర్ ను నియంత్రించండి. గుర్రాలు, బిషప్ లను త్వరగా బయటకు తీయండి. రాజును క్యాజ్లింగ్ తో భద్రపరచండి. ఓపెనింగ్ లో అదే ముక్కను రెండుసార్లు కదపవద్దు. ప్రతి కదలిక ముందు ఆలోచించండి: ప్రత్యర్థి ఇప్పుడు ఏమి బెదిరించాడు?')+'</p>';
@@ -849,7 +871,7 @@ function buildGuide(){
 /* ============ suggestion box ============ */
 document.getElementById('suggestbtn').onclick=()=>{
   const msg=LANG==='te'?'నా సూచన: ':'My suggestion: ';
-  location.href='mailto:svofficials9999@gmail.com?subject='+encodeURIComponent('SV CHESS MASTER suggestion')+'&body='+encodeURIComponent(msg);
+  location.href='mailto:svofficials9999@gmail.com?subject='+encodeURIComponent('ROYAL CHESS suggestion')+'&body='+encodeURIComponent(msg);
 };
 
 /* ============ install + service worker ============ */

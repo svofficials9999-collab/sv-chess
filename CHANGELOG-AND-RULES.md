@@ -1,6 +1,12 @@
-# SV CHESS MASTER - changelog and build rules
+# ROYAL CHESS - changelog and build rules
 
 Live: https://svofficials9999-collab.github.io/sv-chess/
+
+## v1.1.0 - 2026-10-23
+- Rebranded to ROYAL CHESS per user master prompt: Royal Gold + Black Marble board themes,
+  gold luxury palette, 5 AI levels (Beginner/Easy/Medium/Hard/Expert), Hint button.
+  Fixed captured-tray phantom piece bug. Phase 2 (not in this build): true 3D pieces/camera,
+  training mode, more themes, online multiplayer (no buttons shown until real).
 
 ## v1.0.0 - 2026-10-23
 - First release. Two players on one phone, and vs computer with 8 levels
