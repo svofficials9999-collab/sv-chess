@@ -240,7 +240,7 @@ function reconcile(want){
     var w=want[sq];
     if(!meshes[sq]){
       var m=createPiece(w.type,w.color);
-      placeAt(m,sq);pieceGroup.add(m);meshes[sq]=m;
+      placeAt(m,sq);pieceGroup.add(m);meshes[sq]=m;spawnPop(m);
     }else if(meshes[sq].userData.sq!==sq){
       placeAt(meshes[sq],sq);
     }
@@ -276,7 +276,6 @@ RV3.sync=function(st){
     if(captured)anims.push({m:captured,t:0,dur:0.20,shrink:true,done:function(){removeMesh(captured)}});
   }else{
     reconcile(want);
-    if(Object.keys(meshes).length>=32){var i=0;Object.keys(meshes).forEach(function(sq){var m=meshes[sq];m.scale.set(0.01,0.01,0.01);anims.push({m:m,t:-(i++*0.012),dur:0.22,pop:true})})}
   }
 };
 
