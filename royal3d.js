@@ -306,6 +306,7 @@ function stepFx(dt){
     if(k>=1){scene.remove(p.m);if(p.m.geometry)p.m.geometry.dispose();if(p.m.material)p.m.material.dispose();fxParts.splice(i,1)}
   }
 }
+RV3.fxCount=function(){return fxParts.length};
 RV3.fx=function(kind,sq){
   if(!RV3.ready)return;
   var i;

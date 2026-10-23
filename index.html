@@ -58,7 +58,7 @@ body.rv3d #board{position:absolute;inset:0}
 .sq{position:relative;display:flex;align-items:center;justify-content:center}
 .blast{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:38px;pointer-events:none;z-index:6;animation:blastPop .7s ease-out forwards}
 @keyframes blastPop{0%{transform:translate(-50%,-50%) scale(.35);opacity:1}55%{transform:translate(-50%,-50%) scale(1.65);opacity:1}100%{transform:translate(-50%,-50%) scale(2.3);opacity:0}}
-.confetti-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:5}
+.confetti-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:60}
 .confetti-p{position:absolute;top:-16px;width:9px;height:13px;opacity:.95;animation-name:confFall;animation-timing-function:linear;animation-fill-mode:forwards}
 @keyframes confFall{to{transform:translateY(var(--fallH,800px)) rotate(560deg)}}
 .sq.l{background:linear-gradient(145deg,#e3c06a,#c9a24a)}.sq.d{background:linear-gradient(145deg,#2c251a,#1c1710)}
@@ -766,9 +766,8 @@ function blastFx(sq){
   el.appendChild(b);setTimeout(()=>b.remove(),750);
 }
 function confettiFx(){
-  const wrap=document.getElementById('boardwrap');if(!wrap)return;
   const layer=document.createElement('div');layer.className='confetti-layer';
-  layer.style.setProperty('--fallH',(wrap.clientHeight+30)+'px');
+  layer.style.setProperty('--fallH',(window.innerHeight+30)+'px');
   const cols=['#ffd54a','#18e88a','#ff6b8a','#59b7ff','#ffffff'];
   for(let i=0;i<44;i++){
     const p=document.createElement('div');p.className='confetti-p';
@@ -779,7 +778,7 @@ function confettiFx(){
     p.style.borderRadius=Math.random()<0.4?'50%':'2px';
     layer.appendChild(p);
   }
-  wrap.appendChild(layer);setTimeout(()=>layer.remove(),4600);
+  document.body.appendChild(layer);setTimeout(()=>layer.remove(),4600);
 }
 function afterMove(mv){
   if(mv.flags.indexOf('p')>=0)sfx('promo');
