@@ -185,6 +185,11 @@ function onUp(e){
     var rect=renderer.domElement.getBoundingClientRect();
     var ndc=new THREE.Vector2(((e.clientX-rect.left)/rect.width)*2-1,-((e.clientY-rect.top)/rect.height)*2+1);
     raycaster.setFromCamera(ndc,camera);
+    var pm=pieceGroup?raycaster.intersectObjects(pieceGroup.children,true)[0]:null;
+    if(pm){
+      var o=pm.object;while(o&&!(o.userData&&o.userData.type))o=o.parent;
+      if(o){var sq2=sqFromPoint(o.position);if(sq2&&window.__rvTap){window.__rvTap(sq2);tapInfo=null;return}}
+    }
     var hit=new THREE.Vector3();
     if(raycaster.ray.intersectPlane(planeY0,hit)){
       var sq=sqFromPoint(hit);
@@ -364,7 +369,7 @@ function fitRadius(){
   var right=new THREE.Vector3().crossVectors(dir,new THREE.Vector3(0,1,0)).normalize();
   var up=new THREE.Vector3().crossVectors(right,dir).normalize();
   var need=6,i,p,pd,pr,pu;
-  var C=[[-4.15,0,-4.15],[4.15,0,-4.15],[-4.15,0,4.15],[4.15,0,4.15],[-4.15,1.35,-4.15],[4.15,1.35,-4.15],[-4.15,1.35,4.15],[4.15,1.35,4.15]];
+  var C=[[-3.95,0,-3.95],[3.95,0,-3.95],[-3.95,0,3.95],[3.95,0,3.95],[-3.95,1.35,-3.95],[3.95,1.35,-3.95],[-3.95,1.35,3.95],[3.95,1.35,3.95]];
   for(i=0;i<8;i++){
     p=new THREE.Vector3(C[i][0],C[i][1],C[i][2]);
     pd=p.dot(dir);pr=Math.abs(p.dot(right));pu=Math.abs(p.dot(up));

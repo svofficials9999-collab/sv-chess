@@ -322,11 +322,7 @@ input.txt{width:100%;border:1.5px solid #6b5a2a;background:#1a1408;color:#fff;bo
     <button class="btn" data-t="600">10 <span data-i18n="min">min</span></button>
     <button class="btn" data-t="900">15+10s</button>
   </div>
-  <span class="lbl" data-i18n="view">Board view</span>
-  <div class="seg" id="viewseg">
-    <button class="btn on" data-v="2d">2D</button>
-    <button class="btn" data-v="3d">3D</button>
-  </div>
+
   <div class="seg" id="flipsegl" style="display:none"><button class="btn" id="fliptoggle">&#8645; <span data-i18n="flip">Auto-flip board each turn</span></button></div>
   <div style="margin-top:16px"><button class="btn g" id="startbtn" style="width:100%;padding:14px;font-size:17px">&#9654; <span data-i18n="start">Start Game</span></button></div>
 </section>
@@ -388,7 +384,7 @@ input.txt{width:100%;border:1.5px solid #6b5a2a;background:#1a1408;color:#fff;bo
     <button class="btn r" id="c-resign">&#9873; <span data-i18n="resign">Resign</span></button>
     <button class="btn g" id="c-new">&#10227; <span data-i18n="new">New</span></button>
   </div>
-  <div class="seg" id="viewseg2" style="justify-content:center;margin-top:8px"><button class="btn" data-v="2d">2D</button><button class="btn" data-v="3d">3D</button></div>
+  
   <div id="moves"></div>
 </section>
 
@@ -580,12 +576,12 @@ document.getElementById('m-about').onclick=()=>{show('about');sfx('btn')};
 document.getElementById('m-net').onclick=()=>{show('net');sfx('btn')};
 document.getElementById('m-resume').onclick=()=>{show('game');renderAll();sfx('btn')};
 
-function segWire(id,cb){const seg=document.getElementById(id);seg.addEventListener('click',e=>{const b=e.target.closest('.btn');if(!b)return;seg.querySelectorAll('.btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');sfx('btn');cb(b)})}
+function segWire(id,cb){const seg=document.getElementById(id);if(!seg)return;seg.addEventListener('click',e=>{const b=e.target.closest('.btn');if(!b)return;seg.querySelectorAll('.btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');sfx('btn');cb(b)})}
 let selColor='w',selClock=0,selLevel=3,flipOn=false,selTheme='';
 segWire('colorseg',b=>selColor=b.dataset.c);
 segWire('clockseg',b=>selClock=parseInt(b.dataset.t,10));
 segWire('themeseg',b=>selTheme=b.dataset.th);
-let viewMode=localStorage.getItem('rv_view')||'2d';
+let viewMode='3d';localStorage.setItem('rv_view','3d');
 function applyView(){
   const on=viewMode==='3d'&&!!window.RV3&&RV3.supported;
   document.body.classList.toggle('rv3d',on);
