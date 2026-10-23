@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ROYAL CHESS</title>
-<meta name="app-version" content="1.2.1">
+<meta name="app-version" content="1.3.0">
 <meta name="theme-color" content="#191307">
 <meta name="description" content="ROYAL CHESS - a luxury free chess game. Play 2 players on one phone or against the computer at 5 levels up to Expert. English + Telugu. Created by D. Srinivas.">
 <meta property="og:title" content="ROYAL CHESS - Free Luxury Chess">
@@ -271,6 +271,7 @@ input.txt{width:100%;border:1.5px solid #6b5a2a;background:#1a1408;color:#fff;bo
   </div>
   <button class="card" id="m-2p"><b>&#128101; <span data-i18n="two_players">Two Players</span></b><small data-i18n="two_players_d">Play with a friend on this same phone, with clocks</small></button>
   <button class="card" id="m-cpu"><b>&#129302; <span data-i18n="vs_cpu">Play vs Computer</span></b><small data-i18n="vs_cpu_d">8 levels, from Beginner to World Class</small></button>
+  <button class="card" id="m-net"><b>&#128225; <span data-i18n="net">Two Phones</span></b><small data-i18n="net_d">Play a friend on another phone - free, no sign-up</small></button>
   <button class="card" id="m-resume" style="display:none"><b>&#9200; <span data-i18n="resume">Resume Game</span></b><small data-i18n="resume_d">Continue your unfinished game</small></button>
   <button class="card" id="m-guide"><b>&#128214; <span data-i18n="guide">Game Guide</span></b><small data-i18n="guide_d">How to play chess, rules and tips</small></button>
   <button class="card" id="m-about"><b>&#11088; <span data-i18n="about">About</span></b><small data-i18n="about_d">Creator, version and credits</small></button>
@@ -318,6 +319,35 @@ input.txt{width:100%;border:1.5px solid #6b5a2a;background:#1a1408;color:#fff;bo
   <div style="margin-top:16px"><button class="btn g" id="startbtn" style="width:100%;padding:14px;font-size:17px">&#9654; <span data-i18n="start">Start Game</span></button></div>
 </section>
 
+<!-- NET (two phones) -->
+<section id="scr-net" style="display:none">
+  <h2 class="neon" style="text-align:center" data-i18n="net_title">Play on Two Phones</h2>
+  <p class="small" data-i18n="net_how">No sign-up, no server. One player creates a game code, the other joins with it - send the codes in WhatsApp. Moves then go directly phone to phone.</p>
+  <p class="small" style="opacity:.85" data-i18n="net_note">Works best on the same Wi-Fi. On different networks, phones may need the free Google STUN helper below, and some mobile networks can still block direct play.</p>
+  <label class="small" style="display:flex;gap:8px;align-items:flex-start;margin:8px 0"><input type="checkbox" id="net-stun" style="width:20px;height:20px;margin-top:2px"> <span data-i18n="net_stun">Different networks: allow the free Google STUN helper (Google sees your phone's IP address only to connect the two phones; moves are never sent to Google)</span></label>
+  <div class="pcard" style="padding:10px;margin-top:8px">
+    <div class="nm" data-i18n="net_host">Player 1: create a game</div>
+    <button class="btn g" id="net-create" style="width:100%;margin:6px 0" data-i18n="net_create">1. Create game code</button>
+    <div id="net-step-host" style="display:none">
+      <textarea id="net-offer" readonly rows="4" style="width:100%;font-size:11px"></textarea>
+      <button class="btn" id="net-copy1" style="width:100%;margin:4px 0" data-i18n="net_copy">Copy code</button>
+      <textarea id="net-paste-answer" rows="4" style="width:100%;font-size:11px" data-i18n-ph="net_paste_reply" placeholder="Paste your friend's reply code here"></textarea>
+      <button class="btn g" id="net-accept" style="width:100%;margin:4px 0" data-i18n="net_connect">3. Connect and start</button>
+    </div>
+  </div>
+  <div class="pcard" style="padding:10px;margin-top:8px">
+    <div class="nm" data-i18n="net_guest">Player 2: join a game</div>
+    <textarea id="net-paste-offer" rows="4" style="width:100%;font-size:11px" data-i18n-ph="net_paste_code" placeholder="Paste the game code from Player 1 here"></textarea>
+    <button class="btn g" id="net-join" style="width:100%;margin:6px 0" data-i18n="net_join">2. Make reply code</button>
+    <div id="net-step-guest" style="display:none">
+      <textarea id="net-answer" readonly rows="4" style="width:100%;font-size:11px"></textarea>
+      <button class="btn" id="net-copy2" style="width:100%;margin:4px 0" data-i18n="net_copy2">Copy reply code</button>
+      <p class="small" data-i18n="net_wait">Game starts as soon as Player 1 connects.</p>
+    </div>
+  </div>
+  <p class="small" id="net-status" style="text-align:center;margin-top:8px"></p>
+</section>
+
 <!-- GAME -->
 <section id="scr-game" style="display:none">
   <div class="pcard" id="pcard-top">
@@ -360,7 +390,7 @@ input.txt{width:100%;border:1.5px solid #6b5a2a;background:#1a1408;color:#fff;bo
   <div class="me-ring"><img src="assets/me.jpg" alt="D. Srinivas"></div>
   <div class="creator" data-i18n="created">Created by D. Srinivas</div>
   <img class="alogo" src="assets/logo.png" alt="SV PRIME">
-  <p class="small" style="text-align:center">ROYAL CHESS <span data-i18n="ver">version</span> 1.2.1</p>
+  <p class="small" style="text-align:center">ROYAL CHESS <span data-i18n="ver">version</span> 1.3.0</p>
   <span class="lbl" data-i18n="suggest">Suggestion box</span>
   <p class="small" data-i18n="suggest_d">Only the creator can change this app. Have an idea? Send it here:</p>
   <button class="btn" id="suggestbtn">&#9993; <span data-i18n="suggest_btn">Send a suggestion</span></button>
@@ -398,20 +428,21 @@ input.txt{width:100%;border:1.5px solid #6b5a2a;background:#1a1408;color:#fff;bo
 "use strict";
 /* ============ i18n ============ */
 const I18N={
-en:{appname:"ROYAL CHESS",tagline:"A luxury chess experience, free for everyone",two_players:"Two Players",two_players_d:"Play with a friend on this same phone, with clocks",vs_cpu:"Play vs Computer",vs_cpu_d:"5 levels, from Beginner to Expert",resume:"Resume Game",resume_d:"Continue your unfinished game",guide:"Game Guide",guide_d:"How to play chess, rules and tips",about:"About",about_d:"Creator, version and credits",setup2:"Two Players Setup",setupc:"Computer Game Setup",names:"Player names (optional)",level:"Computer level",youplay:"You play as",white:"White",black:"Black",random:"Random",clock:"Clock per player",no_clock:"No clock",min:"min",flip:"Auto-flip board each turn",start:"Start Game",undo:"Undo",draw:"Draw",resign:"Resign",new:"New",thinking:"Computer thinking...",promote:"Choose promotion",created:"Created by D. Srinivas",ver:"version",suggest:"Suggestion box",suggest_d:"Only the creator can change this app. Have an idea? Send it here:",suggest_btn:"Send a suggestion",credits:"Credits and licences",credits_d:"Chess engine: Stockfish 10 (GPL, Chess.com / nmrugg stockfish.js). Rules library: chess.js (MIT, Jeff Hlywa). Piece artwork: Colin M. L. Burnett, CC BY-SA 3.0 / GFDL, via Wikimedia Commons. All free and open.",madewith:"Free forever. No ads. No sign-up.",home:"Home",rematch:"\u27F3 Rematch",white_turn:"White to move",black_turn:"Black to move",your_turn:"Your turn",check:"Check!",checkmate:"Checkmate",stalemate:"Stalemate",draw_by:"Draw",wins:"wins",you_win:"You win!",you_lose:"Computer wins",flag:"Time over",insufficient:"Not enough material to mate",fifty:"50-move rule",threefold:"Same position 3 times",seventyfive:"75-move rule (automatic)",fivefold:"Same position 5 times (automatic)",claimed:"Draw claimed",agreement:"Draw agreed",offered:"offers a draw. Accept?",accept:"Accept",decline:"Decline",yes:"Yes",no:"No",resign_q:"Resign this game?",leave_q:"Leave this game? Your progress on this board stays until you start a new one.",new_q:"Abandon this game and set up a new one?",offline_eng:"Offline engine mode",undo_done:"Move taken back",draw_no:"Computer declines the draw",hint:"Hint",theme:"Board theme",view:"Board view",sound_on:"Sound on",sound_off:"Sound off"},
-te:{appname:"ROYAL CHESS",tagline:"విలాసవంతమైన చదరంగ అనుభూతి, అందరికీ ఉచితం",two_players:"ఇద్దరు ఆటగాళ్ళు",two_players_d:"ఇదే ఫోన్ లో స్నేహితుడితో గడియారంతో ఆడండి",vs_cpu:"కంప్యూటర్ తో ఆట",vs_cpu_d:"5 స్థాయిలు - బిగినర్ నుండి ఎక్స్ పర్ట్ వరకు",resume:"ఆట కొనసాగించండి",resume_d:"మీ అసంపూర్తి ఆటను కొనసాగించండి",guide:"గేమ్ గైడ్",guide_d:"చదరంగం ఎలా ఆడాలి, నియమాలు, చిట్కాలు",about:"గురించి",about_d:"సృష్టికర్త, వెర్షన్, క్రెడిట్స్",setup2:"ఇద్దరు ఆటగాళ్ళ సెటప్",setupc:"కంప్యూటర్ ఆట సెటప్",names:"ఆటగాళ్ళ పేర్లు (ఐచ్ఛికం)",level:"కంప్యూటర్ స్థాయి",youplay:"మీరు ఆడేది",white:"తెలుపు",black:"నలుపు",random:"యాదృచ్ఛికం",clock:"ప్రతి ఆటగాడికి గడియారం",no_clock:"గడియారం లేదు",min:"నిమి",flip:"ప్రతి వంతుకు బోర్డు తిప్పు",start:"ఆట ప్రారంభించండి",undo:"వెనక్కి",draw:"డ్రా",resign:"ఓటమి అంగీకారం",new:"కొత్తది",thinking:"కంప్యూటర్ ఆలోచిస్తోంది...",promote:"ప్రమోషన్ ఎంచుకోండి",created:"సృష్టించినవారు: డి. శ్రీనివాస్",ver:"వెర్షన్",suggest:"సూచనల పెట్టె",suggest_d:"ఈ యాప్ ను సృష్టికర్త మాత్రమే మార్చగలరు. మీ ఆలోచన ఇక్కడ పంపండి:",suggest_btn:"సూచన పంపండి",credits:"క్రెడిట్స్ మరియు లైసెన్సులు",credits_d:"చెస్ ఇంజిన్: Stockfish 10 (GPL, Chess.com / nmrugg stockfish.js). రూల్స్ లైబ్రరీ: chess.js (MIT, Jeff Hlywa). ముక్కల చిత్రాలు: Colin M. L. Burnett, CC BY-SA 3.0 / GFDL, Wikimedia Commons ద్వారా. అన్నీ ఉచితం.",madewith:"ఎప్పటికీ ఉచితం. ప్రకటనలు లేవు. సైన్ అప్ లేదు.",home:"హోమ్",rematch:"\u27F3 మళ్ళీ ఆడండి",white_turn:"తెలుపు వంతు",black_turn:"నలుపు వంతు",your_turn:"మీ వంతు",check:"చెక్!",checkmate:"చెక్మేట్",stalemate:"స్టేల్ మేట్",draw_by:"డ్రా",wins:"గెలిచారు",you_win:"మీరు గెలిచారు!",you_lose:"కంప్యూటర్ గెలిచింది",flag:"సమయం అయిపోయింది",insufficient:"మేట్ చేయడానికి ముక్కలు సరిపోవు",fifty:"50-కదలికల నియమం",threefold:"అదే స్థానం 3 సార్లు",seventyfive:"75-కదలికల నియమం (ఆటోమేటిక్)",fivefold:"అదే స్థానం 5 సార్లు (ఆటోమేటిక్)",claimed:"డ్రా క్లెయిమ్ చేశారు",agreement:"డ్రా అంగీకరించారు",offered:"డ్రా అడుగుతున్నారు. అంగీకరిస్తారా?",accept:"అంగీకరించు",decline:"తిరస్కరించు",yes:"అవును",no:"కాదు",resign_q:"ఈ ఆట ఓటమి అంగీకరిస్తారా?",leave_q:"ఈ ఆట నుండి బయటకు వెళ్తారా?",new_q:"ఈ ఆట వదిలి కొత్త ఆట సెటప్ చేయాలా?",offline_eng:"ఆఫ్ లైన్ ఇంజిన్ మోడ్",undo_done:"కదలిక వెనక్కి తీశారు",draw_no:"కంప్యూటర్ డ్రా తిరస్కరించింది",hint:"హింట్",theme:"బోర్డు థీమ్",view:"బోర్డు వ్యూ",sound_on:"సౌండ్ ఆన్",sound_off:"సౌండ్ ఆఫ్"}};
+en:{appname:"ROYAL CHESS",tagline:"A luxury chess experience, free for everyone",two_players:"Two Players",two_players_d:"Play with a friend on this same phone, with clocks",vs_cpu:"Play vs Computer",vs_cpu_d:"5 levels, from Beginner to Expert",resume:"Resume Game",resume_d:"Continue your unfinished game",guide:"Game Guide",guide_d:"How to play chess, rules and tips",about:"About",about_d:"Creator, version and credits",setup2:"Two Players Setup",setupc:"Computer Game Setup",names:"Player names (optional)",level:"Computer level",youplay:"You play as",white:"White",black:"Black",random:"Random",clock:"Clock per player",no_clock:"No clock",min:"min",flip:"Auto-flip board each turn",start:"Start Game",undo:"Undo",draw:"Draw",resign:"Resign",new:"New",thinking:"Computer thinking...",promote:"Choose promotion",created:"Created by D. Srinivas",ver:"version",suggest:"Suggestion box",suggest_d:"Only the creator can change this app. Have an idea? Send it here:",suggest_btn:"Send a suggestion",credits:"Credits and licences",credits_d:"Chess engine: Stockfish 10 (GPL, Chess.com / nmrugg stockfish.js). Rules library: chess.js (MIT, Jeff Hlywa). Piece artwork: Colin M. L. Burnett, CC BY-SA 3.0 / GFDL, via Wikimedia Commons. All free and open.",madewith:"Free forever. No ads. No sign-up.",home:"Home",rematch:"\u27F3 Rematch",white_turn:"White to move",black_turn:"Black to move",your_turn:"Your turn",check:"Check!",checkmate:"Checkmate",stalemate:"Stalemate",draw_by:"Draw",wins:"wins",you_win:"You win!",you_lose:"Computer wins",flag:"Time over",insufficient:"Not enough material to mate",fifty:"50-move rule",threefold:"Same position 3 times",seventyfive:"75-move rule (automatic)",fivefold:"Same position 5 times (automatic)",claimed:"Draw claimed",agreement:"Draw agreed",offered:"offers a draw. Accept?",accept:"Accept",decline:"Decline",yes:"Yes",no:"No",resign_q:"Resign this game?",leave_q:"Leave this game? Your progress on this board stays until you start a new one.",new_q:"Abandon this game and set up a new one?",offline_eng:"Offline engine mode",undo_done:"Move taken back",draw_no:"Computer declines the draw",hint:"Hint",theme:"Board theme",view:"Board view",sound_on:"Sound on",net:"Two Phones",net_d:"Play a friend on another phone - free, no sign-up",net_title:"Play on Two Phones",net_how:"No sign-up, no server. One player creates a game code, the other joins with it - send the codes in WhatsApp. Moves then go directly phone to phone.",net_note:"Works best on the same Wi-Fi. On different networks, phones may need the free Google STUN helper below, and some mobile networks can still block direct play.",net_stun:"Different networks: allow the free Google STUN helper (Google sees your phone's IP address only to connect the two phones; moves are never sent to Google)",net_host:"Player 1: create a game",net_create:"1. Create game code",net_copy:"Copy code",net_paste_reply:"Paste your friend's reply code here",net_connect:"3. Connect and start",net_guest:"Player 2: join a game",net_paste_code:"Paste the game code from Player 1 here",net_join:"2. Make reply code",net_copy2:"Copy reply code",net_wait:"Game starts as soon as Player 1 connects.",friend_left:"Friend left the game",draw_declined:"Draw declined",offered_net:"Draw offered - waiting for friend",you_2p:"You",friend:"Friend",sound_off:"Sound off"},
+te:{appname:"ROYAL CHESS",tagline:"విలాసవంతమైన చదరంగ అనుభూతి, అందరికీ ఉచితం",two_players:"ఇద్దరు ఆటగాళ్ళు",two_players_d:"ఇదే ఫోన్ లో స్నేహితుడితో గడియారంతో ఆడండి",vs_cpu:"కంప్యూటర్ తో ఆట",vs_cpu_d:"5 స్థాయిలు - బిగినర్ నుండి ఎక్స్ పర్ట్ వరకు",resume:"ఆట కొనసాగించండి",resume_d:"మీ అసంపూర్తి ఆటను కొనసాగించండి",guide:"గేమ్ గైడ్",guide_d:"చదరంగం ఎలా ఆడాలి, నియమాలు, చిట్కాలు",about:"గురించి",about_d:"సృష్టికర్త, వెర్షన్, క్రెడిట్స్",setup2:"ఇద్దరు ఆటగాళ్ళ సెటప్",setupc:"కంప్యూటర్ ఆట సెటప్",names:"ఆటగాళ్ళ పేర్లు (ఐచ్ఛికం)",level:"కంప్యూటర్ స్థాయి",youplay:"మీరు ఆడేది",white:"తెలుపు",black:"నలుపు",random:"యాదృచ్ఛికం",clock:"ప్రతి ఆటగాడికి గడియారం",no_clock:"గడియారం లేదు",min:"నిమి",flip:"ప్రతి వంతుకు బోర్డు తిప్పు",start:"ఆట ప్రారంభించండి",undo:"వెనక్కి",draw:"డ్రా",resign:"ఓటమి అంగీకారం",new:"కొత్తది",thinking:"కంప్యూటర్ ఆలోచిస్తోంది...",promote:"ప్రమోషన్ ఎంచుకోండి",created:"సృష్టించినవారు: డి. శ్రీనివాస్",ver:"వెర్షన్",suggest:"సూచనల పెట్టె",suggest_d:"ఈ యాప్ ను సృష్టికర్త మాత్రమే మార్చగలరు. మీ ఆలోచన ఇక్కడ పంపండి:",suggest_btn:"సూచన పంపండి",credits:"క్రెడిట్స్ మరియు లైసెన్సులు",credits_d:"చెస్ ఇంజిన్: Stockfish 10 (GPL, Chess.com / nmrugg stockfish.js). రూల్స్ లైబ్రరీ: chess.js (MIT, Jeff Hlywa). ముక్కల చిత్రాలు: Colin M. L. Burnett, CC BY-SA 3.0 / GFDL, Wikimedia Commons ద్వారా. అన్నీ ఉచితం.",madewith:"ఎప్పటికీ ఉచితం. ప్రకటనలు లేవు. సైన్ అప్ లేదు.",home:"హోమ్",rematch:"\u27F3 మళ్ళీ ఆడండి",white_turn:"తెలుపు వంతు",black_turn:"నలుపు వంతు",your_turn:"మీ వంతు",check:"చెక్!",checkmate:"చెక్మేట్",stalemate:"స్టేల్ మేట్",draw_by:"డ్రా",wins:"గెలిచారు",you_win:"మీరు గెలిచారు!",you_lose:"కంప్యూటర్ గెలిచింది",flag:"సమయం అయిపోయింది",insufficient:"మేట్ చేయడానికి ముక్కలు సరిపోవు",fifty:"50-కదలికల నియమం",threefold:"అదే స్థానం 3 సార్లు",seventyfive:"75-కదలికల నియమం (ఆటోమేటిక్)",fivefold:"అదే స్థానం 5 సార్లు (ఆటోమేటిక్)",claimed:"డ్రా క్లెయిమ్ చేశారు",agreement:"డ్రా అంగీకరించారు",offered:"డ్రా అడుగుతున్నారు. అంగీకరిస్తారా?",accept:"అంగీకరించు",decline:"తిరస్కరించు",yes:"అవును",no:"కాదు",resign_q:"ఈ ఆట ఓటమి అంగీకరిస్తారా?",leave_q:"ఈ ఆట నుండి బయటకు వెళ్తారా?",new_q:"ఈ ఆట వదిలి కొత్త ఆట సెటప్ చేయాలా?",offline_eng:"ఆఫ్ లైన్ ఇంజిన్ మోడ్",undo_done:"కదలిక వెనక్కి తీశారు",draw_no:"కంప్యూటర్ డ్రా తిరస్కరించింది",hint:"హింట్",theme:"బోర్డు థీమ్",view:"బోర్డు వ్యూ",sound_on:"సౌండ్ ఆన్",net:"రెండు ఫోన్లు",net_d:"మరో ఫోన్ లో స్నేహితుడితో ఆడండి - ఉచితం, సైన్ అప్ లేదు",net_title:"రెండు ఫోన్లలో ఆడండి",net_how:"సైన్ అప్ లేదు, సర్వర్ లేదు. ఒక ఆటగాడు గేమ్ కోడ్ తయారుచేస్తాడు, మరొకరు దాంతో జాయిన్ అవుతారు - కోడ్ లను WhatsApp లో పంపండి. కదలికలు నేరుగా ఫోన్ నుండి ఫోన్ కు వెళ్తాయి.",net_note:"అదే Wi-Fi లో బాగా పనిచేస్తుంది. వేర్వేరు నెట్ వర్క్ లలో క్రింది ఉచిత Google STUN సహాయం అవసరం కావచ్చు; కొన్ని మొబైల్ నెట్ వర్క్ లు డైరెక్ట్ ఆటను బ్లాక్ చేయవచ్చు.",net_stun:"వేర్వేరు నెట్ వర్క్ లు: ఉచిత Google STUN సహాయాన్ని అనుమతించండి (రెండు ఫోన్ లను కనెక్ట్ చేయడానికి మాత్రమే Google మీ ఫోన్ IP చూస్తుంది; కదలికలు Google కు ఎప్పుడూ వెళ్లవు)",net_host:"ఆటగాడు 1: గేమ్ తయారుచేయండి",net_create:"1. గేమ్ కోడ్ తయారుచేయండి",net_copy:"కోడ్ కాపీ చేయండి",net_paste_reply:"మీ స్నేహితుడి రిప్లై కోడ్ ఇక్కడ పేస్ట్ చేయండి",net_connect:"3. కనెక్ట్ చేసి ప్రారంభించండి",net_guest:"ఆటగాడు 2: గేమ్ లో చేరండి",net_paste_code:"ఆటగాడు 1 గేమ్ కోడ్ ఇక్కడ పేస్ట్ చేయండి",net_join:"2. రిప్లై కోడ్ తయారుచేయండి",net_copy2:"రిప్లై కోడ్ కాపీ చేయండి",net_wait:"ఆటగాడు 1 కనెక్ట్ అవ్వగానే ఆట ప్రారంభమవుతుంది.",friend_left:"స్నేహితుడు ఆట నుండి బయటకు వెళ్ళారు",draw_declined:"డ్రా తిరస్కరించారు",offered_net:"డ్రా ఆఫర్ - స్నేహితుడి కోసం వేచి ఉంది",you_2p:"మీరు",friend:"స్నేహితుడు",sound_off:"సౌండ్ ఆఫ్"}};
 let LANG=localStorage.getItem('svchess.lang')||'en';
 const t=k=>(I18N[LANG]&&I18N[LANG][k])||I18N.en[k]||k;
 function applyLang(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n)});
   document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=t(el.dataset.i18nHtml)});
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=t(el.dataset.i18nPh)});
   document.getElementById('langbtn').textContent=LANG==='en'?'\u0C24\u0C46\u0C32\u0C41\u0C17\u0C41':'English';
   buildGuide();
 }
 document.getElementById('langbtn').onclick=()=>{LANG=LANG==='en'?'te':'en';localStorage.setItem('svchess.lang',LANG);applyLang();sfx('btn')};
 
 /* ============ navigation ============ */
-const SCREENS=['home','setup','game','guide','about'];
+const SCREENS=['home','setup','game','guide','about','net'];
 let CUR='home';
 function show(id,push=true){
   SCREENS.forEach(s=>{document.getElementById('scr-'+s).style.display=s===id?'':'none'});
@@ -531,6 +562,7 @@ document.getElementById('m-2p').onclick=()=>setupFor('2p');
 document.getElementById('m-cpu').onclick=()=>setupFor('cpu');
 document.getElementById('m-guide').onclick=()=>{show('guide');sfx('btn')};
 document.getElementById('m-about').onclick=()=>{show('about');sfx('btn')};
+document.getElementById('m-net').onclick=()=>{show('net');sfx('btn')};
 document.getElementById('m-resume').onclick=()=>{show('game');renderAll();sfx('btn')};
 
 function segWire(id,cb){const seg=document.getElementById(id);seg.addEventListener('click',e=>{const b=e.target.closest('.btn');if(!b)return;seg.querySelectorAll('.btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');sfx('btn');cb(b)})}
@@ -579,7 +611,7 @@ function newGame(o){
      orientation:o.mode==='cpu'?o.human:'w',flip:o.flip,lastMove:null,theme:o.theme||''};
   SEL=null;LEGAL=[];THINKING=false;
   if(G.mode==='cpu'){setLevel(G.level)}
-  document.getElementById('modechip').textContent=G.mode==='2p'?t('two_players'):'CPU '+LEVELS[G.level-1].n;
+  document.getElementById('modechip').textContent=G.mode==='2p'?t('two_players'):G.mode==='net'?t('net'):'CPU '+LEVELS[G.level-1].n;
   posRecord(G.chess);
   lastTick=Date.now();
   renderAll();
@@ -637,7 +669,7 @@ function renderPlayers(){
   const ci=capturedInfo();
   const topColor=G.orientation==='w'?'b':'w';
   const bot=topColor==='w'?'b':'w';
-  const nameFor=c=>G.mode==='cpu'?(c===G.human?t('you'):'CPU '+LEVELS[G.level-1].n):G.names[c];
+  const nameFor=c=>G.mode==='cpu'?(c===G.human?t('you'):'CPU '+LEVELS[G.level-1].n):G.mode==='net'?(c===G.human?t('you_2p'):t('friend')):G.names[c];
   document.getElementById('nm-top').textContent=nameFor(topColor);
   document.getElementById('nm-bottom').textContent=nameFor(bot);
   const capsTop=topColor==='w'?ci.byW:ci.byB, capsBot=bot==='w'?ci.byW:ci.byB;
@@ -687,6 +719,7 @@ boardEl.addEventListener('pointerdown',e=>{
 function tapSquare(id){
   if(!G||!G.active||G.over||THINKING)return;
   if(G.mode==='cpu'&&G.chess.turn()!==G.human)return;
+  if(G.mode==='net'&&(G.chess.turn()!==G.human||!window.RVNET||!RVNET.isActive()))return;
   const piece=G.chess.get(id);
   if(SEL){
     const mv=LEGAL.find(m=>m.to===id);
@@ -707,6 +740,7 @@ function commit(from,to,pr){
   let mv;
   try{mv=G.chess.move({from:from,to:to,promotion:pr||undefined})}
   catch(e){sfx('bad');SEL=null;LEGAL=[];render();return false}
+  if(G.mode==='net'&&window.RVNET)RVNET.send({t:'mv',from:from,to:to,promotion:pr||null});
   afterMove(mv);return true;
 }
 function afterMove(mv){
@@ -783,6 +817,7 @@ function finishGame(result,reason){
     body=reason+(G.mode==='2p'?'':(result===G.human?'':' - CPU '+LEVELS[G.level-1].n));
     sfx(result===G.human||G.mode==='2p'?'win':'lose');
   }
+  document.getElementById('go-rematch').style.display=G.mode==='net'?'none':'';
   document.getElementById('status').textContent=title+' - '+reason;
   document.getElementById('go-title').textContent=title;
   document.getElementById('go-body').textContent=reason;
@@ -837,7 +872,13 @@ document.getElementById('c-draw').onclick=()=>{
   if(!G||G.over){sfx('bad');return}
   if(claimableDraw()){
     const why=G.chess.isThreefoldRepetition()?t('threefold'):t('fifty');
+    if(G.mode==='net'&&window.RVNET)RVNET.send({t:'draw_claim',why:why});
     finishGame('draw',t('claimed')+' - '+why);return;
+  }
+  if(G.mode==='net'){
+    if(window.RVNET&&RVNET.isActive()){RVNET.send({t:'draw_offer'});renderStatus(t('offered_net'))}
+    else sfx('bad');
+    return;
   }
   if(G.mode==='2p'){
     const offerer=G.names[G.chess.turn()];
@@ -853,13 +894,14 @@ document.getElementById('c-resign').onclick=()=>{
   if(!G||G.over){sfx('bad');return}
   confirmBox(t('resign'),t('resign_q'),t('yes'),t('no'),ok=>{
     if(!ok)return;
-    const loser=G.mode==='cpu'?G.human:G.chess.turn();
+    const loser=G.mode==='cpu'?G.human:G.mode==='net'?G.human:G.chess.turn();
+    if(G.mode==='net'&&window.RVNET)RVNET.send({t:'resign'});
     finishGame(loser==='w'?'b':'w',t('resign'));
   });
 };
 document.getElementById('c-new').onclick=()=>{
   if(!G){show('setup');return}
-  confirmBox(t('new'),t('new_q'),t('yes'),t('no'),ok=>{if(ok){setupFor(G.mode)}});
+  confirmBox(t('new'),t('new_q'),t('yes'),t('no'),ok=>{if(ok){if(G.mode==='net'){show('net')}else{setupFor(G.mode)}}});
 };
 document.getElementById('go-rematch').onclick=()=>{
   document.getElementById('gameover').style.display='none';sfx('btn');
@@ -912,6 +954,44 @@ document.getElementById('suggestbtn').onclick=()=>{
   location.href='mailto:svofficials9999@gmail.com?subject='+encodeURIComponent('ROYAL CHESS suggestion')+'&body='+encodeURIComponent(msg);
 };
 
+/* ============ net play glue ============ */
+window.__rvNetStart=function(color){
+  document.getElementById('gameover').style.display='none';
+  newGame({mode:'net',level:3,human:color,names:{w:t('you_2p'),b:t('friend')},clock:0,inc:0,flip:false,theme:selTheme});
+  show('game');
+};
+window.__rvNetMsg=function(m){
+  if(!G||G.mode!=='net')return;
+  if(m.t==='mv'){
+    let mv=null;
+    try{mv=G.chess.move({from:m.from,to:m.to,promotion:m.promotion||'q'})}catch(e){return}
+    afterMove(mv);
+  }else if(m.t==='resign'){
+    finishGame(G.human,t('resign'));
+  }else if(m.t==='draw_offer'){
+    confirmBox(t('draw'),t('friend')+' '+t('offered'),t('accept'),t('decline'),ok=>{
+      RVNET.send({t:ok?'draw_yes':'draw_no'});
+      if(ok)finishGame('draw',t('agreement'));
+    });
+  }else if(m.t==='draw_yes'){
+    finishGame('draw',t('agreement'));
+  }else if(m.t==='draw_no'){
+    renderStatus(t('draw_declined'));setTimeout(()=>{if(G&&!G.over)renderStatus()},1600);
+  }else if(m.t==='draw_claim'){
+    finishGame('draw',t('claimed')+' - '+m.why);
+  }else if(m.t==='leave'){
+    renderStatus(t('friend_left'));
+  }
+};
+window.__rvNetClosed=function(){
+  if(G&&G.mode==='net'&&!G.over)renderStatus(t('friend_left'));
+};
+document.getElementById('net-create').onclick=()=>{sfx('btn');RVNET.create()};
+document.getElementById('net-join').onclick=()=>{sfx('btn');RVNET.join()};
+document.getElementById('net-accept').onclick=()=>{sfx('btn');RVNET.accept()};
+document.getElementById('net-copy1').onclick=()=>{sfx('btn');navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('net-offer').value)};
+document.getElementById('net-copy2').onclick=()=>{sfx('btn');navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('net-answer').value)};
+
 /* ============ install + service worker ============ */
 let deferredInstall=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;document.getElementById('installbtn').style.display='block'});
@@ -933,6 +1013,7 @@ show('home',false);
 <script>var module={exports:{}};var exports=module.exports;</script>
 <script src="vendor/three.min.js"></script>
 <script>window.THREE=module.exports;module=undefined;exports=undefined;</script>
+<script src="netplay.js"></script>
 <script src="royal3d.js"></script>
 </body>
 </html>

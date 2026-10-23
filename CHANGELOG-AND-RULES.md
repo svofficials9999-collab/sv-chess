@@ -32,3 +32,6 @@ Live: https://svofficials9999-collab.github.io/sv-chess/
 ## v1.2.1 (2026-10-23)
 - 3D view: wider default framing (whole board + frame visible), brighter obsidian pieces + stronger lighting for contrast, orbit tilt clamped so the board never leaves the view.
 - Draw rules now follow FIDE claim/automatic split: 50-move and threefold repetition are CLAIMABLE (Draw button claims when available, still offers agreement otherwise); 75-move and fivefold are AUTOMATIC. Previously 50-move/threefold ended the game automatically (app-specific behavior) - fixed.
+
+## v1.3.0 (2026-10-23)
+- NEW (beta): Two Phones mode - play a friend on another phone with WebRTC phone-to-phone moves. No account, no game server: game codes are copied by the players themselves. Same Wi-Fi needs no helper; different networks can opt into the free Google STUN helper (off by default; Google sees only the phone IP for connecting). Some mobile networks can still block direct play. Moves/resign/draw offers sync both ways; draw claims follow the same rules as local play.
