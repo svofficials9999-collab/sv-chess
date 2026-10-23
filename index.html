@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ROYAL CHESS</title>
-<meta name="app-version" content="1.1.0">
+<meta name="app-version" content="1.2.0">
 <meta name="theme-color" content="#191307">
 <meta name="description" content="ROYAL CHESS - a luxury free chess game. Play 2 players on one phone or against the computer at 5 levels up to Expert. English + Telugu. Created by D. Srinivas.">
 <meta property="og:title" content="ROYAL CHESS - Free Luxury Chess">
@@ -49,6 +49,10 @@ body{background:radial-gradient(circle at 20% 0,#3d2f10 0,#191307 55%,#0d0a05 10
 @keyframes pulse{50%{box-shadow:0 0 16px #ff3355aa}}
 #boardwrap{position:relative;width:100%;max-width:520px;margin:4px auto;border-radius:10px;overflow:hidden;box-shadow:0 4px 24px #000c,0 0 18px #c9a22744;border:3px solid #c9a227}
 #board{display:grid;grid-template-columns:repeat(8,1fr);width:100%;aspect-ratio:1;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+#board3d{position:absolute;inset:0;display:none;z-index:2;touch-action:none}
+#board3d.on{display:block}
+#board3d canvas{display:block;width:100%;height:100%;border-radius:7px}
+body.rv3d #board{visibility:hidden}
 .sq{position:relative;display:flex;align-items:center;justify-content:center}
 .sq.l{background:linear-gradient(145deg,#e3c06a,#c9a24a)}.sq.d{background:linear-gradient(145deg,#2c251a,#1c1710)}
 .sq svg{width:92%;height:92%;pointer-events:none;filter:drop-shadow(0 2px 2px #0006)}
@@ -305,6 +309,11 @@ input.txt{width:100%;border:1.5px solid #6b5a2a;background:#1a1408;color:#fff;bo
     <button class="btn" data-t="600">10 <span data-i18n="min">min</span></button>
     <button class="btn" data-t="900">15+10s</button>
   </div>
+  <span class="lbl" data-i18n="view">Board view</span>
+  <div class="seg" id="viewseg">
+    <button class="btn on" data-v="2d">2D</button>
+    <button class="btn" data-v="3d">3D</button>
+  </div>
   <div class="seg" id="flipsegl" style="display:none"><button class="btn" id="fliptoggle">&#8645; <span data-i18n="flip">Auto-flip board each turn</span></button></div>
   <div style="margin-top:16px"><button class="btn g" id="startbtn" style="width:100%;padding:14px;font-size:17px">&#9654; <span data-i18n="start">Start Game</span></button></div>
 </section>
@@ -319,6 +328,7 @@ input.txt{width:100%;border:1.5px solid #6b5a2a;background:#1a1408;color:#fff;bo
   </div>
   <div id="boardwrap">
     <div id="board"></div>
+    <div id="board3d"></div>
     <div id="think" style="display:none"><span data-i18n="thinking">Computer thinking&#8230;</span></div>
   </div>
   <div class="pcard" id="pcard-bottom">
@@ -350,7 +360,7 @@ input.txt{width:100%;border:1.5px solid #6b5a2a;background:#1a1408;color:#fff;bo
   <div class="me-ring"><img src="assets/me.jpg" alt="D. Srinivas"></div>
   <div class="creator" data-i18n="created">Created by D. Srinivas</div>
   <img class="alogo" src="assets/logo.png" alt="SV PRIME">
-  <p class="small" style="text-align:center">ROYAL CHESS <span data-i18n="ver">version</span> 1.1.0</p>
+  <p class="small" style="text-align:center">ROYAL CHESS <span data-i18n="ver">version</span> 1.2.0</p>
   <span class="lbl" data-i18n="suggest">Suggestion box</span>
   <p class="small" data-i18n="suggest_d">Only the creator can change this app. Have an idea? Send it here:</p>
   <button class="btn" id="suggestbtn">&#9993; <span data-i18n="suggest_btn">Send a suggestion</span></button>
@@ -388,8 +398,8 @@ input.txt{width:100%;border:1.5px solid #6b5a2a;background:#1a1408;color:#fff;bo
 "use strict";
 /* ============ i18n ============ */
 const I18N={
-en:{appname:"ROYAL CHESS",tagline:"A luxury chess experience, free for everyone",two_players:"Two Players",two_players_d:"Play with a friend on this same phone, with clocks",vs_cpu:"Play vs Computer",vs_cpu_d:"5 levels, from Beginner to Expert",resume:"Resume Game",resume_d:"Continue your unfinished game",guide:"Game Guide",guide_d:"How to play chess, rules and tips",about:"About",about_d:"Creator, version and credits",setup2:"Two Players Setup",setupc:"Computer Game Setup",names:"Player names (optional)",level:"Computer level",youplay:"You play as",white:"White",black:"Black",random:"Random",clock:"Clock per player",no_clock:"No clock",min:"min",flip:"Auto-flip board each turn",start:"Start Game",undo:"Undo",draw:"Draw",resign:"Resign",new:"New",thinking:"Computer thinking...",promote:"Choose promotion",created:"Created by D. Srinivas",ver:"version",suggest:"Suggestion box",suggest_d:"Only the creator can change this app. Have an idea? Send it here:",suggest_btn:"Send a suggestion",credits:"Credits and licences",credits_d:"Chess engine: Stockfish 10 (GPL, Chess.com / nmrugg stockfish.js). Rules library: chess.js (MIT, Jeff Hlywa). Piece artwork: Colin M. L. Burnett, CC BY-SA 3.0 / GFDL, via Wikimedia Commons. All free and open.",madewith:"Free forever. No ads. No sign-up.",home:"Home",rematch:"\u27F3 Rematch",white_turn:"White to move",black_turn:"Black to move",your_turn:"Your turn",check:"Check!",checkmate:"Checkmate",stalemate:"Stalemate",draw_by:"Draw",wins:"wins",you_win:"You win!",you_lose:"Computer wins",flag:"Time over",insufficient:"Not enough material to mate",fifty:"50-move rule",threefold:"Same position 3 times",agreement:"Draw agreed",offered:"offers a draw. Accept?",accept:"Accept",decline:"Decline",yes:"Yes",no:"No",resign_q:"Resign this game?",leave_q:"Leave this game? Your progress on this board stays until you start a new one.",new_q:"Abandon this game and set up a new one?",offline_eng:"Offline engine mode",undo_done:"Move taken back",draw_no:"Computer declines the draw",hint:"Hint",theme:"Board theme",sound_on:"Sound on",sound_off:"Sound off"},
-te:{appname:"ROYAL CHESS",tagline:"విలాసవంతమైన చదరంగ అనుభూతి, అందరికీ ఉచితం",two_players:"ఇద్దరు ఆటగాళ్ళు",two_players_d:"ఇదే ఫోన్ లో స్నేహితుడితో గడియారంతో ఆడండి",vs_cpu:"కంప్యూటర్ తో ఆట",vs_cpu_d:"5 స్థాయిలు - బిగినర్ నుండి ఎక్స్ పర్ట్ వరకు",resume:"ఆట కొనసాగించండి",resume_d:"మీ అసంపూర్తి ఆటను కొనసాగించండి",guide:"గేమ్ గైడ్",guide_d:"చదరంగం ఎలా ఆడాలి, నియమాలు, చిట్కాలు",about:"గురించి",about_d:"సృష్టికర్త, వెర్షన్, క్రెడిట్స్",setup2:"ఇద్దరు ఆటగాళ్ళ సెటప్",setupc:"కంప్యూటర్ ఆట సెటప్",names:"ఆటగాళ్ళ పేర్లు (ఐచ్ఛికం)",level:"కంప్యూటర్ స్థాయి",youplay:"మీరు ఆడేది",white:"తెలుపు",black:"నలుపు",random:"యాదృచ్ఛికం",clock:"ప్రతి ఆటగాడికి గడియారం",no_clock:"గడియారం లేదు",min:"నిమి",flip:"ప్రతి వంతుకు బోర్డు తిప్పు",start:"ఆట ప్రారంభించండి",undo:"వెనక్కి",draw:"డ్రా",resign:"ఓటమి అంగీకారం",new:"కొత్తది",thinking:"కంప్యూటర్ ఆలోచిస్తోంది...",promote:"ప్రమోషన్ ఎంచుకోండి",created:"సృష్టించినవారు: డి. శ్రీనివాస్",ver:"వెర్షన్",suggest:"సూచనల పెట్టె",suggest_d:"ఈ యాప్ ను సృష్టికర్త మాత్రమే మార్చగలరు. మీ ఆలోచన ఇక్కడ పంపండి:",suggest_btn:"సూచన పంపండి",credits:"క్రెడిట్స్ మరియు లైసెన్సులు",credits_d:"చెస్ ఇంజిన్: Stockfish 10 (GPL, Chess.com / nmrugg stockfish.js). రూల్స్ లైబ్రరీ: chess.js (MIT, Jeff Hlywa). ముక్కల చిత్రాలు: Colin M. L. Burnett, CC BY-SA 3.0 / GFDL, Wikimedia Commons ద్వారా. అన్నీ ఉచితం.",madewith:"ఎప్పటికీ ఉచితం. ప్రకటనలు లేవు. సైన్ అప్ లేదు.",home:"హోమ్",rematch:"\u27F3 మళ్ళీ ఆడండి",white_turn:"తెలుపు వంతు",black_turn:"నలుపు వంతు",your_turn:"మీ వంతు",check:"చెక్!",checkmate:"చెక్మేట్",stalemate:"స్టేల్ మేట్",draw_by:"డ్రా",wins:"గెలిచారు",you_win:"మీరు గెలిచారు!",you_lose:"కంప్యూటర్ గెలిచింది",flag:"సమయం అయిపోయింది",insufficient:"మేట్ చేయడానికి ముక్కలు సరిపోవు",fifty:"50-కదలికల నియమం",threefold:"అదే స్థానం 3 సార్లు",agreement:"డ్రా అంగీకరించారు",offered:"డ్రా అడుగుతున్నారు. అంగీకరిస్తారా?",accept:"అంగీకరించు",decline:"తిరస్కరించు",yes:"అవును",no:"కాదు",resign_q:"ఈ ఆట ఓటమి అంగీకరిస్తారా?",leave_q:"ఈ ఆట నుండి బయటకు వెళ్తారా?",new_q:"ఈ ఆట వదిలి కొత్త ఆట సెటప్ చేయాలా?",offline_eng:"ఆఫ్ లైన్ ఇంజిన్ మోడ్",undo_done:"కదలిక వెనక్కి తీశారు",draw_no:"కంప్యూటర్ డ్రా తిరస్కరించింది",hint:"హింట్",theme:"బోర్డు థీమ్",sound_on:"సౌండ్ ఆన్",sound_off:"సౌండ్ ఆఫ్"}};
+en:{appname:"ROYAL CHESS",tagline:"A luxury chess experience, free for everyone",two_players:"Two Players",two_players_d:"Play with a friend on this same phone, with clocks",vs_cpu:"Play vs Computer",vs_cpu_d:"5 levels, from Beginner to Expert",resume:"Resume Game",resume_d:"Continue your unfinished game",guide:"Game Guide",guide_d:"How to play chess, rules and tips",about:"About",about_d:"Creator, version and credits",setup2:"Two Players Setup",setupc:"Computer Game Setup",names:"Player names (optional)",level:"Computer level",youplay:"You play as",white:"White",black:"Black",random:"Random",clock:"Clock per player",no_clock:"No clock",min:"min",flip:"Auto-flip board each turn",start:"Start Game",undo:"Undo",draw:"Draw",resign:"Resign",new:"New",thinking:"Computer thinking...",promote:"Choose promotion",created:"Created by D. Srinivas",ver:"version",suggest:"Suggestion box",suggest_d:"Only the creator can change this app. Have an idea? Send it here:",suggest_btn:"Send a suggestion",credits:"Credits and licences",credits_d:"Chess engine: Stockfish 10 (GPL, Chess.com / nmrugg stockfish.js). Rules library: chess.js (MIT, Jeff Hlywa). Piece artwork: Colin M. L. Burnett, CC BY-SA 3.0 / GFDL, via Wikimedia Commons. All free and open.",madewith:"Free forever. No ads. No sign-up.",home:"Home",rematch:"\u27F3 Rematch",white_turn:"White to move",black_turn:"Black to move",your_turn:"Your turn",check:"Check!",checkmate:"Checkmate",stalemate:"Stalemate",draw_by:"Draw",wins:"wins",you_win:"You win!",you_lose:"Computer wins",flag:"Time over",insufficient:"Not enough material to mate",fifty:"50-move rule",threefold:"Same position 3 times",agreement:"Draw agreed",offered:"offers a draw. Accept?",accept:"Accept",decline:"Decline",yes:"Yes",no:"No",resign_q:"Resign this game?",leave_q:"Leave this game? Your progress on this board stays until you start a new one.",new_q:"Abandon this game and set up a new one?",offline_eng:"Offline engine mode",undo_done:"Move taken back",draw_no:"Computer declines the draw",hint:"Hint",theme:"Board theme",view:"Board view",sound_on:"Sound on",sound_off:"Sound off"},
+te:{appname:"ROYAL CHESS",tagline:"విలాసవంతమైన చదరంగ అనుభూతి, అందరికీ ఉచితం",two_players:"ఇద్దరు ఆటగాళ్ళు",two_players_d:"ఇదే ఫోన్ లో స్నేహితుడితో గడియారంతో ఆడండి",vs_cpu:"కంప్యూటర్ తో ఆట",vs_cpu_d:"5 స్థాయిలు - బిగినర్ నుండి ఎక్స్ పర్ట్ వరకు",resume:"ఆట కొనసాగించండి",resume_d:"మీ అసంపూర్తి ఆటను కొనసాగించండి",guide:"గేమ్ గైడ్",guide_d:"చదరంగం ఎలా ఆడాలి, నియమాలు, చిట్కాలు",about:"గురించి",about_d:"సృష్టికర్త, వెర్షన్, క్రెడిట్స్",setup2:"ఇద్దరు ఆటగాళ్ళ సెటప్",setupc:"కంప్యూటర్ ఆట సెటప్",names:"ఆటగాళ్ళ పేర్లు (ఐచ్ఛికం)",level:"కంప్యూటర్ స్థాయి",youplay:"మీరు ఆడేది",white:"తెలుపు",black:"నలుపు",random:"యాదృచ్ఛికం",clock:"ప్రతి ఆటగాడికి గడియారం",no_clock:"గడియారం లేదు",min:"నిమి",flip:"ప్రతి వంతుకు బోర్డు తిప్పు",start:"ఆట ప్రారంభించండి",undo:"వెనక్కి",draw:"డ్రా",resign:"ఓటమి అంగీకారం",new:"కొత్తది",thinking:"కంప్యూటర్ ఆలోచిస్తోంది...",promote:"ప్రమోషన్ ఎంచుకోండి",created:"సృష్టించినవారు: డి. శ్రీనివాస్",ver:"వెర్షన్",suggest:"సూచనల పెట్టె",suggest_d:"ఈ యాప్ ను సృష్టికర్త మాత్రమే మార్చగలరు. మీ ఆలోచన ఇక్కడ పంపండి:",suggest_btn:"సూచన పంపండి",credits:"క్రెడిట్స్ మరియు లైసెన్సులు",credits_d:"చెస్ ఇంజిన్: Stockfish 10 (GPL, Chess.com / nmrugg stockfish.js). రూల్స్ లైబ్రరీ: chess.js (MIT, Jeff Hlywa). ముక్కల చిత్రాలు: Colin M. L. Burnett, CC BY-SA 3.0 / GFDL, Wikimedia Commons ద్వారా. అన్నీ ఉచితం.",madewith:"ఎప్పటికీ ఉచితం. ప్రకటనలు లేవు. సైన్ అప్ లేదు.",home:"హోమ్",rematch:"\u27F3 మళ్ళీ ఆడండి",white_turn:"తెలుపు వంతు",black_turn:"నలుపు వంతు",your_turn:"మీ వంతు",check:"చెక్!",checkmate:"చెక్మేట్",stalemate:"స్టేల్ మేట్",draw_by:"డ్రా",wins:"గెలిచారు",you_win:"మీరు గెలిచారు!",you_lose:"కంప్యూటర్ గెలిచింది",flag:"సమయం అయిపోయింది",insufficient:"మేట్ చేయడానికి ముక్కలు సరిపోవు",fifty:"50-కదలికల నియమం",threefold:"అదే స్థానం 3 సార్లు",agreement:"డ్రా అంగీకరించారు",offered:"డ్రా అడుగుతున్నారు. అంగీకరిస్తారా?",accept:"అంగీకరించు",decline:"తిరస్కరించు",yes:"అవును",no:"కాదు",resign_q:"ఈ ఆట ఓటమి అంగీకరిస్తారా?",leave_q:"ఈ ఆట నుండి బయటకు వెళ్తారా?",new_q:"ఈ ఆట వదిలి కొత్త ఆట సెటప్ చేయాలా?",offline_eng:"ఆఫ్ లైన్ ఇంజిన్ మోడ్",undo_done:"కదలిక వెనక్కి తీశారు",draw_no:"కంప్యూటర్ డ్రా తిరస్కరించింది",hint:"హింట్",theme:"బోర్డు థీమ్",view:"బోర్డు వ్యూ",sound_on:"సౌండ్ ఆన్",sound_off:"సౌండ్ ఆఫ్"}};
 let LANG=localStorage.getItem('svchess.lang')||'en';
 const t=k=>(I18N[LANG]&&I18N[LANG][k])||I18N.en[k]||k;
 function applyLang(){
@@ -528,6 +538,16 @@ let selColor='w',selClock=0,selLevel=3,flipOn=false,selTheme='';
 segWire('colorseg',b=>selColor=b.dataset.c);
 segWire('clockseg',b=>selClock=parseInt(b.dataset.t,10));
 segWire('themeseg',b=>selTheme=b.dataset.th);
+let viewMode=localStorage.getItem('rv_view')||'2d';
+function applyView(){
+  const on=viewMode==='3d'&&!!window.RV3&&RV3.supported;
+  document.body.classList.toggle('rv3d',on);
+  document.getElementById('board3d').classList.toggle('on',on);
+  if(window.RV3){if(on)RV3.attach(document.getElementById('board3d'));RV3.setActive(on)}
+  if(on&&G)render();
+}
+segWire('viewseg',b=>{viewMode=b.dataset.v;localStorage.setItem('rv_view',viewMode);applyView()});
+window.__rvApplyView=applyView;
 document.getElementById('fliptoggle').onclick=function(){flipOn=!flipOn;this.classList.toggle('on',flipOn);sfx('btn')};
 function buildLevels(){
   const g=document.getElementById('levels');g.innerHTML='';
@@ -595,6 +615,7 @@ function render(){
   renderPlayers();
   renderMoves();
   renderStatus();
+  if(window.RV3&&RV3.active){RV3.sync({board:G.chess.board(),selected:SEL,legal:LEGAL.map(m=>({to:m.to,cap:!!m.captured})),last:G.lastMove,check:G.chess.inCheck()?kingSq(G.chess.turn()):null,orient:G.orientation})}
 }
 function capturedInfo(){
   const counts={w:{p:0,n:0,b:0,r:0,q:0,k:0},b:{p:0,n:0,b:0,r:0,q:0,k:0}};
@@ -654,9 +675,12 @@ function renderAll(){
 /* ============ move input ============ */
 boardEl.addEventListener('pointerdown',e=>{
   const sq=e.target.closest('.sq');
-  if(!sq||!G||!G.active||G.over||THINKING)return;
+  if(!sq)return;
+  tapSquare(sq.dataset.sq);
+});
+function tapSquare(id){
+  if(!G||!G.active||G.over||THINKING)return;
   if(G.mode==='cpu'&&G.chess.turn()!==G.human)return;
-  const id=sq.dataset.sq;
   const piece=G.chess.get(id);
   if(SEL){
     const mv=LEGAL.find(m=>m.to===id);
@@ -664,7 +688,8 @@ boardEl.addEventListener('pointerdown',e=>{
   }
   if(piece&&piece.color===G.chess.turn()){SEL=id;LEGAL=G.chess.moves({square:id,verbose:true});render();sfx('btn')}
   else{SEL=null;LEGAL=[];render()}
-});
+}
+window.__rvTap=tapSquare;
 function attempt(from,to){
   const piece=G.chess.get(from);
   if(piece&&piece.type==='p'&&((piece.color==='w'&&to[1]==='8')||(piece.color==='b'&&to[1]==='1'))){
@@ -842,8 +867,8 @@ function buildGuide(){
   const en=LANG!=='te';
   el.innerHTML=
   '<h4>'+(en?'The game':'ఆట గురించి')+'</h4><p>'+(en
-    ?'Chess is a battle of two armies on an 8x8 board. Trap the enemy king so it cannot escape - that is checkmate, and you win. Play with a friend on this phone, or challenge the computer at 8 strength levels up to World Class.'
-    :'చదరంగం 8x8 బోర్డు మీద ఇద్దరు సైన్యాల యుద్ధం. శత్రు రాజు తప్పించుకోలేనిత్టుగా చుట్టుముట్టితే అది చెక్మేట్ - మీరు గెలిచారు. ఈ ఫోన్ లోనే స్నేహితుడితో ఆడండి లేదా కంప్యూటర్ ను 8 స్థాయిల్లో సవాలు చేయండి, వరల్డ్ క్లాస్ వరకు.')+'</p>'
+    ?'Chess is a battle of two armies on an 8x8 board. Trap the enemy king so it cannot escape - that is checkmate, and you win. Play with a friend on this phone, or challenge the computer at 5 strength levels up to Expert.'
+    :'చదరంగం 8x8 బోర్డు మీద ఇద్దరు సైన్యాల యుద్ధం. శత్రు రాజు తప్పించుకోలేనిత్టుగా చుట్టుముట్టితే అది చెక్మేట్ - మీరు గెలిచారు. ఈ ఫోన్ లోనే స్నేహితుడితో ఆడండి లేదా కంప్యూటర్ ను 5 స్థాయిల్లో సవాలు చేయండి, ఎక్స్ పర్ట్ వరకు.')+'</p>'
   +'<h4>'+(en?'How the pieces move':'ముక్కలు ఎలా కదుతాయి')+'</h4>'
   +prow('p','Pawn: moves one square forward (two on its first move), captures one square diagonally forward.','పawn: నేరుగా ఒక గడి ముందుకు (మొదటి సారి రెండు గడులు), మూలలో ఒక గడి ముందుకు బంతిని పట్టుకుంటుంది.')
   +prow('n','Knight: jumps in an L shape - two squares one way, then one to the side. It can jump over pieces.','గుర్రం: L ఆకారంలో - ఒక వైపు రెండు గడులు, పక్కకు ఒక గడి. ముక్కలను దాటి దూకగలదు.')
@@ -892,5 +917,7 @@ applyLang();
 initEngine();
 show('home',false);
 </script>
+<script src="vendor/three.min.js"></script>
+<script src="royal3d.js"></script>
 </body>
 </html>

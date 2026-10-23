@@ -23,3 +23,8 @@ Live: https://svofficials9999-collab.github.io/sv-chess/
 2. Re-test the live link at 360px and 414px before saying done.
 3. Never remove the creator credit, guide, or Telugu toggle.
 4. Free services only.
+
+## v1.2.0 (2026-10-23)
+- NEW: 3D board view (Three.js, vendored, free) - gold/obsidian 3D pieces, orbit + pinch camera, tap-to-move, glide/capture animations, check/last-move/legal-move highlights, auto shadow-off on slow phones. 2D stays the default and fallback (setup > Board view > 2D/3D).
+- Fixed guide text: 5 levels up to Expert (was wrongly "8 levels ... World Class").
+- Verified: engine levels genuinely differ (same position: Beginner a3 d10 / Medium Be2 d13 / Expert O-O-O d17). Draw rules automatic: 50-move, threefold, stalemate, insufficient material.
