@@ -88,3 +88,12 @@ Live: https://svofficials9999-collab.github.io/sv-chess/
 - King/queen selection rings, promotion burst, straight-view finish emphasis; no angled checkmate camera, preserving the user's later straight-board override.
 - Service worker activation now retires only sv-chess-* caches, preserving sibling apps. No stored games removed.
 - Optional original online platform (matchmaking/accounts/profiles/ratings/server reconnection) not implemented; existing manual-code WebRTC beta and cross-network caveat unchanged. No services/accounts/spending added.
+
+## v2.1.0 (2026-10-24)
+- Bounded foundation course: 18 interactive studies covering all six pieces, en passant and promotion, three opening lines, fork/pin/skewer, three mate-in-one patterns, and a free movement laboratory. Explanations in English/Telugu, device-local completion checks. A defined introductory course, not exhaustive chess education.
+- Three original modelled lightweight 3D environments (columned hall, furnished room, arched arena) replace palette-only backgrounds. Static rendering avoids an extra continuous animation loop. Scene preview in settings; straight full-width board and exact tap geometry untouched.
+- Original generated studio reflection texture for physical piece materials. Lighting settings now applied on first renderer initialization.
+- Ambient audio starts at zero gain, removing an unintended loud initial transient; existing shared chord and opt-in volume unchanged.
+- Menu fade transitions respect reduced motion; non-game navigation stops the board render loop. Top/game controls meet a 44px minimum. Storage failure cannot stop appearance application. Completed lesson hints no longer show undefined next moves.
+- Existing CPU/local saves, themes, larger pieces, online beta and sibling storage/cache preservation retained. No new accounts, servers, analytics, paid dependencies or external assets.
+- Optional advanced online platform remains outside this local release; physical-device performance/network coverage and listening audition are not certified by mobile browser emulation.

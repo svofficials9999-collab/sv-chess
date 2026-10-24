@@ -79,6 +79,8 @@ function pieceGeo(type){
   geoCache[pieceStyle+type]=g;
   return g;
 }
+var studioEnv=null;
+function reflectionEnv(){if(studioEnv)return studioEnv;var c=document.createElement('canvas');c.width=256;c.height=128;var x=c.getContext('2d'),gr=x.createLinearGradient(0,0,0,128);gr.addColorStop(0,'#a5a8b4');gr.addColorStop(.46,'#222936');gr.addColorStop(1,'#15120c');x.fillStyle=gr;x.fillRect(0,0,256,128);x.fillStyle='#e7dec5';x.fillRect(22,12,17,65);x.fillRect(152,15,32,50);x.fillStyle='#748ca5';x.fillRect(225,28,10,45);studioEnv=new THREE.CanvasTexture(c);studioEnv.mapping=THREE.EquirectangularReflectionMapping;return studioEnv}
 var woodTexCache={};
 function woodTex(base,grain, streaks){
   var c=document.createElement('canvas');c.width=c.height=256;
@@ -114,7 +116,7 @@ function woodPair(base,grain,streaks){
 }
 function mats(color){
  var key=themeKey+color;if(matCache[key])return matCache[key];var p=PALETTES[themeKey]||PALETTES.walnut;
- var opts={color:color==='w'?p.w:p.b,metalness:p.metal||.08,roughness:themeKey==='crystal'?.18:.40,clearcoat:.45};
+ var opts={envMap:reflectionEnv(),envMapIntensity:.35,color:color==='w'?p.w:p.b,metalness:p.metal||.08,roughness:themeKey==='crystal'?.18:.40,clearcoat:.45};
  if(p.wood){var tx=woodPair(color==='w'?'#e2d0a6':'#241f1a',color==='w'?'122,96,58':'105,84,60',color==='w'?10:18);opts.color=0xffffff;opts.map=tx.map;opts.bumpMap=tx.bump;opts.bumpScale=.012}
  if(themeKey==='crystal'){opts.transmission=.25;opts.thickness=.6;opts.roughness=.10;opts.ior=1.45}
  return matCache[key]=new THREE.MeshPhysicalMaterial(opts);
@@ -202,7 +204,7 @@ function init(){
   renderer.domElement.addEventListener('dblclick',function(){zoom.t=1});
   window.addEventListener('resize',resize);
   resize();
-  RV3.ready=true;
+  RV3.ready=true;if(window.RCSettings)RV3.settings(window.RCSettings);
 }
 var obliqueM=null;
 function applyProj(){
