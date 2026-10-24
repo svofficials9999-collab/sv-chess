@@ -97,3 +97,6 @@ Live: https://svofficials9999-collab.github.io/sv-chess/
 - Menu fade transitions respect reduced motion; non-game navigation stops the board render loop. Top/game controls meet a 44px minimum. Storage failure cannot stop appearance application. Completed lesson hints no longer show undefined next moves.
 - Existing CPU/local saves, themes, larger pieces, online beta and sibling storage/cache preservation retained. No new accounts, servers, analytics, paid dependencies or external assets.
 - Optional advanced online platform remains outside this local release; physical-device performance/network coverage and listening audition are not certified by mobile browser emulation.
+
+## v2.1.1 (2026-10-24)
+- Upgrade integration test exposed an old worker finishing a background asset fetch after cache retirement and recreating its old cache. Global cache lookup could then serve stale HTML. Fetch lookup and offline fallback now read only the current named chess cache. Old/sibling caches cannot win request matching. Verified through a real old-worker-to-new-worker saved-game/offline upgrade.
