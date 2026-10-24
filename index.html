@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ROYAL CHESS</title>
-<meta name="app-version" content="1.4.1">
+<meta name="app-version" content="2.0.0">
 <meta name="theme-color" content="#191307">
 <meta name="description" content="ROYAL CHESS - a luxury free chess game. Play 2 players on one phone or against the computer at 5 levels up to Expert. English + Telugu. Created by D. Srinivas.">
 <meta property="og:title" content="ROYAL CHESS - Free Luxury Chess">
@@ -405,7 +405,7 @@ input.txt{width:100%;border:1.5px solid #6b5a2a;background:#1a1408;color:#fff;bo
   <div class="me-ring"><img src="assets/me.jpg" alt="D. Srinivas"></div>
   <div class="creator" data-i18n="created">Created by D. Srinivas</div>
   <img class="alogo" src="assets/logo.png" alt="SV PRIME">
-  <p class="small" style="text-align:center">ROYAL CHESS <span data-i18n="ver">version</span> 1.4.1</p>
+  <p class="small" style="text-align:center">ROYAL CHESS <span data-i18n="ver">version</span> 2.0.0</p>
   <span class="lbl" data-i18n="suggest">Suggestion box</span>
   <p class="small" data-i18n="suggest_d">Only the creator can change this app. Have an idea? Send it here:</p>
   <button class="btn" id="suggestbtn">&#9993; <span data-i18n="suggest_btn">Send a suggestion</span></button>
@@ -458,14 +458,15 @@ function applyLang(){
 document.getElementById('langbtn').onclick=()=>{LANG=LANG==='en'?'te':'en';localStorage.setItem('svchess.lang',LANG);applyLang();sfx('btn')};
 
 /* ============ navigation ============ */
-const SCREENS=['home','setup','game','guide','about','net'];
+const SCREENS=['home','setup','game','guide','about','net','training','settings'];
 let CUR='home';
 function show(id,push=true){
-  SCREENS.forEach(s=>{document.getElementById('scr-'+s).style.display=s===id?'':'none'});
+  SCREENS.forEach(s=>{const el=document.getElementById('scr-'+s);if(el)el.style.display=s===id?'':'none'});
   CUR=id;
   document.getElementById('backbtn').style.visibility=id==='home'?'hidden':'visible';
   document.getElementById('modechip').style.display=id==='game'?'':'none';
   if(push){try{history.pushState({scr:id},'')}catch(e){}}
+  if(typeof G!=='undefined'&&G&&G.mode!=='net'&&id!=='game')G.paused=true;
   if(id==='home'){document.getElementById('m-resume').style.display=(G&&G.active&&!G.over)?'':'none'}
   if(id==='game'&&window.RV3){RV3.setActive(false);requestAnimationFrame(()=>applyView())}
 }
@@ -479,7 +480,7 @@ history.replaceState({scr:'home'},'');
 /* ============ audio ============ */
 let AC=null,SOUND=localStorage.getItem('svchess.sound')!=='0';
 function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
-function tone(f,d,type,gain,when){const c=ac();if(!c)return;const o=c.createOscillator(),g=c.createGain();o.type=type||'square';o.frequency.value=f;g.gain.setValueAtTime(gain||.12,c.currentTime+(when||0));g.gain.exponentialRampToValueAtTime(.001,c.currentTime+(when||0)+d);o.connect(g);g.connect(c.destination);o.start(c.currentTime+(when||0));o.stop(c.currentTime+(when||0)+d+.02)}
+function tone(f,d,type,gain,when){const c=ac();if(!c)return;gain=(gain||.12)*(window.RCSettings?.effects??1);if(gain<=0)return;const o=c.createOscillator(),g=c.createGain();o.type=type||'square';o.frequency.value=f;g.gain.setValueAtTime(gain||.12,c.currentTime+(when||0));g.gain.exponentialRampToValueAtTime(.001,c.currentTime+(when||0)+d);o.connect(g);g.connect(c.destination);o.start(c.currentTime+(when||0));o.stop(c.currentTime+(when||0)+d+.02)}
 function sfx(kind){if(!SOUND)return;try{
   if(kind==='move')tone(440,.07,'square',.10);
   else if(kind==='cap'){tone(95,.13,'square',.20);tone(300,.06,'sawtooth',.14,.02);tone(180,.10,'sawtooth',.14,.07)}
@@ -676,7 +677,8 @@ function render(){
   renderPlayers();
   renderMoves();
   renderStatus();
-  if(window.RV3&&RV3.active){RV3.sync({board:G.chess.board(),selected:SEL,legal:LEGAL.map(m=>({to:m.to,cap:!!m.captured})),last:G.lastMove,check:G.chess.inCheck()?kingSq(G.chess.turn()):null,orient:G.orientation})}
+  if(window.rcSave)window.rcSave();
+  if(window.RV3&&RV3.active){RV3.sync({theme:G.theme,board:G.chess.board(),selected:SEL,legal:LEGAL.map(m=>({to:m.to,cap:!!m.captured})),last:G.lastMove,check:G.chess.inCheck()?kingSq(G.chess.turn()):null,orient:G.orientation})}
 }
 function capturedInfo(){
   const counts={w:{p:0,n:0,b:0,r:0,q:0,k:0},b:{p:0,n:0,b:0,r:0,q:0,k:0}};
@@ -740,7 +742,7 @@ boardEl.addEventListener('pointerdown',e=>{
   tapSquare(sq.dataset.sq);
 });
 function tapSquare(id){
-  if(!G||!G.active||G.over||THINKING)return;
+  if(!G||!G.active||G.over||G.paused||THINKING)return;
   if(G.mode==='cpu'&&G.chess.turn()!==G.human)return;
   if(G.mode==='net'&&(G.chess.turn()!==G.human||!window.RVNET||!RVNET.isActive()))return;
   const piece=G.chess.get(id);
@@ -816,12 +818,14 @@ function afterMove(mv){
   maybeEngine();
 }
 function maybeEngine(){
+  if(window.rcRestoring||G&&G.paused)return;
   if(!G||G.mode!=='cpu'||G.over||!G.active)return;
   if(G.chess.turn()===G.human)return;
   THINKING=true;
   document.getElementById('think').style.display='flex';
   const game=G;
   engineBestMove(game.chess.fen(),game.level,bm=>{
+    if(game!==G||G.paused){THINKING=false;document.getElementById('think').style.display='none';return;}
     THINKING=false;
     document.getElementById('think').style.display='none';
     if(game!==G||G.over)return;
@@ -837,6 +841,7 @@ let lastTick=Date.now();
 setInterval(()=>{
   if(!G||!G.active||G.over||!G.base){lastTick=Date.now();return}
   const now=Date.now(),dt=now-lastTick;lastTick=now;
+  if(G.paused){lastTick=Date.now();return}
   const side=G.chess.turn();
   const before=G.time[side];
   G.time[side]-=dt;
@@ -1073,5 +1078,6 @@ show('home',false);
 <script>window.THREE=module.exports;module=undefined;exports=undefined;</script>
 <script src="netplay.js"></script>
 <script src="royal3d.js"></script>
+<script src="enhancements.js"></script>
 </body>
 </html>

@@ -78,3 +78,13 @@ Live: https://svofficials9999-collab.github.io/sv-chess/
 - Bigger board: 3D fit tightened so the board fills ~90% of the canvas (was ~80%), larger finger targets.
 - Tap accuracy: tapping a piece's body now selects that piece (piece-first raycast), not whatever square the plane projection lands on.
 - Capture blast, win confetti, rules, modes, netplay unchanged.
+
+## v2.0.0 (2026-10-24)
+- Larger pieces: physical geometry +20% width/depth, +14% height for standard styling. Straight orthographic board and exact raycast kept; normal/flipped legal pointer drags tested.
+- Six actual 3D material palettes, three silhouette-preserving piece styles, environment colour palettes, lighting and glide-speed choices. Manual choice, no talent inference/locks. Backgrounds are graphic palettes, not modelled photographic rooms.
+- Interactive starter training: piece movement, seven-half-move opening/castling exercise, knight fork, mate-in-one, legal move hints and explanations. A starter set, not a complete chess curriculum.
+- Device-local PGN/FEN save/resume for local/CPU games. Restores paused; no network-match persistence/reconnect promise. Menu/background pauses local clocks; explicit Pause/Resume. Native fullscreen where browser permits.
+- Independent effects/music volume and master mute; original generated ambient chord off by default. Lightweight2D choice and sustained-low-FPS automatic fallback. No physical budget-phone certification.
+- King/queen selection rings, promotion burst, straight-view finish emphasis; no angled checkmate camera, preserving the user's later straight-board override.
+- Service worker activation now retires only sv-chess-* caches, preserving sibling apps. No stored games removed.
+- Optional original online platform (matchmaking/accounts/profiles/ratings/server reconnection) not implemented; existing manual-code WebRTC beta and cross-network caveat unchanged. No services/accounts/spending added.
