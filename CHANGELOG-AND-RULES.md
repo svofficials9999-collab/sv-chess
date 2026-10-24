@@ -106,3 +106,9 @@ Live: https://svofficials9999-collab.github.io/sv-chess/
 - Visible title/author/source/CCBY4 licence and compression-only change notice in English/Telugu music settings; source provenance retained in audio/SOURCES.txt. Free commercial software use with credit verified from the composer's own pages. No paid licences/accounts created.
 - Separate music play/stop, gentle starting volume0.12, adjustable volume, master mute and background pause. Off for new users until chosen; browser autoplay restrictions respected. Full track repeats only while enabled. Existing effects volume unchanged.
 - Real audio decoding/time advancement/play-stop/mute verified, not a claim of listening audition. All prior local-phase release caveats remain.
+
+## v2.2.1 (2026-10-24)
+- Nonbackend integrity audit: serialize engine/hint searches so one response cannot replace another callback. Bound unresponsive worker recovery and ignore callbacks for a different game/FEN/promotion context. Correct fallback negamax mate score.
+- Disable unsynchronised Undo and assisted Hint during two-phone matches; both remain available locally. Verify incoming peer move ownership, square/promotion shape, legal result and draw claims; reject unsolicited draw acceptance. These protect normal peer consistency, not server-authoritative anti-cheat or reconnection.
+- Captured trays now use actual capture history, fixing false captured pawns after promotion. Timeout against a bare king is a draw. Stale draw/resign modal callbacks cannot finish a replacement game.
+- Correct Telugu pawn/en-passant/guide mistranslations and describe castling/draw claim rules precisely. Larger pieces/straight board/themes/training/local saves/Solace unchanged. Hosted Cloudflare phase explicitly deferred by owner, not deployed or completed.

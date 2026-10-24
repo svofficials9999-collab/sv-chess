@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ROYAL CHESS</title>
-<meta name="app-version" content="2.2.0">
+<meta name="app-version" content="2.2.1">
 <meta name="theme-color" content="#191307">
 <meta name="description" content="ROYAL CHESS - a luxury free chess game. Play 2 players on one phone or against the computer at 5 levels up to Expert. English + Telugu. Created by D. Srinivas.">
 <meta property="og:title" content="ROYAL CHESS - Free Luxury Chess">
@@ -514,7 +514,7 @@ function initEngine(){
       else if(line==='readyok'){engineReady=true}
       else if(line.indexOf('bestmove ')===0){const bm=line.split(' ')[1];if(pendingBest){const cb=pendingBest;pendingBest=null;cb(bm)}}
     };
-    engine.onerror=()=>{engineOffline=true;engineReady=true};
+    engine.onerror=()=>{engineOffline=true;engineReady=true;if(pendingBest){const cb=pendingBest;pendingBest=null;cb(null)}};
     engineSend('uci');
   }catch(e){engineOffline=true;engineReady=true}
 }
@@ -527,11 +527,13 @@ function setLevel(lv){
   else{engineSend('setoption name UCI_LimitStrength value true');engineSend('setoption name UCI_Elo value '+L.elo)}
   engineSend('isready');
 }
-function engineBestMove(fen,lv,cb){
-  const L=LEVELS[lv-1];
-  if(engineOffline||!engine){setTimeout(()=>cb(fallbackBest(fen,lv)),120);return}
-  const go=()=>{pendingBest=cb;engineSend('position fen '+fen);engineSend('go movetime '+L.mt)};
-  if(engineReady){go()}else{let n=0;const iv=setInterval(()=>{if(engineReady){clearInterval(iv);go()}else if(++n>60){clearInterval(iv);engineOffline=true;cb(fallbackBest(fen,lv))}},100)}
+const engineQueue=[];let engineBusy=false;
+function engineBestMove(fen,lv,cb){engineQueue.push({fen,lv,cb});drainEngine()}
+function drainEngine(){if(engineBusy||!engineQueue.length)return;engineBusy=true;const job=engineQueue.shift(),L=LEVELS[job.lv-1];let settled=false,timer=null;
+ const finish=bm=>{if(settled)return;settled=true;clearTimeout(timer);engineBusy=false;job.cb(bm||fallbackBest(job.fen,job.lv));drainEngine()};
+ const fail=()=>{engineOffline=true;try{engine?.terminate()}catch(e){}pendingBest=null;finish(null)};
+ const go=()=>{if(engineOffline||!engine){timer=setTimeout(()=>finish(null),20);return}setLevel(job.lv);pendingBest=finish;engineSend('position fen '+job.fen);engineSend('go movetime '+L.mt);timer=setTimeout(fail,L.mt+7000)};
+ if(engineReady||engineOffline)go();else{let n=0;const wait=setInterval(()=>{if(engineReady||engineOffline){clearInterval(wait);go()}else if(++n>60){clearInterval(wait);fail()}},100)}
 }
 /* emergency offline engine: negamax, material + piece-square, only if the Stockfish worker cannot load */
 const FVAL={p:100,n:320,b:330,r:500,q:900,k:0};
@@ -542,7 +544,7 @@ function fallbackBest(fen,lv){
   const boardOf=()=>{const o={};for(const r of c.board())for(const p of r)if(p)o[p.square]=p;return o};
   const neg=(d,alpha,beta,ply)=>{
     if(d===0||c.isGameOver()){
-      if(c.isCheckmate())return c.turn()==='w'?-99999+ply:99999-ply;
+      if(c.isCheckmate())return -99999+ply;
       if(c.isDraw()||c.isStalemate())return 0;
       return ev(boardOf())*(c.turn()==='w'?1:-1);
     }
@@ -560,6 +562,7 @@ function fallbackBest(fen,lv){
 }
 
 /* ============ game state ============ */
+let netDrawPending=false;
 let G=null,SEL=null,LEGAL=[],PENDING_PROMO=null,THINKING=false;
 const FILES='abcdefgh';
 const START_COUNTS={p:8,n:2,b:2,r:2,q:1,k:1};
@@ -629,7 +632,8 @@ function posKey(c){return c.fen().split(' ').slice(0,4).join(' ')}
 function posRecord(c){const k=posKey(c);POSMAP[k]=(POSMAP[k]||0)+1;if(POSMAP[k]>POSCOUNT)POSCOUNT=POSMAP[k]}
 function posUnrecord(c){const k=posKey(c);if(POSMAP[k])POSMAP[k]--;let m=0;for(const q in POSMAP)if(POSMAP[q]>m)m=POSMAP[q];POSCOUNT=Math.max(m,1)}
 function newGame(o){
-  POSMAP={};POSCOUNT=1;
+  document.getElementById('promo').style.display='none';document.getElementById('confirm').style.display='none';
+  POSMAP={};POSCOUNT=1;netDrawPending=false;
   G={chess:new Chess(),mode:o.mode,level:o.level,human:o.human,names:o.names||{w:'Player 1',b:'Player 2'},
      base:o.clock,inc:o.inc,time:{w:o.clock*1000,b:o.clock*1000},active:true,over:false,
      orientation:o.mode==='cpu'?o.human:'w',flip:o.flip,lastMove:null,theme:o.theme||''};
@@ -680,16 +684,7 @@ function render(){
   if(window.rcSave)window.rcSave();
   if(window.RV3&&RV3.active){RV3.sync({theme:G.theme,board:G.chess.board(),selected:SEL,legal:LEGAL.map(m=>({to:m.to,cap:!!m.captured})),last:G.lastMove,check:G.chess.inCheck()?kingSq(G.chess.turn()):null,orient:G.orientation})}
 }
-function capturedInfo(){
-  const counts={w:{p:0,n:0,b:0,r:0,q:0,k:0},b:{p:0,n:0,b:0,r:0,q:0,k:0}};
-  for(const row of G.chess.board())for(const p of row)if(p)counts[p.color][p.type]++;
-  const byW=[],byB=[];let mW=0,mB=0;
-  for(const ty of['q','r','b','n','p']){
-    for(let i=counts.b[ty];i<START_COUNTS[ty];i++){byW.push('b'+ty);mW+=MVAL[ty]}
-    for(let i=counts.w[ty];i<START_COUNTS[ty];i++){byB.push('w'+ty);mB+=MVAL[ty]}
-  }
-  return {byW:byW,byB:byB,diff:mW-mB};
-}
+function capturedInfo(){const byW=[],byB=[];let mW=0,mB=0;for(const m of G.chess.history({verbose:true})){if(!m.captured)continue;if(m.color==='w'){byW.push('b'+m.captured);mW+=MVAL[m.captured]||0}else{byB.push('w'+m.captured);mB+=MVAL[m.captured]||0}}return {byW,byB,diff:mW-mB}}
 function renderPlayers(){
   const ci=capturedInfo();
   const topColor=G.orientation==='w'?'b':'w';
@@ -730,6 +725,7 @@ function renderStatus(msg){
   st.textContent=s+(G.chess.inCheck()?'  '+t('check'):'');
 }
 function renderAll(){
+  for(const id of ['c-undo','c-hint']){const b=document.getElementById(id);b.disabled=G.mode==='net';b.title=G.mode==='net'?(LANG==='te'?'రెండు ఫోన్ల ఆటలో అందుబాటులో లేదు':'Unavailable in two-phone matches'):''}
   document.getElementById('boardwrap').className=G.theme||'';
   if(G.orientation!==boardEl.dataset.or){buildBoard();boardEl.dataset.or=G.orientation}
   render();renderClocks();
@@ -757,7 +753,7 @@ window.__rvTap=tapSquare;
 function attempt(from,to){
   const piece=G.chess.get(from);
   if(piece&&piece.type==='p'&&((piece.color==='w'&&to[1]==='8')||(piece.color==='b'&&to[1]==='1'))){
-    showPromo(piece.color,pr=>commit(from,to,pr));return;
+    const game=G,fen=G.chess.fen();showPromo(piece.color,pr=>{if(G===game&&!G.over&&!G.paused&&G.chess.fen()===fen)commit(from,to,pr)});return;
   }
   commit(from,to,null);
 }
@@ -802,6 +798,7 @@ function confettiFx(){
   document.body.appendChild(layer);setTimeout(()=>layer.remove(),4600);
 }
 function afterMove(mv){
+  if(!mv)return;netDrawPending=false;
   if(mv.flags.indexOf('p')>=0)sfx('promo');
   else if(mv.flags.indexOf('c')>=0||mv.flags.indexOf('e')>=0)sfx('cap');
   else if(mv.flags.indexOf('k')>=0||mv.flags.indexOf('q')>=0)sfx('castle');
@@ -823,9 +820,10 @@ function maybeEngine(){
   if(G.chess.turn()===G.human)return;
   THINKING=true;
   document.getElementById('think').style.display='flex';
-  const game=G;
-  engineBestMove(game.chess.fen(),game.level,bm=>{
-    if(game!==G||G.paused){THINKING=false;document.getElementById('think').style.display='none';return;}
+  const game=G,fen=G.chess.fen();
+  engineBestMove(fen,game.level,bm=>{
+    if(game!==G)return;
+    if(G.paused||G.chess.fen()!==fen||G.chess.turn()===G.human){THINKING=false;document.getElementById('think').style.display='none';return;}
     THINKING=false;
     document.getElementById('think').style.display='none';
     if(game!==G||G.over)return;
@@ -851,7 +849,8 @@ setInterval(()=>{
 },100);
 function flagFall(side){
   const winner=side==='w'?'b':'w';
-  if(G.chess.isInsufficientMaterial()){finishGame('draw',t('flag')+' - '+t('insufficient'));return}
+  const winnerPieces=G.chess.board().flat().filter(p=>p&&p.color===winner&&p.type!=='k');
+  if(!winnerPieces.length||G.chess.isInsufficientMaterial()){finishGame('draw',t('flag')+' - '+t('insufficient'));return}
   finishGame(winner,t('flag'));
 }
 
@@ -910,7 +909,7 @@ function showPromo(color,cb){
 
 /* ============ controls ============ */
 document.getElementById('c-undo').onclick=()=>{
-  if(!G||G.over||THINKING||!G.chess.history().length){sfx('bad');return}
+  if(!G||G.mode==='net'||G.over||G.paused||THINKING||!G.chess.history().length){sfx('bad');return}
   posUnrecord(G.chess);G.chess.undo();
   if(G.mode==='cpu'&&G.chess.turn()!==G.human&&G.chess.history().length){posUnrecord(G.chess);G.chess.undo()}
   SEL=null;LEGAL=[];G.lastMove=null;
@@ -920,15 +919,16 @@ document.getElementById('c-undo').onclick=()=>{
   setTimeout(()=>{if(G&&!G.over)renderStatus()},1200);
 };
 document.getElementById('c-hint').onclick=()=>{
-  if(!G||G.over||THINKING){sfx('bad');return}
+  if(!G||G.mode==='net'||G.over||G.paused||THINKING){sfx('bad');return}
   if(G.mode==='cpu'&&G.chess.turn()!==G.human){sfx('bad');return}
   sfx('btn');
-  engineBestMove(G.chess.fen(),Math.min(G.mode==='cpu'?G.level:3,3),bm=>{
-    if(!bm||!G||G.over)return;
+  const game=G,fen=G.chess.fen();
+  engineBestMove(fen,Math.min(G.mode==='cpu'?G.level:3,3),bm=>{
+    if(!bm||G!==game||G.over||G.paused||G.chess.fen()!==fen)return;
     const from=bm.slice(0,2),to=bm.slice(2,4);
     SEL=from;LEGAL=G.chess.moves({square:from,verbose:true});render();
     const tgt=boardEl.querySelector('[data-sq="'+to+'"]');if(tgt)tgt.classList.add('last');
-    setTimeout(()=>{SEL=null;LEGAL=[];if(G&&!G.over)render()},1800);
+    const selected=SEL;setTimeout(()=>{if(G!==game||G.chess.fen()!==fen||SEL!==selected)return;SEL=null;LEGAL=[];if(!G.over)render()},1800);
   });
 };
 document.getElementById('c-draw').onclick=()=>{
@@ -939,14 +939,14 @@ document.getElementById('c-draw').onclick=()=>{
     finishGame('draw',t('claimed')+' - '+why);return;
   }
   if(G.mode==='net'){
-    if(window.RVNET&&RVNET.isActive()){RVNET.send({t:'draw_offer'});renderStatus(t('offered_net'))}
+    if(window.RVNET&&RVNET.isActive()){netDrawPending=true;RVNET.send({t:'draw_offer'});renderStatus(t('offered_net'))}
     else sfx('bad');
     return;
   }
   if(G.mode==='2p'){
-    const offerer=G.names[G.chess.turn()];
+    const offerer=G.names[G.chess.turn()],game=G,fen=G.chess.fen();
     confirmBox(t('draw'),offerer+' '+t('offered'),t('accept'),t('decline'),ok=>{
-      if(ok)finishGame('draw',t('agreement'));
+      if(ok&&G===game&&!G.over&&G.chess.fen()===fen)finishGame('draw',t('agreement'));
     });
   }else{
     renderStatus(t('draw_no'));sfx('bad');
@@ -955,8 +955,8 @@ document.getElementById('c-draw').onclick=()=>{
 };
 document.getElementById('c-resign').onclick=()=>{
   if(!G||G.over){sfx('bad');return}
-  confirmBox(t('resign'),t('resign_q'),t('yes'),t('no'),ok=>{
-    if(!ok)return;
+  const game=G;confirmBox(t('resign'),t('resign_q'),t('yes'),t('no'),ok=>{
+    if(!ok||G!==game||G.over)return;
     const loser=G.mode==='cpu'?G.human:G.mode==='net'?G.human:G.chess.turn();
     if(G.mode==='net'&&window.RVNET)RVNET.send({t:'resign'});
     finishGame(loser==='w'?'b':'w',t('resign'));
@@ -988,18 +988,18 @@ function buildGuide(){
     ?'Chess is a battle of two armies on an 8x8 board. Trap the enemy king so it cannot escape - that is checkmate, and you win. Play with a friend on this phone, or challenge the computer at 5 strength levels up to Expert.'
     :'చదరంగం 8x8 బోర్డు మీద ఇద్దరు సైన్యాల యుద్ధం. శత్రు రాజు తప్పించుకోలేనిత్టుగా చుట్టుముట్టితే అది చెక్మేట్ - మీరు గెలిచారు. ఈ ఫోన్ లోనే స్నేహితుడితో ఆడండి లేదా కంప్యూటర్ ను 5 స్థాయిల్లో సవాలు చేయండి, ఎక్స్ పర్ట్ వరకు.')+'</p>'
   +'<h4>'+(en?'How the pieces move':'ముక్కలు ఎలా కదుతాయి')+'</h4>'
-  +prow('p','Pawn: moves one square forward (two on its first move), captures one square diagonally forward.','పawn: నేరుగా ఒక గడి ముందుకు (మొదటి సారి రెండు గడులు), మూలలో ఒక గడి ముందుకు బంతిని పట్టుకుంటుంది.')
+  +prow('p','Pawn: moves one square forward (two on its first move), captures one square diagonally forward.','సిపాయి: ముందుకు ఒక గడి (మొదటి కదలికలో రెండు గడులు కావచ్చు). వాలుగా ముందుకు ఒక గడిలో ప్రత్యర్థి పావును కొడుతుంది.')
   +prow('n','Knight: jumps in an L shape - two squares one way, then one to the side. It can jump over pieces.','గుర్రం: L ఆకారంలో - ఒక వైపు రెండు గడులు, పక్కకు ఒక గడి. ముక్కలను దాటి దూకగలదు.')
-  +prow('b','Bishop: slides any number of squares diagonally.','బిషప్: మూలలో ఎన్ని గడులైనా కదుతుంది.')
+  +prow('b','Bishop: slides any number of squares diagonally.','ఏనుగు (బిషప్): ఖాళీ దారిలో వాలుగా ఎన్ని గడులైనా కదులుతుంది.')
   +prow('r','Rook: slides any number of squares straight - forward, back or sideways.','రూక్: నేరుగా - ముందుకు, వెనుకకు లేదా పక్కకు ఎన్ని గడులైనా.')
   +prow('q','Queen: slides any number of squares in any direction. The strongest piece.','రాణి: ఏ దిశలోనైనా ఎన్ని గడులైనా. అత్యంత బలమైన ముక్క.')
   +prow('k','King: one square in any direction. Keep it safe!','రాజు: ఏ దిశలోనైనా ఒక గడి. దీన్ని కాపాడండి!')
   +'<h4>'+(en?'Special moves':'ప్రత్యేక కదలికలు')+'</h4><p>'+(en
-    ?'Castling: the king moves two squares toward a rook and the rook jumps over it - only if neither has moved and no square is attacked. En passant: a pawn that jumps two squares can be captured by a neighbor pawn as if it moved one. Promotion: a pawn reaching the last rank becomes a queen, rook, bishop or knight - your choice.'
-    :'క్యాజ్లింగ్: రాజు రూక్ వైపు రెండు గడులు, రూక్ దాని మీదుగా దూకుతుంది - రెండూ ముందు కదలకుండా, దారిలో ఎటాక్ లేకుండా ఉంటేనే. En passant: రెండు గడులు దూకిన బంతిని పక్క బంతి ఒక గడి కదిలినట్టు పట్టుకోవచ్చు. ప్రమోషన్: చివరి వరుసకు చేరిన బంతి రాణి, రూక్, బిషప్ లేదా గుర్రం అవుతుంది - మీ ఎంపిక.')+'</p>'
+    ?'Castling: king and rook must not have moved, squares between them must be empty, and the king must not be in check or cross/land on an attacked square. En passant: a pawn that jumps two squares can be captured by a neighbor pawn as if it moved one. Promotion: a pawn reaching the last rank becomes a queen, rook, bishop or knight - your choice.'
+    :'కాస్లింగ్: రాజు, రూక్ ముందు కదలకూడదు; మధ్య గడులు ఖాళీగా ఉండాలి. రాజు చెక్‌లో ఉండకూడదు, దాడి ఉన్న గడిని దాటకూడదు లేదా చేరకూడదు. ఎన్ పసాంట్: పక్క సిపాయి రెండు గడులు వచ్చిన వెంటనే, ఒక్క గడి వచ్చినట్టు కొట్టవచ్చు. ప్రమోషన్: చివరి వరుస చేరిన సిపాయి రాణి, రూక్, ఏనుగు లేదా గుర్రం అవుతుంది - మీ ఎంపిక.')+'</p>'
   +'<h4>'+(en?'Win, lose or draw':'గెలుపు, ఓటమి, డ్రా')+'</h4><p>'+(en
-    ?'Check means the king is attacked - it must escape. Checkmate ends the game. A draw happens by stalemate (no legal move but not in check), not enough material to mate, the same position 3 times, the 50-move rule, or both players agreeing.'
-    :'చెక్ అంటే రాజుకు ముప్పు - తప్పించుకోవాలి. చెక్మేట్ తో ఆట ముగుస్తుంది. స్టేల్ మేట్ (చెక్ లేకుండా కదలిక లేకపోవడం), మేట్ కు సరిపోనంత ముక్కలు, అదే స్థానం 3 సార్లు, 50-కదలికల నియమం, లేదా ఇద్దరు అంగీకరిస్తే డ్రా.')+'</p>'
+    ?'Check means the king is attacked - it must escape. Checkmate ends the game. Stalemate and insufficient material end in a draw. Threefold repetition and 50 full moves without a pawn move or capture can be claimed with Draw; fivefold repetition and 75 full moves are automatic. Players may also agree to a draw.'
+    :'చెక్ అంటే రాజుకు ముప్పు - తప్పించుకోవాలి. చెక్మేట్ తో ఆట ముగుస్తుంది. చెక్ లేకుండా చట్టబద్ధ కదలిక లేకపోతే స్టేల్‌మేట్ డ్రా. మేట్‌కు సరిపోని పావులైనా డ్రా. ఒకే స్థానం మూడుసార్లు లేదా సిపాయి కదలిక/కొట్టడం లేకుండా 50 పూర్తి కదలికల తర్వాత Drawతో క్లెయిమ్ చేయవచ్చు. ఐదుసార్ల పునరావృతం, 75 పూర్తి కదలికలకు ఆటోమేటిక్ డ్రా. ఇద్దరూ అంగీకరించవచ్చు.')+'</p>'
   +'<h4>'+(en?'Clocks':'గడియారాలు')+'</h4><p>'+(en
     ?'Pick a clock per player in setup, or play with no clock. Your time runs only on your turn. In 15+10s, each move adds 10 seconds. If your time hits zero, you lose - unless the other side cannot possibly mate, which is a draw.'
     :'సెటప్ లో ప్రతి ఆటగాడికి గడియారం ఎంచుకోండి లేదా గడియారం లేకుండా ఆడండి. మీ వంతులో మాత్రమే మీ సమయం తగ్గుతుంది. 15+10s లో ప్రతి కదలిక 10 సెకన్లు ఇస్తుంది. సమయం అయిపోతే ఓటమి - కానీ మిగతా వైపు మేట్ చేయలేకపోతే డ్రా.')+'</p>'
@@ -1007,8 +1007,8 @@ function buildGuide(){
     ?'Five levels: Beginner, Easy, Medium, Hard, Expert. Each level up plays stronger and thinks longer; Expert is full Stockfish strength. Levels follow the built-in engine strength settings, not a measured player rating.'
     :'ఐదు స్థాయిలు: బిగినర్, ఈజీ, మీడియం, హార్డ్, ఎక్స్ పర్ట్. పై స్థాయిలు బలంగా ఆడి ఎక్కువ ఆలోచిస్తాయి; ఎక్స్ పర్ట్ పూర్తి Stockfish శక్తి. స్థాయిలు ఇంజిన్ శక్తి సెట్టింగులు, కొలిచిన ఆటగాడి రేటింగు కాదు.')+'</p>'
   +'<h4>'+(en?'Tips':'చిట్కాలు')+'</h4><p>'+(en
-    ?'Control the center with pawns. Bring knights and bishops out early. Castle your king to safety. Do not move the same piece twice in the opening. Think before every move: what did my opponent just threaten?'
-    :'బంతులతో సెంటర్ ను నియంత్రించండి. గుర్రాలు, బిషప్ లను త్వరగా బయటకు తీయండి. రాజును క్యాజ్లింగ్ తో భద్రపరచండి. ఓపెనింగ్ లో అదే ముక్కను రెండుసార్లు కదపవద్దు. ప్రతి కదలిక ముందు ఆలోచించండి: ప్రత్యర్థి ఇప్పుడు ఏమి బెదిరించాడు?')+'</p>';
+    ?'Control the center with pawns. Bring knights and bishops out early. Castle your king to safety. Usually avoid moving the same piece repeatedly in the opening unless needed. Think before every move: what did my opponent just threaten?'
+    :'సిపాయిలతో కేంద్రాన్ని నియంత్రించండి. గుర్రాలు, బిషప్ లను త్వరగా బయటకు తీయండి. రాజును క్యాజ్లింగ్ తో భద్రపరచండి. అవసరం లేకపోతే ఓపెనింగ్‌లో అదే పావును మళ్లీ మళ్లీ కదపకండి. ప్రతి కదలిక ముందు ఆలోచించండి: ప్రత్యర్థి ఇప్పుడు ఏమి బెదిరించాడు?')+'</p>';
 }
 
 /* ============ suggestion box ============ */
@@ -1024,24 +1024,26 @@ window.__rvNetStart=function(color){
   show('game');
 };
 window.__rvNetMsg=function(m){
-  if(!G||G.mode!=='net')return;
+  if(!G||G.mode!=='net'||G.over||!m||typeof m!=='object')return;
   if(m.t==='mv'){
+    netDrawPending=false;
+    if(G.chess.turn()===G.human||!/^([a-h][1-8])$/.test(m.from)||!/^([a-h][1-8])$/.test(m.to)||m.promotion&&!['q','r','b','n'].includes(m.promotion))return;
     let mv=null;
     try{mv=G.chess.move({from:m.from,to:m.to,promotion:m.promotion||'q'})}catch(e){return}
-    afterMove(mv);
+    if(mv)afterMove(mv);
   }else if(m.t==='resign'){
     finishGame(G.human,t('resign'));
   }else if(m.t==='draw_offer'){
-    confirmBox(t('draw'),t('friend')+' '+t('offered'),t('accept'),t('decline'),ok=>{
-      RVNET.send({t:ok?'draw_yes':'draw_no'});
+    const game=G,fen=G.chess.fen();confirmBox(t('draw'),t('friend')+' '+t('offered'),t('accept'),t('decline'),ok=>{
+      if(G!==game||G.over||G.chess.fen()!==fen)return;RVNET.send({t:ok?'draw_yes':'draw_no'});
       if(ok)finishGame('draw',t('agreement'));
     });
   }else if(m.t==='draw_yes'){
-    finishGame('draw',t('agreement'));
+    if(!netDrawPending)return;netDrawPending=false;finishGame('draw',t('agreement'));
   }else if(m.t==='draw_no'){
-    renderStatus(t('draw_declined'));setTimeout(()=>{if(G&&!G.over)renderStatus()},1600);
+    if(!netDrawPending)return;netDrawPending=false;renderStatus(t('draw_declined'));setTimeout(()=>{if(G&&!G.over)renderStatus()},1600);
   }else if(m.t==='draw_claim'){
-    finishGame('draw',t('claimed')+' - '+m.why);
+    if(claimableDraw())finishGame('draw',t('claimed')+' - '+(G.chess.isThreefoldRepetition()?t('threefold'):t('fifty')));
   }else if(m.t==='leave'){
     renderStatus(t('friend_left'));
   }
