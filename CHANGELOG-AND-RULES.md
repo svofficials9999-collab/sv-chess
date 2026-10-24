@@ -100,3 +100,9 @@ Live: https://svofficials9999-collab.github.io/sv-chess/
 
 ## v2.1.1 (2026-10-24)
 - Upgrade integration test exposed an old worker finishing a background asset fetch after cache retirement and recreating its old cache. Global cache lookup could then serve stale HTML. Fetch lookup and offline fallback now read only the current named chess cache. Old/sibling caches cannot win request matching. Verified through a real old-worker-to-new-worker saved-game/offline upgrade.
+
+## v2.2.0 (2026-10-24)
+- Owner selected option3 from the real-track audition: Solace by Scott Buckley. Replaced the rejected synthesized ambient chord with the full selected recording, bundled locally as a96kbps MP3 (about4.1MB), no external streaming or tracking.
+- Visible title/author/source/CCBY4 licence and compression-only change notice in English/Telugu music settings; source provenance retained in audio/SOURCES.txt. Free commercial software use with credit verified from the composer's own pages. No paid licences/accounts created.
+- Separate music play/stop, gentle starting volume0.12, adjustable volume, master mute and background pause. Off for new users until chosen; browser autoplay restrictions respected. Full track repeats only while enabled. Existing effects volume unchanged.
+- Real audio decoding/time advancement/play-stop/mute verified, not a claim of listening audition. All prior local-phase release caveats remain.
