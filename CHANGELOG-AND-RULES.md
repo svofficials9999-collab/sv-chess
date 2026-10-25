@@ -122,3 +122,6 @@ Live: https://svofficials9999-collab.github.io/sv-chess/
 - Replaced flat knight branding with original realistic golden horse sculpture across favicon,Apple touchicon,PNG192/512install icons,maskable512andmatchinghomehero.Legacyicon.svgembedsthesamePNG.
 - Androidmaskablehasextrasafemargin.Installedlaunchericonrefreshiscontrolledbybrowser/OS;newmanifestassetsdonotproveanexistingphoneiconhaschanged.
 - Boardpiececode/assets,SVPRIMEcreatorlogo,engine,settingsandsavesunchanged.CPUHardlegalreply,savedreload/resume,tinythinkingstatus320/393/430regressionpassed. Cachev44,app2.2.3.
+
+##2.2.4 -25October2026homeheadings
+- User-requestedfuturistichomecardheadings:staticbrightcyan,subtlesoftglow,goldaccentbar;Teluguletterspacingremainsnormal.Noboard/gameplay/wording/layout/settings/savechange.Realisticgoldhorsepreserved.Cachev45.
