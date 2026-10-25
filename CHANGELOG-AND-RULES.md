@@ -125,3 +125,7 @@ Live: https://svofficials9999-collab.github.io/sv-chess/
 
 ##2.2.4 -25October2026homeheadings
 - User-requestedfuturistichomecardheadings:staticbrightcyan,subtlesoftglow,goldaccentbar;Teluguletterspacingremainsnormal.Noboard/gameplay/wording/layout/settings/savechange.Realisticgoldhorsepreserved.Cachev45.
+
+##2.2.5 -25October2026futuristiclaunchericon
+- Userclarifiedactualphonelauncherandpremiumfuturisticdirection. Neworiginalrealisticgoldknightwithrestrainedcyanorbit,install/Apple/favicon/maskableassetsnewfilenames,matchinghero. Preserves2.2.4cyan/goldheadings. Cachev46.
+- Screenshotconfirmedphoneoldwhiteknightpersistedafterpublic2.2.3assets;browser/OSrefreshnotcontrolledbywebpage. Nouninstall/localdataclear.
