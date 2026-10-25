@@ -10,7 +10,7 @@ document.head.appendChild(css);
 const home=$('scr-home');const trainingBtn=document.createElement('button');trainingBtn.id='m-training';trainingBtn.className='card';trainingBtn.innerHTML='<b>'+tx('Chess Training','చెస్ శిక్షణ')+'</b><small>'+tx('Openings, tactics, checkmate and piece practice','ఓపెనింగ్స్, వ్యూహాలు, చెక్‌మేట్, పావుల సాధన')+'</small>';home.insertBefore(trainingBtn,$('m-guide'));
 const settingsBtn=document.createElement('button');settingsBtn.id='m-settings';settingsBtn.className='card';settingsBtn.innerHTML='<b>'+tx('Themes & Settings','థీమ్స్ & సెట్టింగ్స్')+'</b><small>'+tx('Appearance, sound and performance','రూపం, ధ్వని, పనితీరు')+'</small>';home.insertBefore(settingsBtn,$('m-guide'));
 for(const id of ['training','settings']){const el=document.createElement('section');el.id='scr-'+id;el.style.display='none';$('scr-home').parentElement.appendChild(el)}
-const themes=[['','Royal Gold'],['marble','Black Marble'],['walnut','Classic Walnut'],['crystal','Crystal Glass'],['neon','Futuristic Neon'],['indian','Ancient Indian Royal']];
+const themes=[['','Royal Emerald Gold'],['marble','Black Marble'],['walnut','Classic Walnut'],['crystal','Crystal + Emerald'],['neon','Futuristic Neon'],['indian','Ancient Indian Royal']];
 $('themeseg').innerHTML=themes.map(([id,n])=>'<button class="btn'+(id===selTheme?' on':'')+'" data-th="'+id+'">'+n+'</button>').join('');
 window.__rvDrag=(from,to)=>{if(!G||G.paused||THINKING||G.over)return;if(G.mode==='cpu'&&G.chess.turn()!==G.human)return;if(G.mode==='net'&&G.chess.turn()!==G.human)return;SEL=null;LEGAL=[];tapSquare(from);if(SEL===from)tapSquare(to)};
 // 2D fallback also supports legal drag. A single click retains the existing tap behavior.

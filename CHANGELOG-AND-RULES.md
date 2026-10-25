@@ -129,3 +129,8 @@ Live: https://svofficials9999-collab.github.io/sv-chess/
 ##2.2.5 -25October2026futuristiclaunchericon
 - Userclarifiedactualphonelauncherandpremiumfuturisticdirection. Neworiginalrealisticgoldknightwithrestrainedcyanorbit,install/Apple/favicon/maskableassetsnewfilenames,matchinghero. Preserves2.2.4cyan/goldheadings. Cachev46.
 - Screenshotconfirmedphoneoldwhiteknightpersistedafterpublic2.2.3assets;browser/OSrefreshnotcontrolledbywebpage. Nouninstall/localdataclear.
+
+## 2.2.6 - 25 October 2026 board colour refinement
+- Owner marked the board and requested a different colour. Royal Gold and Crystal board squares now use emerald green + ivory, retaining their existing distinct piece materials and frame, all other themes and gameplay.
+- Same palette in lightweight 2D. Crystal's old blue/grey squares no longer remain in its 3D view. Existing theme IDs, settings and saved games are unchanged; no forced theme reset.
+- Cache v47. Verified 32 pieces in each 3D palette, Telugu/English mobile screens, 320/393/430 layouts, 2D fallback and CPU legal reply/save/reload/resume.
