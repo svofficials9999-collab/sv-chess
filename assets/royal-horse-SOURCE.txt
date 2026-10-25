@@ -1,2 +1,2 @@
-Royal Chess home horse artwork
-Original image generated for D Srinivas on25October2026 for the requested realistic golden horse home icon. No third-party photograph, logo or stock artwork used. Display asset: royal-horse.webp,256x256. Does not replace board pieces or application install icon.
+Royal Chess artwork,25October2026
+Original generated realistic gold horse chess-knight artwork for D Srinivas's requested Royal Chess realistic logo/icon update. No third-party photo, stock art or trademark used. Master assets/royal-chess-artwork.jpg; PNG192/512install,180Apple,32favicon,maskable512withsafeinset. Homehero256WebP matches same artwork. icon.svg legacy fallback embeds512PNG. Board pieces and SV PRIME creator logo are unchanged.

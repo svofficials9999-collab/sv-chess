@@ -1,5 +1,5 @@
-const V='sv-chess-v43';
-const ASSETS=['./','./index.html','./manifest.webmanifest','./icon.svg','./vendor/chess.js','./vendor/stockfish.asm.js','./vendor/three.min.js','./royal3d.js','./netplay.js','./enhancements.js','./environment.js','./audio/solace-scott-buckley.mp3','./audio/SOURCES.txt','./assets/me.jpg','./assets/logo.png','./assets/royal-horse.webp'];
+const V='sv-chess-v44';
+const ASSETS=['./','./index.html','./manifest.webmanifest','./icon.svg','./icon-realistic-32.png','./icon-realistic-180.png','./icon-realistic-192.png','./icon-realistic-512.png','./icon-realistic-maskable-512.png','./vendor/chess.js','./vendor/stockfish.asm.js','./vendor/three.min.js','./royal3d.js','./netplay.js','./enhancements.js','./environment.js','./audio/solace-scott-buckley.mp3','./audio/SOURCES.txt','./assets/me.jpg','./assets/logo.png','./assets/royal-horse.webp'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(ASSETS.map(a=>c.add(new Request(a,{cache:'reload'}))))).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('sv-chess-')&&k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{

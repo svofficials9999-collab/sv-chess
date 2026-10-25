@@ -117,3 +117,8 @@ Live: https://svofficials9999-collab.github.io/sv-chess/
 - User-requested visual correction: thinking status is a19px-high edge pill, with no full-board dimming, large panel, pulse or glow. Piece sizes and engine behaviour unchanged.
 - Home hero uses original realistic golden horse artwork instead of flat knight icon. Install icon unchanged.
 - Cachev43 includes home artwork. Saved-game/settings keys and music untouched.
+
+##2.2.3 -25October2026 realistic Royal Chess icon
+- Replaced flat knight branding with original realistic golden horse sculpture across favicon,Apple touchicon,PNG192/512install icons,maskable512andmatchinghomehero.Legacyicon.svgembedsthesamePNG.
+- Androidmaskablehasextrasafemargin.Installedlaunchericonrefreshiscontrolledbybrowser/OS;newmanifestassetsdonotproveanexistingphoneiconhaschanged.
+- Boardpiececode/assets,SVPRIMEcreatorlogo,engine,settingsandsavesunchanged.CPUHardlegalreply,savedreload/resume,tinythinkingstatus320/393/430regressionpassed. Cachev44,app2.2.3.
