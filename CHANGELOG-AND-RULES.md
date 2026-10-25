@@ -112,3 +112,8 @@ Live: https://svofficials9999-collab.github.io/sv-chess/
 - Disable unsynchronised Undo and assisted Hint during two-phone matches; both remain available locally. Verify incoming peer move ownership, square/promotion shape, legal result and draw claims; reject unsolicited draw acceptance. These protect normal peer consistency, not server-authoritative anti-cheat or reconnection.
 - Captured trays now use actual capture history, fixing false captured pawns after promotion. Timeout against a bare king is a draw. Stale draw/resign modal callbacks cannot finish a replacement game.
 - Correct Telugu pawn/en-passant/guide mistranslations and describe castling/draw claim rules precisely. Larger pieces/straight board/themes/training/local saves/Solace unchanged. Hosted Cloudflare phase explicitly deferred by owner, not deployed or completed.
+
+##2.2.2 -25October2026
+- User-requested visual correction: thinking status is a19px-high edge pill, with no full-board dimming, large panel, pulse or glow. Piece sizes and engine behaviour unchanged.
+- Home hero uses original realistic golden horse artwork instead of flat knight icon. Install icon unchanged.
+- Cachev43 includes home artwork. Saved-game/settings keys and music untouched.
